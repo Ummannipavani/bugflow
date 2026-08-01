@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Projects | BugFlow</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>🐞 BugFlow</h2>
+    </div>
+
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/report-issue">Report Issue</a>
+        <a href="/issues">Issues</a>
+        <a href="/projects" class="active">Projects</a>
+        <a href="/">Logout</a>
+    </nav>
+
+</div>
+
+<div class="main">
+
+    <div class="topbar">
+        <h1>Project Management</h1>
+    </div>
+
+    <!-- Create Project Card -->
+
+    <div class="table-container">
+
+        <h2>Create New Project</h2>
+        <p style="color:#94a3b8;margin-bottom:25px;">
+            Add a new software project to BugFlow.
+        </p>
+
+        <form id="projectForm">
+
+            <div class="form-group">
+
+                <label>Project Name</label>
+
+                <input
+                    type="text"
+                    id="name"
+                    placeholder="Example: BugFlow API"
+                    required
+                >
+
+            </div>
+
+            <div class="form-group">
+
+                <label>Project Description</label>
+
+                <textarea
+                    id="description"
+                    rows="5"
+                    placeholder="Describe your project..."
+                    required
+                ></textarea>
+
+            </div>
+
+            <button
+                class="report-btn"
+                type="submit">
+
+                + Create Project
+
+            </button>
+
+        </form>
+
+    </div>
+
+    <br>
+
+    <!-- Project List -->
+
+    <div class="table-container">
+
+        <h2>All Projects</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Project Name</th>
+                    <th>Description</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% if projects %}
+
+                {% for project in projects %}
+
+                <tr>
+
+                    <td>{{ project.id }}</td>
+
+                    <td>
+
+                        <strong>{{ project.name }}</strong>
+
+                    </td>
+
+                    <td>{{ project.description }}</td>
+
+                </tr>
+
+                {% endfor %}
+
+            {% else %}
+
+                <tr>
+
+                    <td colspan="3" style="text-align:center;padding:40px;color:#94a3b8;">
+
+                        📂 No Projects Found
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("projectForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const response = await fetch("/projects",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            name:document.getElementById("name").value,
+
+            description:document.getElementById("description").value
+
+        })
+
+    });
+
+    const result = await response.json();
+
+    if(response.ok){
+
+        window.location.reload();
+
+    }else{
+
+        alert(result.message);
+
+    }
+
+});
+
+</script>
+
+</body>
+
+</html>

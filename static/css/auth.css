@@ -1,0 +1,436 @@
+/* Google Font */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#0f172a,#1e293b,#312e81);
+    overflow:hidden;
+    position:relative;
+}
+
+/* Animated background circles */
+
+body::before,
+body::after{
+    content:"";
+    position:absolute;
+    width:450px;
+    height:450px;
+    border-radius:50%;
+    filter:blur(120px);
+    opacity:.35;
+}
+
+body::before{
+    background:#6d5dfc;
+    top:-150px;
+    left:-120px;
+}
+
+body::after{
+    background:#2563eb;
+    bottom:-150px;
+    right:-120px;
+}
+
+/* Login Card */
+
+.auth-card{
+
+    width:430px;
+
+    background:rgba(30,41,59,.72);
+
+    border:1px solid rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:22px;
+
+    padding:45px;
+
+    box-shadow:0 25px 60px rgba(0,0,0,.45);
+
+    color:white;
+
+}
+
+/* Brand */
+
+.brand{
+
+    text-align:center;
+
+    margin-bottom:35px;
+
+}
+
+.brand h1{
+
+    font-size:38px;
+
+    font-weight:700;
+
+    color:#ffffff;
+
+}
+
+.brand span{
+
+    color:#8b7cff;
+
+}
+
+.brand p{
+
+    color:#94a3b8;
+
+    margin-top:8px;
+
+    font-size:15px;
+
+}
+
+/* Headings */
+
+.auth-title{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    margin-bottom:8px;
+
+}
+
+.auth-subtitle{
+
+    color:#94a3b8;
+
+    margin-bottom:30px;
+
+    font-size:15px;
+
+}
+
+/* Labels */
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-size:14px;
+
+    font-weight:500;
+
+    color:#e2e8f0;
+
+}
+
+/* Inputs */
+
+.input-group{
+
+    position:relative;
+
+    margin-bottom:22px;
+
+}
+
+.input-group input,
+.input-group select{
+
+    width:100%;
+
+    padding:15px 18px;
+
+    border-radius:12px;
+
+    border:1px solid rgba(255,255,255,.12);
+
+    background:#0f172a;
+
+    color:white;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.input-group input::placeholder{
+
+    color:#64748b;
+
+}
+
+.input-group input:focus,
+.input-group select:focus{
+
+    outline:none;
+
+    border-color:#7c6cff;
+
+    box-shadow:0 0 0 4px rgba(124,108,255,.15);
+
+}
+
+/* Password toggle */
+
+.password-box{
+
+    position:relative;
+
+}
+
+.toggle-password{
+
+    position:absolute;
+
+    right:15px;
+
+    top:50%;
+
+    transform:translateY(-50%);
+
+    cursor:pointer;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+}
+
+/* Remember row */
+
+.options{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:25px;
+
+    font-size:14px;
+
+}
+
+.options label{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin:0;
+
+    color:#cbd5e1;
+
+}
+
+.options input{
+
+    width:auto;
+
+}
+
+.options a{
+
+    color:#8b7cff;
+
+    text-decoration:none;
+
+}
+
+.options a:hover{
+
+    color:white;
+
+}
+
+/* Button */
+
+.auth-btn{
+
+    width:100%;
+
+    border:none;
+
+    padding:15px;
+
+    border-radius:12px;
+
+    background:linear-gradient(90deg,#6d5dfc,#8b7cff);
+
+    color:white;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.auth-btn:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:0 15px 30px rgba(109,93,252,.35);
+
+}
+
+/* Divider */
+
+.divider{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    margin:30px 0;
+
+    color:#94a3b8;
+
+    font-size:14px;
+
+}
+
+.divider::before,
+.divider::after{
+
+    content:"";
+
+    flex:1;
+
+    height:1px;
+
+    background:#334155;
+
+}
+
+/* Footer */
+
+.auth-footer{
+
+    text-align:center;
+
+    color:#cbd5e1;
+
+    font-size:15px;
+
+}
+
+.auth-footer a{
+
+    color:#8b7cff;
+
+    text-decoration:none;
+
+    font-weight:600;
+
+}
+
+.auth-footer a:hover{
+
+    color:white;
+
+}
+
+/* Responsive */
+
+@media(max-width:500px){
+
+.auth-card{
+
+width:92%;
+
+padding:30px;
+
+}
+
+.brand h1{
+
+font-size:30px;
+
+}
+
+.auth-title{
+
+font-size:24px;
+
+}
+
+}
+/* ================= TOAST ================= */
+
+.toast{
+
+    position:fixed;
+
+    top:25px;
+
+    right:25px;
+
+    min-width:300px;
+
+    padding:16px 20px;
+
+    border-radius:12px;
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:500;
+
+    box-shadow:0 15px 35px rgba(0,0,0,.35);
+
+    opacity:0;
+
+    transform:translateY(-20px);
+
+    transition:.35s;
+
+    z-index:9999;
+
+}
+
+.toast.show{
+
+    opacity:1;
+
+    transform:translateY(0);
+
+}
+
+.toast.success{
+
+    background:#10b981;
+
+}
+
+.toast.error{
+
+    background:#ef4444;
+
+}

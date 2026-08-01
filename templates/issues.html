@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Issues | BugFlow</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>🐞 BugFlow</h2>
+    </div>
+
+    <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/report-issue">Report Issue</a>
+        <a href="/issues" class="active">Issues</a>
+        <a href="/projects">Projects</a>
+        <a href="/">Logout</a>
+    </nav>
+
+</div>
+
+<div class="main">
+
+    <div class="topbar">
+
+        <div>
+
+            <h1>Issue Tracker</h1>
+
+            <p style="color:#94a3b8;">
+                Manage and monitor all reported bugs.
+            </p>
+
+        </div>
+
+        <button
+            class="report-btn"
+            onclick="window.location='/report-issue'">
+
+            + Report Issue
+
+        </button>
+
+    </div>
+
+    <!-- Search + Filter -->
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Search by title or project..."
+            onkeyup="filterTable()">
+
+        <select
+            id="severityFilter"
+            onchange="filterTable()">
+
+            <option value="All">All Severity</option>
+            <option value="Critical">Critical</option>
+            <option value="Major">Major</option>
+            <option value="Minor">Minor</option>
+
+        </select>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>#</th>
+                    <th>Issue</th>
+                    <th>Project</th>
+                    <th>Priority</th>
+                    <th>Severity</th>
+                    <th>Screenshot</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="issuesTable">
+
+            {% if issues %}
+
+            {% for issue in issues %}
+
+            <tr>
+
+                <td>{{ issue.id }}</td>
+
+                <td>
+                    <strong>{{ issue.title }}</strong>
+                </td>
+
+                <td>{{ issue.project }}</td>
+
+                <td>
+
+                    {% if issue.priority=="P1" %}
+
+                    <span class="badge red">
+                        {{ issue.priority }}
+                    </span>
+
+                    {% elif issue.priority=="P2" %}
+
+                    <span class="badge orange">
+                        {{ issue.priority }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge green">
+                        {{ issue.priority }}
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if issue.severity=="Critical" %}
+
+                    <span class="badge red">
+                        {{ issue.severity }}
+                    </span>
+
+                    {% elif issue.severity=="Major" %}
+
+                    <span class="badge orange">
+                        {{ issue.severity }}
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge blue">
+                        {{ issue.severity }}
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <!-- Screenshot -->
+
+                <td>
+
+                    {% if issue.screenshot %}
+
+                        <a href="/uploads/{{ issue.screenshot }}" target="_blank">
+
+                            <img
+                                src="/uploads/{{ issue.screenshot }}"
+                                width="80"
+                                height="55"
+                                style="border-radius:8px; object-fit:cover;">
+
+                        </a>
+
+                    {% else %}
+
+                        <span style="color:gray;">No Image</span>
+
+                    {% endif %}
+
+                </td>
+
+                <!-- Status -->
+
+                <td>
+
+                    <select
+                        class="status-select"
+                        onchange="updateStatus({{ issue.id }}, this.value)">
+
+                        <option value="Open"
+                        {% if issue.status=="Open" %}selected{% endif %}>
+                            Open
+                        </option>
+
+                        <option value="In Progress"
+                        {% if issue.status=="In Progress" %}selected{% endif %}>
+                            In Progress
+                        </option>
+
+                        <option value="Resolved"
+                        {% if issue.status=="Resolved" %}selected{% endif %}>
+                            Resolved
+                        </option>
+
+                    </select>
+
+                </td>
+
+                <!-- Actions -->
+
+                <td>
+
+                    <button
+                        class="edit-btn"
+                        onclick="editIssue({{ issue.id }})">
+
+                        Edit
+
+                    </button>
+
+                    <button
+                        class="delete-btn"
+                        onclick="deleteIssue({{ issue.id }})">
+
+                        Delete
+
+                    </button>
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="8" style="padding:40px;text-align:center;">
+
+                    No Issues Reported Yet
+
+                </td>
+
+            </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+
+function editIssue(id){
+
+    window.location="/report-issue?id="+id;
+
+}
+
+async function deleteIssue(id){
+
+    if(!confirm("Delete this issue?")) return;
+
+    const response=await fetch(`/issues/${id}`,{
+
+        method:"DELETE"
+
+    });
+
+    const result=await response.json();
+
+    alert(result.message);
+
+    location.reload();
+
+}
+
+
+// =========================
+// Update Status
+// =========================
+
+async function updateStatus(id,status){
+
+    const response=await fetch(`/issues/${id}/status`,{
+
+        method:"PUT",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            status:status
+
+        })
+
+    });
+
+    const result=await response.json();
+
+    console.log(result.message);
+
+}
+
+
+// =========================
+// Search + Filter
+// =========================
+
+function filterTable(){
+
+    const search=document.getElementById("searchInput").value.toLowerCase();
+
+    const severity=document.getElementById("severityFilter").value;
+
+    const rows=document.querySelectorAll("#issuesTable tr");
+
+    rows.forEach(row=>{
+
+        if(row.cells.length===0) return;
+
+        const title=row.cells[1].innerText.toLowerCase();
+
+        const project=row.cells[2].innerText.toLowerCase();
+
+        const sev=row.cells[4].innerText.trim();
+
+        const matchSearch=
+            title.includes(search) ||
+            project.includes(search);
+
+        const matchSeverity=
+            severity==="All" ||
+            sev===severity;
+
+        row.style.display=
+            (matchSearch && matchSeverity)
+            ? ""
+            : "none";
+
+    });
+
+}
+
+</script>
+
+</body>
+</html>

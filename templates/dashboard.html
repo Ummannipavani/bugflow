@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>BugFlow Dashboard</title>
+
+    <link rel="stylesheet" href="/static/css/style.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>🐞 BugFlow</h2>
+    </div>
+
+    <nav>
+
+        <a href="/dashboard" class="active">Dashboard</a>
+
+        <a href="/report-issue">Report Issue</a>
+
+        <a href="/issues">Issues</a>
+
+        <a href="/projects">Projects</a>
+
+        <a href="/">Logout</a>
+
+    </nav>
+
+</div>
+
+<div class="main">
+
+    <!-- Top Bar -->
+    <div class="topbar">
+
+        <h1>Dashboard</h1>
+
+        <div class="topbar-right">
+
+            <!-- Notification -->
+            <div class="notification-wrapper">
+
+                <button type="button"
+                        class="notification-btn"
+                        onclick="toggleNotifications()">
+                    🔔
+
+                    {% if notifications and notifications|length > 0 %}
+                    <span class="notification-count">
+                        {{ "9+" if notifications|length > 9 else notifications|length }}
+                    </span>
+                    {% endif %}
+                </button>
+
+                <div id="notificationDropdown" class="notification-dropdown">
+
+                    <h4>Notifications</h4>
+
+                    {% if notifications %}
+
+                        {% for notification in notifications %}
+
+                        <div class="notification-item">
+                            {{ notification }}
+                        </div>
+
+                        {% endfor %}
+
+                    {% else %}
+
+                        <div class="notification-item">
+                            No new notifications
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+            <!-- Profile -->
+            <div class="profile-wrapper">
+
+                <div class="profile-info" onclick="toggleProfileMenu()">
+
+                    <div class="profile-circle">
+                        {% if user %}
+                            {{ user["name"][0]|upper }}
+                        {% else %}
+                            G
+                        {% endif %}
+                    </div>
+
+                    <div class="profile-name">
+                        {% if user %}
+                            {{ user["name"] }} ▼
+                        {% else %}
+                            Guest ▼
+                        {% endif %}
+                    </div>
+
+                </div>
+
+                <div id="profileDropdown" class="profile-dropdown">
+
+                    {% if user %}
+
+                    <div class="profile-header">
+
+                        <div class="profile-circle large">
+                            {{ user["name"][0]|upper }}
+                        </div>
+
+                        <h4>{{ user["name"] }}</h4>
+
+                        <p>{{ user["email"] }}</p>
+
+                        <span class="role-badge">
+                            {{ user["role"] }}
+                        </span>
+
+                    </div>
+
+                    <hr>
+
+                    <a href="/logout" class="logout-link">
+                        🚪 Logout
+                    </a>
+
+                    {% else %}
+
+                    <p style="padding:15px;">Guest User</p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+            
+    <!-- Statistics -->
+
+    <div class="cards">
+
+        <div class="card">
+
+            <p>Total Issues</p>
+
+            <h2>{{ total_issues }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <p>Total Projects</p>
+
+            <h2>{{ total_projects }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <p>Critical Bugs</p>
+
+            <h2 class="danger">{{ critical_bugs }}</h2>
+
+        </div>
+
+        <div class="card">
+
+            <p>Resolved</p>
+
+            <h2 class="success">{{ resolved }}</h2>
+
+        </div>
+
+    </div>
+
+    <!-- Quick Actions -->
+
+    <div class="quick-actions">
+
+        <a href="/report-issue" class="action-card">
+
+            <div class="action-icon">🐞</div>
+
+            <h3>Report Issue</h3>
+
+            <p>Create a new bug report</p>
+
+        </a>
+
+        <a href="/issues" class="action-card">
+
+            <div class="action-icon">📋</div>
+
+            <h3>View Issues</h3>
+
+            <p>Manage all reported issues</p>
+
+        </a>
+
+        <a href="/projects" class="action-card">
+
+            <div class="action-icon">📁</div>
+
+            <h3>Projects</h3>
+
+            <p>View project details</p>
+
+        </a>
+
+    </div>
+
+    <!-- Recent Issues -->
+
+    <div class="table-container">
+
+        <h2>Recent Issues</h2>
+
+        <table>
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Title</th>
+
+                <th>Project</th>
+
+                <th>Priority</th>
+
+                <th>Severity</th>
+
+                <th>Status</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            {% if issues %}
+
+            {% for issue in issues %}
+
+            <tr>
+
+                <td>#{{ issue.id }}</td>
+
+                <td>{{ issue.title }}</td>
+
+                <td>{{ issue.project }}</td>
+
+                <td>
+
+                    {% if issue.priority=="P1" %}
+
+                    <span class="badge badge-red">P1</span>
+
+                    {% elif issue.priority=="P2" %}
+
+                    <span class="badge badge-orange">P2</span>
+
+                    {% else %}
+
+                    <span class="badge badge-green">P3</span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if issue.severity=="Critical" %}
+
+                    <span class="badge badge-red">
+                        Critical
+                    </span>
+
+                    {% elif issue.severity=="Major" %}
+
+                    <span class="badge badge-orange">
+                        Major
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-green">
+                        Minor
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if issue.status=="Open" %}
+
+                    <span class="badge badge-blue">
+                        Open
+                    </span>
+
+                    {% elif issue.status=="Resolved" %}
+
+                    <span class="badge badge-green">
+                        Resolved
+                    </span>
+
+                    {% else %}
+
+                    <span class="badge badge-gray">
+                        {{ issue.status }}
+                    </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+            {% else %}
+
+            <tr>
+
+                <td colspan="6"
+                    style="text-align:center;padding:35px;">
+
+                    No issues reported yet.
+
+                </td>
+
+            </tr>
+
+            {% endif %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <br>
+
+    <!-- Recent Activity -->
+    <div class="table-container">
+
+        <h2>Recent Activity</h2>
+
+        {% if activities %}
+
+            <ul class="activity-list">
+
+            {% for activity in activities %}
+
+                <li>
+
+                    {{ activity.action }}
+
+                    <br>
+
+                    <small>
+
+                        {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+
+                    </small>
+
+                </li>
+
+            {% endfor %}
+
+            </ul>
+
+        {% else %}
+
+            <p>No recent activity.</p>
+
+        {% endif %}
+
+    </div>
+
+    
+
+</div>
+<script>
+function toggleNotifications(){
+
+    const menu=document.getElementById("notificationDropdown");
+
+    if(menu.style.display==="block"){
+
+        menu.style.display="none";
+
+    }
+
+    else{
+
+        menu.style.display="block";
+
+    }
+
+}
+function toggleProfileMenu(){
+
+    const menu = document.getElementById("profileDropdown");
+
+    if(menu.style.display === "block"){
+        menu.style.display = "none";
+    }
+    else{
+        menu.style.display = "block";
+    }
+
+}
+window.onclick = function(event){
+
+    if(!event.target.closest(".notification-wrapper")){
+        document.getElementById("notificationDropdown").style.display = "none";
+    }
+
+    if(!event.target.closest(".profile-wrapper")){
+        document.getElementById("profileDropdown").style.display = "none";
+    }
+
+}
+</script>
+</body>
+
+</html>

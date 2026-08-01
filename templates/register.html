@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Create Account</title>
+
+<link rel="stylesheet" href="/static/css/auth.css">
+
+</head>
+
+<body>
+
+<div class="auth-card">
+
+<div class="brand">
+
+<h1>Bug<span>Flow</span></h1>
+
+<p>Bug Tracking Platform</p>
+
+</div>
+
+<h2 class="auth-title">
+
+Create Account
+
+</h2>
+
+<p class="auth-subtitle">
+
+Create your BugFlow account
+
+</p>
+
+<form id="registerForm">
+
+<div class="input-group">
+
+<label>Full Name</label>
+
+<input
+type="text"
+id="name"
+placeholder="John Doe"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>Email Address</label>
+
+<input
+type="email"
+id="email"
+placeholder="name@example.com"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>Password</label>
+
+<input
+type="password"
+id="password"
+placeholder="Create password"
+required>
+
+</div>
+
+<div class="input-group">
+
+<label>Role</label>
+
+<select id="role">
+
+<option value="">Select Role</option>
+
+<option>Developer</option>
+
+<option>Tester</option>
+
+<option>Project Manager</option>
+
+</select>
+
+</div>
+
+<button
+type="submit"
+class="auth-btn">
+
+Create Account
+
+</button>
+
+</form>
+
+<div class="divider">
+
+Already have an account?
+
+</div>
+
+<div class="auth-footer">
+
+<a href="/">Sign In</a>
+
+</div>
+
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+
+const toast = document.getElementById("toast");
+
+function showToast(message,type){
+
+    toast.innerText = message;
+
+    toast.className = "toast show " + type;
+
+    setTimeout(()=>{
+
+        toast.className = "toast";
+
+    },3000);
+
+}
+
+document.getElementById("registerForm").addEventListener("submit",async function(e){
+
+    e.preventDefault();
+
+    const response = await fetch("/register",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            name:document.getElementById("name").value,
+
+            email:document.getElementById("email").value,
+
+            password:document.getElementById("password").value,
+
+            role:document.getElementById("role").value
+
+        })
+
+    });
+
+    const result = await response.json();
+
+    if(response.ok){
+
+        showToast(result.message,"success");
+
+        setTimeout(()=>{
+
+            window.location="/";
+
+        },1500);
+
+    }
+    else{
+
+        showToast(result.message || result.detail,"error");
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

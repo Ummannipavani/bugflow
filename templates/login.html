@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>BugFlow Login</title>
+
+    <link rel="stylesheet" href="/static/css/auth.css">
+
+</head>
+
+<body>
+
+<div class="auth-card">
+
+    <div class="brand">
+        <h1>Bug<span>Flow</span></h1>
+        <p>Bug Tracking Platform</p>
+    </div>
+
+    <h2 class="auth-title">Welcome Back</h2>
+
+    <p class="auth-subtitle">
+        Sign in to continue to your dashboard
+    </p>
+
+    <form id="loginForm">
+
+        <div class="input-group">
+
+            <label>Email Address</label>
+
+            <input
+                type="email"
+                id="email"
+                placeholder="name@example.com"
+                required>
+
+        </div>
+
+        <div class="input-group">
+
+            <label>Password</label>
+
+            <input
+                type="password"
+                id="password"
+                placeholder="Enter password"
+                required>
+
+        </div>
+
+        <button
+            type="submit"
+            class="auth-btn">
+
+            Sign In
+
+        </button>
+
+    </form>
+
+    <div class="divider">
+        New to BugFlow?
+    </div>
+
+    <div class="auth-footer">
+
+        Don't have an account?
+
+        <a href="/register">
+
+            Create Account
+
+        </a>
+
+    </div>
+
+</div>
+
+<script>
+
+document.getElementById("loginForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const response = await fetch("/login",{
+
+        method:"POST",
+
+        headers:{
+            "Content-Type":"application/json"
+        },
+
+        body:JSON.stringify({
+
+            email:email.value,
+
+            password:password.value
+
+        })
+
+    });
+
+    const result = await response.json();
+
+    if(result.access_token){
+
+        localStorage.setItem("token", result.access_token);
+
+        window.location="/dashboard";
+
+    }
+    else{
+
+        alert(result.message);
+
+    }
+
+});
+
+</script>
+</body>
+</html>

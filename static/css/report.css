@@ -1,0 +1,300 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:#0f172a;
+    color:white;
+}
+
+/* Sidebar */
+
+.sidebar{
+
+    position:fixed;
+
+    left:0;
+
+    top:0;
+
+    width:240px;
+
+    height:100vh;
+
+    background:#111827;
+
+    border-right:1px solid #1f2937;
+
+    padding:25px;
+
+}
+
+.logo{
+
+    text-align:center;
+
+    margin-bottom:40px;
+
+}
+
+.logo h2{
+
+    color:white;
+
+    font-size:30px;
+
+}
+
+.sidebar nav a{
+
+    display:block;
+
+    text-decoration:none;
+
+    color:#cbd5e1;
+
+    padding:15px;
+
+    margin-bottom:12px;
+
+    border-radius:12px;
+
+    transition:.3s;
+
+}
+
+.sidebar nav a:hover{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.sidebar .active{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+
+/* Main */
+
+.main{
+
+    margin-left:240px;
+
+    padding:50px;
+
+}
+
+/* Heading */
+
+.page-header{
+
+    margin-bottom:35px;
+
+}
+
+.page-header h1{
+
+    font-size:38px;
+
+    margin-bottom:8px;
+
+}
+
+.page-header p{
+
+    color:#94a3b8;
+
+    font-size:16px;
+
+}
+
+
+/* Card */
+
+.report-card{
+
+    background:#1e293b;
+
+    border-radius:20px;
+
+    padding:40px;
+
+    max-width:950px;
+
+    box-shadow:0 20px 40px rgba(0,0,0,.35);
+
+}
+
+
+/* Labels */
+
+.report-card label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:600;
+
+}
+
+
+/* Inputs */
+
+.report-card input,
+.report-card select,
+.report-card textarea{
+
+    width:100%;
+
+    padding:15px;
+
+    margin-bottom:22px;
+
+    background:#334155;
+
+    border:1px solid #475569;
+
+    border-radius:10px;
+
+    color:white;
+
+    font-size:15px;
+
+    transition:.3s;
+
+}
+
+.report-card input:focus,
+.report-card select:focus,
+.report-card textarea:focus{
+
+    outline:none;
+
+    border-color:#2563eb;
+
+    box-shadow:0 0 0 3px rgba(37,99,235,.25);
+
+}
+
+.report-card textarea{
+
+    height:170px;
+
+    resize:none;
+
+}
+
+
+/* Two Columns */
+
+.form-row{
+
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:20px;
+
+}
+
+
+/* Button */
+
+.report-card button{
+
+    width:100%;
+
+    background:#2563eb;
+
+    color:white;
+
+    border:none;
+
+    padding:15px;
+
+    border-radius:10px;
+
+    font-size:17px;
+
+    font-weight:600;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.report-card button:hover{
+
+    background:#1d4ed8;
+
+}
+
+
+/* Responsive */
+
+@media(max-width:900px){
+
+.sidebar{
+
+    position:relative;
+
+    width:100%;
+
+    height:auto;
+
+}
+
+.main{
+
+    margin-left:0;
+
+    padding:20px;
+
+}
+
+.form-row{
+
+    grid-template-columns:1fr;
+
+}
+
+}
+.file-input{
+    width:100%;
+    padding:12px;
+    border:1px solid #3b82f6;
+    border-radius:10px;
+    background:#16213e;
+    color:#fff;
+    margin-bottom:20px;
+    cursor:pointer;
+}
+body.light-mode .file-input{
+    background:#ffffff;
+    color:#333;
+    border:1px solid #d1d5db;
+}
+.button-group{
+    display:flex;
+    gap:15px;
+    margin-top:20px;
+}
+
+.cancel-btn{
+    flex:1;
+}
+
+#submitBtn{
+    flex:1;
+}

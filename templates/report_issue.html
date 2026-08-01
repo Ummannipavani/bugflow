@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Report Issue | BugFlow</title>
+
+    <link rel="stylesheet" href="/static/css/report.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>BugFlow</h2>
+    </div>
+
+    <nav>
+
+        <a href="/dashboard">Dashboard</a>
+
+        <a href="/report-issue" class="active">
+            Report Issue
+        </a>
+
+        <a href="/issues">
+            Issues
+        </a>
+
+        <a href="/projects">
+            Projects
+        </a>
+
+        <a href="/">Logout</a>
+
+    </nav>
+
+</div>
+
+<div class="main">
+
+    <div class="page-header">
+
+        <span class="breadcrumb">
+            Dashboard / Report Issue
+        </span>
+
+        <h1>Report New Issue</h1>
+
+        <p>Create and track software bugs efficiently.</p>
+
+    </div>
+
+    <div class="report-card">
+
+        <form id="issueForm" enctype="multipart/form-data" >
+
+            <label>Issue Title</label>
+
+            <input
+                type="text"
+                id="title"
+                placeholder="Enter issue title"
+                required
+            >
+
+            <div class="form-row">
+
+                <div>
+
+                    <label>Select Existing Project</label>
+
+                    <select id="project">
+
+                        <option value="">Select Project</option>
+
+                        {% for project in projects %}
+
+                        <option value="{{ project.name }}">
+                            {{ project.name }}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+                <div>
+
+                    <label>Due Date</label>
+
+                    <input
+                        type="date"
+                        id="due_date"
+                        required
+                    >
+
+                </div>
+
+                
+
+            </div>
+
+            <div class="form-row">
+
+                <div>
+
+                    <label>Priority</label>
+
+                    <select id="priority">
+
+                        <option value="">Select Priority</option>
+
+                        <option value="P1">🔴 P1 - High</option>
+
+                        <option value="P2">🟠 P2 - Medium</option>
+
+                        <option value="P3">🟢 P3 - Low</option>
+
+                    </select>
+
+                </div>
+
+                <div>
+
+                    <label>Severity</label>
+
+                    <select id="severity">
+
+                        <option value="">Select Severity</option>
+
+                        <option value="Critical">Critical</option>
+
+                        <option value="Major">Major</option>
+
+                        <option value="Minor">Minor</option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+            <label>Description</label>
+
+            <textarea
+                id="description"
+                placeholder="Describe the issue..."
+                rows="7"
+                required
+            ></textarea>
+
+            <div class="input-group">
+
+                <label>Screenshot</label>
+
+                <input
+                    type="file"
+                    id="screenshot"
+                    accept="image/*"
+                    class="file-input">
+
+            </div>
+
+            <button
+                type="button"
+                id="aiButton"
+                style="margin-bottom:15px;background:#7c3aed;color:white;padding:12px 18px;border:none;border-radius:8px;cursor:pointer;"
+            >
+                ✨ Improve with AI
+            </button>
+
+            <div class="button-group">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="window.location='/dashboard'">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    id="submitBtn">
+
+                    Report Issue
+
+                </button>
+
+            </div>
+
+            
+
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+function showToast(message){
+
+    const toast=document.createElement("div");
+
+    toast.className="toast";
+
+    toast.innerText=message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(()=>{
+
+        toast.remove();
+
+    },2500);
+
+}
+
+const params = new URLSearchParams(window.location.search);
+
+const issueId = params.get("id");
+
+if(issueId){
+
+    fetch(`/issues/${issueId}`)
+    .then(res=>res.json())
+    .then(issue=>{
+
+        title.value=issue.title;
+        project.value=issue.project;
+        priority.value=issue.priority;
+        severity.value=issue.severity;
+        description.value=issue.description;
+        due_date.value = issue.due_date;
+
+        submitBtn.innerText="Update Issue";
+
+    });
+
+}
+
+
+// =========================
+// AI Button
+// =========================
+
+document.getElementById("aiButton").addEventListener("click", async function(){
+
+    const description=document.getElementById("description").value;
+
+    if(description.trim()==""){
+
+        alert("Please enter a bug description first.");
+
+        return;
+
+    }
+
+    const aiBtn=this;
+
+    aiBtn.disabled=true;
+
+    aiBtn.innerHTML="⏳ Improving...";
+
+    try{
+
+        const response=await fetch("/ai/improve",{
+
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body:JSON.stringify({
+                description:description
+            })
+
+        });
+
+        const result=await response.json();
+
+        document.getElementById("description").value=result.improved_text;
+
+    }
+
+    catch(error){
+
+        alert("AI service unavailable.");
+
+    }
+
+    aiBtn.disabled=false;
+
+    aiBtn.innerHTML="✨ Improve with AI";
+
+});
+
+
+// =========================
+// Submit Issue
+// =========================
+
+document.getElementById("issueForm").addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    let projectName = project.value;
+
+    
+
+    const formData = new FormData();
+
+    formData.append("title", title.value);
+    formData.append("project", projectName);
+    formData.append("priority", priority.value);
+    formData.append("severity", severity.value);
+    formData.append("description", description.value);
+    formData.append("due_date", due_date.value);
+
+    const screenshot = document.getElementById("screenshot").files[0];
+
+    if(screenshot){
+        formData.append("screenshot", screenshot);
+    }
+
+    let url = "/issues";
+    let method = "POST";
+
+    if(issueId){
+        url = `/issues/${issueId}`;
+        method = "PUT";
+    }
+
+    const response = await fetch(url,{
+        method: method,
+        body: formData
+    });
+
+    const result = await response.json();
+
+    showToast(result.message);
+
+    setTimeout(()=>{
+        window.location="/issues";
+    },800);
+
+});
+
+</script>
+
+</body>
+
+</html>
