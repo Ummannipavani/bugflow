@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 from app.models.project import Project
+from app.models.activity import Activity
 from app.schemas.project import ProjectCreate
 
 router = APIRouter()
