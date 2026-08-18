@@ -27,6 +27,8 @@
 
         <a href="/projects">Projects</a>
 
+        <a href="/sprints">Sprints</a>
+
         <a href="/">Logout</a>
 
     </nav>
@@ -222,10 +224,31 @@
     </div>
 
     <!-- Recent Issues -->
-
     <div class="table-container">
 
-        <h2>Recent Issues</h2>
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:20px;
+        ">
+
+            <h2 style="margin:0;">
+                Recent Issues
+            </h2>
+
+            <a href="/issues" style="
+                color:#60a5fa;
+                text-decoration:none;
+                font-size:14px;
+                font-weight:600;
+            ">
+                View All →
+            </a>
+
+        </div>
+
+    
 
         <table>
 
@@ -280,30 +303,44 @@
                     {% endif %}
 
                 </td>
-
+                
                 <td>
 
-                    {% if issue.severity=="Critical" %}
+                    {% if issue.severity == "Critical" %}
 
                     <span class="badge badge-red">
                         Critical
                     </span>
 
-                    {% elif issue.severity=="Major" %}
+                    {% elif issue.severity == "High" %}
 
                     <span class="badge badge-orange">
-                        Major
+                        High
+                    </span>
+
+                    {% elif issue.severity == "Medium" %}
+
+                    <span class="badge badge-blue">
+                        Medium
+                    </span>
+
+                    {% elif issue.severity == "Low" %}
+
+                    <span class="badge badge-green">
+                        Low
                     </span>
 
                     {% else %}
 
-                    <span class="badge badge-green">
-                        Minor
+                    <span class="badge badge-gray">
+                        {{ issue.severity }}
                     </span>
 
                     {% endif %}
 
                 </td>
+
+               
 
                 <td>
 

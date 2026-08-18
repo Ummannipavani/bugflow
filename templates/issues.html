@@ -2,41 +2,231 @@
 <html>
 
 <head>
+
     <title>Issues | BugFlow</title>
+
     <link rel="stylesheet" href="/static/css/style.css">
+
+    <style>
+
+        /* =========================
+           STATUS SELECT
+        ========================= */
+
+        .status-select {
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            padding: 8px 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .status-select:hover {
+            border-color: #60a5fa;
+        }
+
+        .status-select:focus {
+            border-color: #2563eb;
+        }
+
+        /* =========================
+           TABLE
+        ========================= */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 14px;
+            color: #94a3b8;
+            background: #111827;
+            border-bottom: 1px solid #1e293b;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #1e293b;
+            color: #cbd5e1;
+        }
+
+        tbody tr:hover {
+            background: #172033;
+        }
+
+        /* =========================
+           BADGES
+        ========================= */
+
+        .badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .red {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        .orange {
+            background: #78350f;
+            color: #fed7aa;
+        }
+
+        .green {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .blue {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        .gray {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        /* =========================
+           ACTION BUTTONS
+        ========================= */
+
+        .edit-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 7px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+
+        .edit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .delete-btn {
+            background: #991b1b;
+            color: white;
+            border: none;
+            padding: 7px 11px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background: #b91c1c;
+        }
+
+        /* =========================
+           SCREENSHOT
+        ========================= */
+
+        .issue-image {
+            width: 80px;
+            height: 55px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #334155;
+        }
+
+        /* =========================
+           RESPONSIVE TABLE
+        ========================= */
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
 
 <div class="sidebar">
 
     <div class="logo">
+
         <h2>🐞 BugFlow</h2>
+
     </div>
 
+
     <nav>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/report-issue">Report Issue</a>
-        <a href="/issues" class="active">Issues</a>
-        <a href="/projects">Projects</a>
-        <a href="/">Logout</a>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/report-issue">
+            Report Issue
+        </a>
+
+        <a href="/issues" class="active">
+            Issues
+        </a>
+
+        <a href="/projects">
+            Projects
+        </a>
+
+        <a href="/sprints">
+            Sprints
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
     </nav>
 
 </div>
 
+
+<!-- =========================
+     MAIN
+========================= -->
+
 <div class="main">
+
+
+    <!-- =========================
+         TOP BAR
+    ========================= -->
 
     <div class="topbar">
 
         <div>
 
-            <h1>Issue Tracker</h1>
+            <h1>
+                Issue Tracker
+            </h1>
 
             <p style="color:#94a3b8;">
+
                 Manage and monitor all reported bugs.
+
             </p>
 
         </div>
+
 
         <button
             class="report-btn"
@@ -48,7 +238,10 @@
 
     </div>
 
-    <!-- Search + Filter -->
+
+    <!-- =========================
+         SEARCH + FILTER
+    ========================= -->
 
     <div class="toolbar">
 
@@ -58,194 +251,490 @@
             placeholder="🔍 Search by title or project..."
             onkeyup="filterTable()">
 
+
         <select
             id="severityFilter"
             onchange="filterTable()">
 
-            <option value="All">All Severity</option>
-            <option value="Critical">Critical</option>
-            <option value="Major">Major</option>
-            <option value="Minor">Minor</option>
+            <option value="All">
+                All Severity
+            </option>
+
+            <option value="Critical">
+                Critical
+            </option>
+
+            <option value="High">
+                High
+            </option>
+
+            <option value="Medium">
+                Medium
+            </option>
+
+            <option value="Low">
+                Low
+            </option>
 
         </select>
 
     </div>
 
+
+    <!-- =========================
+         ISSUE TABLE
+    ========================= -->
+
     <div class="table-container">
 
         <table>
+
+
+            <!-- =========================
+                 TABLE HEADER
+            ========================= -->
 
             <thead>
 
                 <tr>
 
                     <th>#</th>
+
                     <th>Issue</th>
+
                     <th>Project</th>
+
+                    <th>Assignee</th>
+
+                    <th>Sprint</th>
+
                     <th>Priority</th>
+
                     <th>Severity</th>
+
                     <th>Screenshot</th>
+
                     <th>Status</th>
+
                     <th>Actions</th>
 
                 </tr>
 
             </thead>
 
+
+            <!-- =========================
+                 TABLE BODY
+            ========================= -->
+
             <tbody id="issuesTable">
+
 
             {% if issues %}
 
-            {% for issue in issues %}
 
-            <tr>
+                {% for issue in issues %}
 
-                <td>{{ issue.id }}</td>
 
-                <td>
-                    <strong>{{ issue.title }}</strong>
-                </td>
+                <tr style="cursor:pointer;">
 
-                <td>{{ issue.project }}</td>
 
-                <td>
+                    <!-- =========================
+                         ISSUE ID
+                    ========================= -->
 
-                    {% if issue.priority=="P1" %}
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-                    <span class="badge red">
-                        {{ issue.priority }}
-                    </span>
+                        {{ issue.id }}
 
-                    {% elif issue.priority=="P2" %}
+                    </td>
 
-                    <span class="badge orange">
-                        {{ issue.priority }}
-                    </span>
 
-                    {% else %}
+                    <!-- =========================
+                         ISSUE TITLE
+                    ========================= -->
 
-                    <span class="badge green">
-                        {{ issue.priority }}
-                    </span>
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-                    {% endif %}
+                        <strong>
 
-                </td>
+                            {{ issue.title }}
 
-                <td>
+                        </strong>
 
-                    {% if issue.severity=="Critical" %}
+                    </td>
 
-                    <span class="badge red">
-                        {{ issue.severity }}
-                    </span>
 
-                    {% elif issue.severity=="Major" %}
+                    <!-- =========================
+                         PROJECT
+                    ========================= -->
 
-                    <span class="badge orange">
-                        {{ issue.severity }}
-                    </span>
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-                    {% else %}
+                        {{ issue.project }}
 
-                    <span class="badge blue">
-                        {{ issue.severity }}
-                    </span>
+                    </td>
 
-                    {% endif %}
 
-                </td>
+                    <!-- =========================
+                         ASSIGNEE
+                    ========================= -->
 
-                <!-- Screenshot -->
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-                <td>
+                        {% if issue.assignee %}
 
-                    {% if issue.screenshot %}
+                            <span class="badge blue">
 
-                        <a href="/uploads/{{ issue.screenshot }}" target="_blank">
+                                👤 {{ issue.assignee.name }}
 
-                            <img
-                                src="/uploads/{{ issue.screenshot }}"
-                                width="80"
-                                height="55"
-                                style="border-radius:8px; object-fit:cover;">
+                            </span>
 
-                        </a>
+                        {% else %}
 
-                    {% else %}
+                            <span style="color:#94a3b8;">
 
-                        <span style="color:gray;">No Image</span>
+                                Unassigned
 
-                    {% endif %}
+                            </span>
 
-                </td>
+                        {% endif %}
 
-                <!-- Status -->
+                    </td>
 
-                <td>
 
-                    <select
-                        class="status-select"
-                        onchange="updateStatus({{ issue.id }}, this.value)">
+                    <!-- =========================
+                         SPRINT
+                    ========================= -->
 
-                        <option value="Open"
-                        {% if issue.status=="Open" %}selected{% endif %}>
-                            Open
-                        </option>
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-                        <option value="In Progress"
-                        {% if issue.status=="In Progress" %}selected{% endif %}>
-                            In Progress
-                        </option>
+                        {% if issue.sprint %}
 
-                        <option value="Resolved"
-                        {% if issue.status=="Resolved" %}selected{% endif %}>
-                            Resolved
-                        </option>
+                            <span class="badge blue">
 
-                    </select>
+                                🏃 {{ issue.sprint.name }}
 
-                </td>
+                            </span>
 
-                <!-- Actions -->
+                        {% else %}
 
-                <td>
+                            <span style="color:#94a3b8;">
 
-                    <button
-                        class="edit-btn"
-                        onclick="editIssue({{ issue.id }})">
+                                No Sprint
 
-                        Edit
+                            </span>
 
-                    </button>
+                        {% endif %}
 
-                    <button
-                        class="delete-btn"
-                        onclick="deleteIssue({{ issue.id }})">
+                    </td>
 
-                        Delete
 
-                    </button>
+                    <!-- =========================
+                         PRIORITY
+                    ========================= -->
 
-                </td>
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
 
-            </tr>
 
-            {% endfor %}
+                        {% if issue.priority == "P1" %}
+
+                            <span class="badge red">
+
+                                {{ issue.priority }}
+
+                            </span>
+
+
+                        {% elif issue.priority == "P2" %}
+
+                            <span class="badge orange">
+
+                                {{ issue.priority }}
+
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="badge green">
+
+                                {{ issue.priority }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                    <!-- =========================
+                         SEVERITY
+                    ========================= -->
+
+                    <td
+                        onclick="window.location='/issues/{{ issue.id }}/details'">
+
+
+                        {% if issue.severity == "Critical" %}
+
+                            <span class="badge red">
+
+                                {{ issue.severity }}
+
+                            </span>
+
+
+                        {% elif issue.severity == "High" %}
+
+                            <span class="badge orange">
+
+                                {{ issue.severity }}
+
+                            </span>
+
+
+                        {% elif issue.severity == "Medium" %}
+
+                            <span class="badge blue">
+
+                                {{ issue.severity }}
+
+                            </span>
+
+
+                        {% elif issue.severity == "Low" %}
+
+                            <span class="badge green">
+
+                                {{ issue.severity }}
+
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="badge gray">
+
+                                {{ issue.severity }}
+
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                    <!-- =========================
+                         SCREENSHOT
+                    ========================= -->
+
+                    <td>
+
+
+                        {% if issue.screenshot %}
+
+
+                            <a
+                                href="/uploads/{{ issue.screenshot }}"
+                                target="_blank"
+                                onclick="event.stopPropagation();">
+
+
+                                <img
+                                    src="/uploads/{{ issue.screenshot }}"
+                                    class="issue-image">
+
+
+                            </a>
+
+
+                        {% else %}
+
+
+                            <span style="color:#64748b;">
+
+                                No Image
+
+                            </span>
+
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                    <!-- =========================
+                         STATUS
+                    ========================= -->
+
+                    <td>
+
+
+                        <select
+                            class="status-select"
+                            onclick="event.stopPropagation();"
+                            onchange="updateStatus(
+                                {{ issue.id }},
+                                this.value
+                            )">
+
+
+                            <option
+                                value="Open"
+                                {% if issue.status == "Open" %}
+                                    selected
+                                {% endif %}>
+
+                                Open
+
+                            </option>
+
+
+                            <option
+                                value="In Progress"
+                                {% if issue.status == "In Progress" %}
+                                    selected
+                                {% endif %}>
+
+                                In Progress
+
+                            </option>
+
+
+                            <option
+                                value="In Review"
+                                {% if issue.status == "In Review" %}
+                                    selected
+                                {% endif %}>
+
+                                In Review
+
+                            </option>
+
+
+                            <option
+                                value="Resolved"
+                                {% if issue.status == "Resolved" %}
+                                    selected
+                                {% endif %}>
+
+                                Resolved
+
+                            </option>
+                            <option
+                                value="Reopened"
+                                {% if issue.status == "Reopened" %}
+                                    selected
+                                {% endif %}>
+
+                                Reopened
+
+                            </option>
+                            <option
+                                value="Verified"
+                                {% if issue.status == "Verified" %}
+                                    selected
+                                {% endif %}>
+
+                                Verified
+
+                            </option>
+
+                            <option
+                                value="Closed"
+                                {% if issue.status == "Closed" %}
+                                    selected
+                                {% endif %}>
+
+                                Closed
+
+                            </option>
+
+
+                        </select>
+
+
+                    </td>
+
+
+                    <!-- =========================
+                         ACTIONS
+                    ========================= -->
+
+                    <td>
+
+
+                        <button
+                            class="edit-btn"
+                            type="button"
+                            onclick="
+                                event.stopPropagation();
+                                editIssue({{ issue.id }});
+                            ">
+
+                            Edit
+
+                        </button>
+
+
+                        <button
+                            class="delete-btn"
+                            type="button"
+                            onclick="
+                                event.stopPropagation();
+                                deleteIssue({{ issue.id }});
+                            ">
+
+                            Delete
+
+                        </button>
+
+
+                    </td>
+
+
+                </tr>
+
+
+                {% endfor %}
+
 
             {% else %}
 
-            <tr>
 
-                <td colspan="8" style="padding:40px;text-align:center;">
+                <!-- =========================
+                     NO ISSUES
+                ========================= -->
 
-                    No Issues Reported Yet
+                <tr>
 
-                </td>
+                    <td
+                        colspan="10"
+                        style="
+                            padding:40px;
+                            text-align:center;
+                            color:#64748b;
+                        ">
 
-            </tr>
+                        No Issues Reported Yet
+
+                    </td>
+
+                </tr>
+
 
             {% endif %}
+
 
             </tbody>
 
@@ -255,102 +744,303 @@
 
 </div>
 
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
 <script>
 
-function editIssue(id){
 
-    window.location="/report-issue?id="+id;
+// =====================================
+// EDIT ISSUE
+// =====================================
 
-}
+function editIssue(id) {
 
-async function deleteIssue(id){
-
-    if(!confirm("Delete this issue?")) return;
-
-    const response=await fetch(`/issues/${id}`,{
-
-        method:"DELETE"
-
-    });
-
-    const result=await response.json();
-
-    alert(result.message);
-
-    location.reload();
+    window.location =
+        "/report-issue?id=" + id;
 
 }
 
 
-// =========================
-// Update Status
-// =========================
 
-async function updateStatus(id,status){
+// =====================================
+// DELETE ISSUE
+// =====================================
 
-    const response=await fetch(`/issues/${id}/status`,{
+async function deleteIssue(id) {
 
-        method:"PUT",
 
-        headers:{
-            "Content-Type":"application/json"
-        },
+    if (!confirm("Delete this issue?")) {
 
-        body:JSON.stringify({
+        return;
 
-            status:status
+    }
 
-        })
 
-    });
+    try {
 
-    const result=await response.json();
 
-    console.log(result.message);
+        const response =
+            await fetch(`/issues/${id}`, {
+
+                method: "DELETE"
+
+            });
+
+
+        const result =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                result.message ||
+                "Failed to delete issue."
+            );
+
+            return;
+
+        }
+
+
+        alert(result.message);
+
+
+        location.reload();
+
+
+    }
+    catch (error) {
+
+
+        console.error(
+            "Delete error:",
+            error
+        );
+
+
+        alert(
+            "Unable to delete issue."
+        );
+
+
+    }
 
 }
 
 
-// =========================
-// Search + Filter
-// =========================
 
-function filterTable(){
+// =====================================
+// UPDATE STATUS
+// =====================================
+async function updateStatus(id, status) {
 
-    const search=document.getElementById("searchInput").value.toLowerCase();
+    try {
 
-    const severity=document.getElementById("severityFilter").value;
+        const response = await fetch(`/issues/${id}/status`, {
+            method: "PUT",
 
-    const rows=document.querySelectorAll("#issuesTable tr");
+            headers: {
+                "Content-Type": "application/json"
+            },
 
-    rows.forEach(row=>{
+            body: JSON.stringify({
+                status: status
+            })
+        });
 
-        if(row.cells.length===0) return;
+        const result = await response.json();
 
-        const title=row.cells[1].innerText.toLowerCase();
+        if (!response.ok) {
+            console.error(result.message);
+            return;
+        }
 
-        const project=row.cells[2].innerText.toLowerCase();
+        // Reload so the updated status comes from the database
+        window.location.reload();
 
-        const sev=row.cells[4].innerText.trim();
+    } catch (error) {
 
-        const matchSearch=
+        console.error("Status update error:", error);
+
+    }
+}
+
+// =====================================
+// SEARCH + SEVERITY FILTER
+// =====================================
+
+function filterTable() {
+
+
+    const searchInput =
+        document.getElementById(
+            "searchInput"
+        );
+
+
+    const severityFilter =
+        document.getElementById(
+            "severityFilter"
+        );
+
+
+    const search =
+        searchInput.value
+        .toLowerCase()
+        .trim();
+
+
+    const severity =
+        severityFilter.value;
+
+
+    const rows =
+        document.querySelectorAll(
+            "#issuesTable tr"
+        );
+
+
+    rows.forEach(row => {
+
+
+        /*
+         * Skip the "No Issues" row.
+         */
+
+        if (row.cells.length < 10) {
+
+            return;
+
+        }
+
+
+        /*
+         * Column positions:
+         *
+         * 0 = ID
+         * 1 = Issue
+         * 2 = Project
+         * 3 = Assignee
+         * 4 = Sprint
+         * 5 = Priority
+         * 6 = Severity
+         * 7 = Screenshot
+         * 8 = Status
+         * 9 = Actions
+         */
+
+
+        const title =
+            row.cells[1]
+            .innerText
+            .toLowerCase();
+
+
+        const project =
+            row.cells[2]
+            .innerText
+            .toLowerCase();
+
+
+        /*
+         * IMPORTANT:
+         *
+         * Severity is column 6
+         * because Assignee and Sprint
+         * were added before it.
+         */
+
+        const sev =
+            row.cells[6]
+            .innerText
+            .trim();
+
+
+        const matchSearch =
             title.includes(search) ||
             project.includes(search);
 
-        const matchSeverity=
-            severity==="All" ||
-            sev===severity;
 
-        row.style.display=
-            (matchSearch && matchSeverity)
-            ? ""
-            : "none";
+        const matchSeverity =
+            severity === "All" ||
+            sev === severity;
+
+
+        if (
+            matchSearch &&
+            matchSeverity
+        ) {
+
+            row.style.display = "";
+
+        }
+        else {
+
+            row.style.display = "none";
+
+        }
+
 
     });
 
 }
 
+
+
+// =====================================
+// PREVENT ROW CLICK WHEN USING
+// STATUS DROPDOWN
+// =====================================
+
+document.querySelectorAll(
+    ".status-select"
+).forEach(select => {
+
+
+    select.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+        }
+    );
+
+
+});
+
+
+
+// =====================================
+// PREVENT ROW CLICK WHEN USING
+// BUTTONS
+// =====================================
+
+document.querySelectorAll(
+    ".edit-btn, .delete-btn"
+).forEach(button => {
+
+
+    button.addEventListener(
+        "click",
+        function(event) {
+
+            event.stopPropagation();
+
+        }
+    );
+
+
+});
+
+
 </script>
 
+
 </body>
+
 </html>

@@ -1,0 +1,3656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Issue Details - BugFlow</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+        }
+
+        /* =========================
+           SIDEBAR
+        ========================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 240px;
+            height: 100vh;
+            background: #111827;
+            border-right: 1px solid #1e293b;
+            padding: 25px 15px;
+        }
+
+        .logo {
+            padding: 0 15px 30px;
+        }
+
+        .logo h2 {
+            color: #f8fafc;
+        }
+
+        nav {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #94a3b8;
+            padding: 13px 15px;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        nav a:hover {
+            background: #1e293b;
+            color: white;
+        }
+
+        nav a.active {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* =========================
+           MAIN
+        ========================= */
+
+        .main {
+            margin-left: 240px;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .topbar h1 {
+            font-size: 28px;
+            color: #f8fafc;
+        }
+
+        .topbar-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .back-btn,
+        .edit-btn {
+            text-decoration: none;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: #1e293b;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+        }
+
+        .back-btn:hover {
+            background: #334155;
+        }
+
+        .edit-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+        }
+
+        .edit-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           ISSUE HEADER
+        ========================= */
+
+        .issue-header {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .issue-header h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #f8fafc;
+        }
+
+        .issue-id {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        /* =========================
+           GRID
+        ========================= */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        .card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .card h3 {
+            color: #f8fafc;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        /* =========================
+           DESCRIPTION
+        ========================= */
+
+        .description {
+            color: #cbd5e1;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        /* =========================
+           DETAILS
+        ========================= */
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+        }
+
+        .detail-item {
+            background: #0f172a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #1e293b;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 7px;
+        }
+
+        .detail-value {
+            color: #e2e8f0;
+            font-size: 15px;
+        }
+
+        /* =========================
+           BADGES
+        ========================= */
+
+        .badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .red {
+            background: #7f1d1d;
+            color: #fecaca;
+        }
+
+        .orange {
+            background: #78350f;
+            color: #fed7aa;
+        }
+
+        .green {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .blue {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        .gray {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        /* =========================
+           SCREENSHOT
+        ========================= */
+
+        .screenshot-container {
+            text-align: center;
+        }
+
+        .screenshot {
+            width: 100%;
+            max-width: 650px;
+            max-height: 500px;
+            object-fit: contain;
+            border-radius: 10px;
+            border: 1px solid #334155;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .screenshot:hover {
+            opacity: 0.85;
+            transform: scale(1.01);
+        }
+
+        .screenshot-hint {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .no-image {
+            color: #64748b;
+        }
+
+        /* =========================
+           ATTACHMENTS
+        ========================= */
+
+        .upload-box {
+            border: 2px dashed #334155;
+            border-radius: 10px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 20px;
+            background: #0f172a;
+        }
+
+        .upload-box:hover {
+            border-color: #2563eb;
+        }
+
+        .upload-box p {
+            color: #94a3b8;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            max-width: 100%;
+        }
+
+        .upload-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .upload-btn:hover {
+            background: #1d4ed8;
+        }
+
+        .attachment {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px;
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .attachment:last-child {
+            margin-bottom: 0;
+        }
+
+        .attachment-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .attachment-icon {
+            font-size: 25px;
+        }
+
+        .attachment-name {
+            color: #e2e8f0;
+            font-weight: bold;
+            word-break: break-word;
+        }
+
+        .attachment-date {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .attachment-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .view-btn,
+        .delete-btn {
+            text-decoration: none;
+            padding: 7px 11px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .view-btn {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        .view-btn:hover {
+            background: #2563eb;
+        }
+
+        .delete-btn {
+            background: #7f1d1d;
+            color: #fecaca;
+            border: none;
+        }
+
+        .delete-btn:hover {
+            background: #991b1b;
+        }
+
+        .no-attachments {
+            color: #64748b;
+            padding: 10px 0;
+        }
+
+        /* =========================
+           COMMENTS
+        ========================= */
+
+        .comment {
+            border-bottom: 1px solid #1e293b;
+            padding: 15px 0;
+        }
+
+        .comment:first-child {
+            padding-top: 0;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-user {
+            font-weight: bold;
+            color: #60a5fa;
+            margin-bottom: 6px;
+        }
+
+        .comment-text {
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .comment-date {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .no-comments {
+            color: #64748b;
+            padding: 10px 0;
+        }
+
+        /* =========================
+           ACTIVITY HISTORY
+        ========================= */
+
+        .activity {
+            border-bottom: 1px solid #1e293b;
+            padding: 15px 0;
+        }
+
+        .activity:first-child {
+            padding-top: 0;
+        }
+
+        .activity:last-child {
+            border-bottom: none;
+        }
+
+        .activity-action {
+            color: #cbd5e1;
+            line-height: 1.5;
+        }
+
+        .activity-date {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 6px;
+        }
+
+        .no-activity {
+            color: #64748b;
+            padding: 10px 0;
+        }
+
+        /* =========================
+           SUMMARY BOX
+        ========================= */
+
+        .summary-box {
+            background: #0f172a;
+            padding: 18px;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+        }
+
+        .summary-name {
+            font-size: 17px;
+            font-weight: bold;
+            color: #f8fafc;
+        }
+
+        .summary-email {
+            color: #94a3b8;
+            margin-top: 6px;
+        }
+
+        /* =========================
+           LINKS
+        ========================= */
+
+        .blue-link {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .blue-link:hover {
+            text-decoration: underline;
+        }
+
+        /* =========================
+           AI SECTION
+        ========================= */
+
+        .ai-card {
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 20px;
+        }
+
+        .ai-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .ai-header h3 {
+            margin-bottom: 0;
+        }
+
+        .ai-button {
+            background: #7c3aed;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .ai-button:hover {
+            background: #6d28d9;
+        }
+
+        .ai-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .ai-loading {
+            display: none;
+            color: #94a3b8;
+            padding: 15px 0;
+        }
+
+        .ai-error {
+            display: none;
+            background: #7f1d1d;
+            color: #fecaca;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .ai-empty {
+            color: #64748b;
+            padding: 10px 0;
+        }
+
+        /* =========================
+           SIMILAR DEFECT
+        ========================= */
+
+        .similar-defect {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: block;
+            text-decoration: none;
+            color: inherit;
+            transition: 0.2s;
+        }
+
+        .similar-defect:hover {
+            border-color: #2563eb;
+            background: #172033;
+            transform: translateY(-2px);
+        }
+
+
+        .similar-defect:last-child {
+            margin-bottom: 0;
+        }
+
+        .similar-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .similar-title {
+            color: #f8fafc;
+            font-weight: bold;
+        }
+
+        .similar-reason {
+            color: #94a3b8;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .similar-score {
+            background: #14532d;
+            color: #bbf7d0;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           RESOLUTION ASSISTANCE
+        ========================= */
+
+        .resolution-section {
+            margin-bottom: 20px;
+        }
+
+        .resolution-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .resolution-label {
+            color: #60a5fa;
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .resolution-content {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 15px;
+            color: #cbd5e1;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 6px;
+            background: #1e3a8a;
+            color: #bfdbfe;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* =========================
+           EDIT MODAL
+        ========================= */
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            overflow-y: auto;
+            padding: 40px 20px;
+        }
+
+        .modal-content {
+            background: #111827;
+            border: 1px solid #334155;
+            border-radius: 12px;
+            max-width: 750px;
+            margin: auto;
+            padding: 25px;
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            color: #f8fafc;
+        }
+
+        .close-btn {
+            background: transparent;
+            border: none;
+            color: #94a3b8;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .close-btn:hover {
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #cbd5e1;
+            font-size: 14px;
+            margin-bottom: 7px;
+            font-weight: bold;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            background: #0f172a;
+            color: #e2e8f0;
+            border: 1px solid #334155;
+            border-radius: 7px;
+            padding: 11px 12px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: #2563eb;
+        }
+
+        .form-group textarea {
+            min-height: 130px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .current-file {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 7px;
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .cancel-btn,
+        .save-btn {
+            border: none;
+            padding: 11px 18px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            background: #334155;
+            color: #e2e8f0;
+        }
+
+        .cancel-btn:hover {
+            background: #475569;
+        }
+
+        .save-btn {
+            background: #2563eb;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* =========================
+           SCREENSHOT MODAL
+        ========================= */
+
+        .screenshot-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .screenshot-modal img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .screenshot-close {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .screenshot-close:hover {
+            color: #60a5fa;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .sidebar {
+                width: 190px;
+            }
+
+            .main {
+                margin-left: 190px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+        @media (max-width: 650px) {
+
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+
+            .main {
+                margin-left: 0;
+                padding: 20px;
+            }
+
+            .details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .topbar-actions {
+                width: 100%;
+            }
+
+            .back-btn,
+            .edit-btn {
+                flex: 1;
+                text-align: center;
+            }
+
+            .attachment {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .attachment-actions {
+                width: 100%;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .ai-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar">
+
+    <div class="logo">
+        <h2>🐞 BugFlow</h2>
+    </div>
+
+    <nav>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/report-issue">
+            Report Issue
+        </a>
+
+        <a href="/issues" class="active">
+            Issues
+        </a>
+
+        <a href="/projects">
+            Projects
+        </a>
+
+        <a href="/sprints">
+            Sprints
+        </a>
+
+        <a href="/logout">
+            Logout
+        </a>
+
+    </nav>
+
+</div>
+
+
+<!-- =========================
+     MAIN CONTENT
+========================= -->
+
+<div class="main">
+
+
+    <!-- TOP BAR -->
+
+    <div class="topbar">
+
+        <div>
+            <h1>Issue Details</h1>
+        </div>
+
+        <div class="topbar-actions">
+
+            <button
+                type="button"
+                class="edit-btn"
+                onclick="openEditModal()">
+
+                ✏ Edit Issue
+
+            </button>
+
+            <a
+                href="/issues"
+                class="back-btn">
+
+                ← Back to Issues
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         ISSUE HEADER
+    ========================= -->
+
+    <div class="issue-header">
+
+        <div class="issue-id">
+            ISSUE #{{ issue.id }}
+        </div>
+
+        <h2>
+            {{ issue.title }}
+        </h2>
+
+        <div>
+
+            {% if issue.status == "Resolved" %}
+
+                <span class="badge green">
+                    ✓ Resolved
+                </span>
+
+            {% elif issue.status == "In Review" %}
+
+                <span class="badge blue">
+                    👀 In Review
+                </span>
+
+            {% elif issue.status == "In Progress" %}
+
+                <span class="badge orange">
+                    ⏳ In Progress
+                </span>
+
+            {% else %}
+
+                <span class="badge blue">
+                    Open
+                </span>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         CONTENT GRID
+    ========================= -->
+
+    <div class="content-grid">
+
+
+        <!-- =========================
+             LEFT COLUMN
+        ========================= -->
+
+        <div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="card">
+
+                <h3>
+                    📝 Description
+                </h3>
+
+                <div class="description">
+
+                    {% if issue.description %}
+
+                        {{ issue.description }}
+
+                    {% else %}
+
+                        No description provided.
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- SCREENSHOT -->
+
+            <div class="card">
+
+                <h3>
+                    📸 Screenshot
+                </h3>
+
+                {% if issue.screenshot %}
+
+                    <div class="screenshot-container">
+
+                        <img
+                            src="/uploads/{{ issue.screenshot }}"
+                            class="screenshot"
+                            alt="Issue Screenshot"
+                            onclick="openScreenshotModal()"
+                        >
+
+                        <p class="screenshot-hint">
+                            Click the image to view it.
+                        </p>
+
+                    </div>
+
+                {% else %}
+
+                    <div class="no-image">
+                        No screenshot attached to this issue.
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 ATTACHMENTS
+            ========================= -->
+
+            <div class="card">
+
+                <h3>
+                    📎 Attachments
+                </h3>
+
+
+                <div class="upload-box">
+
+                    <p>
+                        Upload additional files related to this issue
+                    </p>
+
+                    <form
+                        action="/issues/{{ issue.id }}/attachments"
+                        method="post"
+                        enctype="multipart/form-data">
+
+                        <input
+                            type="file"
+                            name="file"
+                            class="file-input"
+                            required>
+
+                        <br>
+
+                        <button
+                            type="submit"
+                            class="upload-btn">
+
+                            ⬆ Upload Attachment
+
+                        </button>
+
+                    </form>
+
+                </div>
+
+
+                {% if attachments %}
+
+                    {% for attachment in attachments %}
+
+                        <div class="attachment">
+
+                            <div class="attachment-info">
+
+                                <div class="attachment-icon">
+                                    📎
+                                </div>
+
+                                <div>
+
+                                    <div class="attachment-name">
+
+                                        {{ attachment.original_filename }}
+
+                                    </div>
+
+                                    {% if attachment.uploaded_at %}
+
+                                        <div class="attachment-date">
+
+                                            Uploaded:
+                                            {{ attachment.uploaded_at }}
+
+                                        </div>
+
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="attachment-actions">
+
+                                <a
+                                    href="/uploads/{{ attachment.filename }}"
+                                    target="_blank"
+                                    class="view-btn">
+
+                                    📥 Download
+
+                                </a>
+
+
+                                <button
+                                    type="button"
+                                    class="delete-btn"
+                                    onclick="deleteAttachment({{ attachment.id }})">
+
+                                    🗑 Delete
+
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="no-attachments">
+
+                        No attachments uploaded yet.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 COMMENTS
+            ========================= -->
+
+            <div class="card">
+
+                <h3>
+                    💬 Comments
+                </h3>
+
+
+                <form
+                    id="commentForm"
+                    style="margin-bottom: 25px;">
+
+                    <textarea
+                        id="commentText"
+                        name="comment"
+                        placeholder="Write your comment..."
+                        required
+                        style="
+                            width: 100%;
+                            min-height: 100px;
+                            background: #0f172a;
+                            color: #e2e8f0;
+                            border: 1px solid #334155;
+                            border-radius: 8px;
+                            padding: 12px;
+                            resize: vertical;
+                            font-family: Arial, Helvetica, sans-serif;
+                            font-size: 14px;
+                        "
+                    ></textarea>
+
+
+                    <button
+                        type="submit"
+                        class="upload-btn"
+                        style="margin-top: 10px;">
+
+                        💬 Post Comment
+
+                    </button>
+
+                </form>
+
+
+                {% if comments %}
+
+                    {% for comment in comments %}
+
+                        <div class="comment">
+
+                            <div class="comment-user">
+
+                                {% if comment.user %}
+
+                                    {{ comment.user.name }}
+
+                                {% elif comment.author %}
+
+                                    {{ comment.author.name }}
+
+                                {% else %}
+
+                                    User
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <div class="comment-text">
+
+                                {{ comment.comment }}
+
+                            </div>
+
+
+                            {% if comment.created_at %}
+
+                                <div class="comment-date">
+
+                                    {{ comment.created_at }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="no-comments">
+
+                        No comments yet.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =========================
+                 ACTIVITY HISTORY
+            ========================= -->
+
+            <div class="card">
+
+                <h3>
+                    📜 Activity History
+                </h3>
+
+                {% if activities %}
+
+                    {% for activity in activities %}
+
+                        <div class="activity">
+
+                            <div class="activity-action">
+
+                                {{ activity.action }}
+
+                            </div>
+
+                            {% if activity.created_at %}
+
+                                <div class="activity-date">
+
+                                    {{ activity.created_at }}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+                    {% endfor %}
+
+                {% else %}
+
+                    <div class="no-activity">
+
+                        No activity recorded yet.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- =================================================
+                 AI SIMILAR DEFECTS
+            ================================================= -->
+
+            <div class="ai-card">
+
+                <div class="ai-header">
+
+                    <h3>
+                        🔍 Similar Defects
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="ai-button"
+                        id="similarDefectsButton"
+                        onclick="findSimilarDefects()">
+
+                        🤖 Find Similar Defects
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="similarDefectsLoading"
+                    class="ai-loading">
+
+                    🔄 AI is analyzing existing defects...
+
+                </div>
+
+
+                <div
+                    id="similarDefectsError"
+                    class="ai-error">
+                </div>
+
+
+                <div
+                    id="similarDefectsResult">
+
+                    <div class="ai-empty">
+
+                        Click
+                        <strong>Find Similar Defects</strong>
+                        to check whether this issue is related to existing defects.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 AI RESOLUTION ASSISTANCE
+            ================================================= -->
+
+            <div class="ai-card">
+
+                <div class="ai-header">
+
+                    <h3>
+                        🛠 AI Resolution Assistance
+                    </h3>
+
+                    <button
+                        type="button"
+                        class="ai-button"
+                        id="resolutionButton"
+                        onclick="generateResolution()">
+
+                        🤖 Analyze & Suggest Resolution
+
+                    </button>
+
+                </div>
+
+
+                <div
+                    id="resolutionLoading"
+                    class="ai-loading">
+
+                    🔄 AI is analyzing the defect and preparing resolution guidance...
+
+                </div>
+
+
+                <div
+                    id="resolutionError"
+                    class="ai-error">
+                </div>
+
+
+                <div
+                    id="resolutionResult">
+
+                    <div class="ai-empty">
+
+                        Click
+                        <strong>Analyze & Suggest Resolution</strong>
+                        to get AI-powered debugging assistance.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =========================
+             RIGHT COLUMN
+        ========================= -->
+
+        <div>
+
+
+            <!-- ISSUE INFORMATION -->
+
+            <div class="card">
+
+                <h3>
+                    ℹ️ Issue Information
+                </h3>
+
+                <div class="details-grid">
+
+
+                    <!-- PROJECT -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Project
+                        </div>
+
+                        <div class="detail-value">
+                            {{ issue.project }}
+                        </div>
+
+                    </div>
+
+
+                    <!-- PRIORITY -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Priority
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.priority == "P1" %}
+
+                                <span class="badge red">
+                                    P1
+                                </span>
+
+                            {% elif issue.priority == "P2" %}
+
+                                <span class="badge orange">
+                                    P2
+                                </span>
+
+                            {% elif issue.priority == "P3" %}
+
+                                <span class="badge blue">
+                                    P3
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge green">
+                                    {{ issue.priority }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SEVERITY -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Severity
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.severity == "Critical" %}
+
+                                <span class="badge red">
+                                    Critical
+                                </span>
+
+                            {% elif issue.severity == "High" %}
+
+                                <span class="badge orange">
+                                    High
+                                </span>
+
+                            {% elif issue.severity == "Major" %}
+
+                                <span class="badge orange">
+                                    Major
+                                </span>
+
+                            {% elif issue.severity == "Medium" %}
+
+                                <span class="badge blue">
+                                    Medium
+                                </span>
+
+                            {% elif issue.severity == "Minor" %}
+
+                                <span class="badge blue">
+                                    Minor
+                                </span>
+
+                            {% elif issue.severity == "Low" %}
+
+                                <span class="badge green">
+                                    Low
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge gray">
+                                    {{ issue.severity }}
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CATEGORY -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Category
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.category %}
+
+                                <span class="badge blue">
+                                    {{ issue.category }}
+                                </span>
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    Not specified
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- MODULE -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Module / Component
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.module %}
+
+                                {{ issue.module }}
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    Not specified
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DEFECT TYPE -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Defect Type
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.defect_type %}
+
+                                <span class="badge blue">
+                                    {{ issue.defect_type }}
+                                </span>
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    Not specified
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- STATUS -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Status
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.status == "Resolved" %}
+
+                                <span class="badge green">
+                                    Resolved
+                                </span>
+
+                            {% elif issue.status == "In Review" %}
+
+                                <span class="badge blue">
+                                    In Review
+                                </span>
+
+                            {% elif issue.status == "In Progress" %}
+
+                                <span class="badge orange">
+                                    In Progress
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge blue">
+                                    Open
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- SPRINT -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Sprint
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.sprint %}
+
+                                <a
+                                    href="/sprints/{{ issue.sprint.id }}"
+                                    class="blue-link">
+
+                                    🏃 {{ issue.sprint.name }}
+
+                                </a>
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    No Sprint
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ASSIGNED MEMBER -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Assigned To
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.assignee %}
+
+                                👤 {{ issue.assignee.name }}
+
+                                {% if issue.assignee.email %}
+
+                                    <div style="
+                                        color:#64748b;
+                                        font-size:12px;
+                                        margin-top:5px;
+                                    ">
+
+                                        {{ issue.assignee.email }}
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    Unassigned
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- DUE DATE -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Due Date
+                        </div>
+
+                        <div class="detail-value">
+
+                            {% if issue.due_date %}
+
+                                📅 {{ issue.due_date }}
+
+                            {% else %}
+
+                                <span style="color:#64748b;">
+                                    No due date
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ISSUE ID -->
+
+                    <div class="detail-item">
+
+                        <div class="detail-label">
+                            Issue ID
+                        </div>
+
+                        <div class="detail-value">
+
+                            #{{ issue.id }}
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <!-- ASSIGNMENT SUMMARY -->
+
+            <div class="card">
+
+                <h3>
+                    👤 Assignment
+                </h3>
+
+                {% if issue.assignee %}
+
+                    <div class="summary-box">
+
+                        <div class="summary-name">
+                            {{ issue.assignee.name }}
+                        </div>
+
+                        {% if issue.assignee.email %}
+
+                            <div class="summary-email">
+                                {{ issue.assignee.email }}
+                            </div>
+
+                        {% endif %}
+
+                        {% if issue.assignee.role %}
+
+                            <div style="margin-top:10px;">
+
+                                <span class="badge gray">
+                                    {{ issue.assignee.role }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                {% else %}
+
+                    <p style="color:#64748b;">
+
+                        This issue has not been assigned
+                        to a team member.
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- SPRINT SUMMARY -->
+
+            <div class="card">
+
+                <h3>
+                    🏃 Sprint
+                </h3>
+
+                {% if issue.sprint %}
+
+                    <div class="summary-box">
+
+                        <div class="summary-name">
+                            {{ issue.sprint.name }}
+                        </div>
+
+                        {% if issue.sprint.status %}
+
+                            <div style="margin-top:10px;">
+
+                                {% if issue.sprint.status == "Active" %}
+
+                                    <span class="badge green">
+                                        Active
+                                    </span>
+
+                                {% elif issue.sprint.status == "Completed" %}
+
+                                    <span class="badge blue">
+                                        Completed
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge gray">
+                                        {{ issue.sprint.status }}
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        {% endif %}
+
+                        <a
+                            href="/sprints/{{ issue.sprint.id }}"
+                            class="blue-link"
+                            style="
+                                display:inline-block;
+                                margin-top:15px;
+                            ">
+
+                            View Sprint →
+
+                        </a>
+
+                    </div>
+
+                {% else %}
+
+                    <p style="color:#64748b;">
+
+                        This issue is not assigned
+                        to a sprint.
+
+                    </p>
+
+                {% endif %}
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ==================================================
+     EDIT ISSUE MODAL
+================================================== -->
+
+<div
+    id="editModal"
+    class="modal">
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+            <h2>
+                ✏ Edit Issue
+            </h2>
+
+            <button
+                type="button"
+                class="close-btn"
+                onclick="closeEditModal()">
+
+                ×
+
+            </button>
+
+        </div>
+
+
+        <form
+            id="editIssueForm"
+            enctype="multipart/form-data">
+
+
+            <!-- TITLE -->
+
+            <div class="form-group">
+
+                <label for="editTitle">
+                    Issue Title
+                </label>
+
+                <input
+                    type="text"
+                    id="editTitle"
+                    name="title"
+                    value="{{ issue.title }}"
+                    required>
+
+            </div>
+
+
+            <!-- PROJECT -->
+
+            <div class="form-group">
+
+                <label for="editProject">
+                    Project
+                </label>
+
+                <input
+                    type="text"
+                    id="editProject"
+                    name="project"
+                    value="{{ issue.project }}"
+                    required>
+
+            </div>
+
+
+            <!-- PRIORITY + SEVERITY -->
+
+            <div class="form-row">
+
+
+                <div class="form-group">
+
+                    <label for="editPriority">
+                        Priority
+                    </label>
+
+                    <select
+                        id="editPriority"
+                        name="priority"
+                        required>
+
+                        <option
+                            value="P1"
+                            {% if issue.priority == "P1" %}selected{% endif %}>
+
+                            P1 - Critical
+
+                        </option>
+
+                        <option
+                            value="P2"
+                            {% if issue.priority == "P2" %}selected{% endif %}>
+
+                            P2 - High
+
+                        </option>
+
+                        <option
+                            value="P3"
+                            {% if issue.priority == "P3" %}selected{% endif %}>
+
+                            P3 - Medium
+
+                        </option>
+
+                        <option
+                            value="P4"
+                            {% if issue.priority == "P4" %}selected{% endif %}>
+
+                            P4 - Low
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="editSeverity">
+                        Severity
+                    </label>
+
+                    <select
+                        id="editSeverity"
+                        name="severity"
+                        required>
+
+                        <option
+                            value="Critical"
+                            {% if issue.severity == "Critical" %}selected{% endif %}>
+
+                            Critical
+
+                        </option>
+
+                        <option
+                            value="High"
+                            {% if issue.severity == "High" %}selected{% endif %}>
+
+                            High
+
+                        </option>
+
+                        <option
+                            value="Major"
+                            {% if issue.severity == "Major" %}selected{% endif %}>
+
+                            Major
+
+                        </option>
+
+                        <option
+                            value="Medium"
+                            {% if issue.severity == "Medium" %}selected{% endif %}>
+
+                            Medium
+
+                        </option>
+
+                        <option
+                            value="Minor"
+                            {% if issue.severity == "Minor" %}selected{% endif %}>
+
+                            Minor
+
+                        </option>
+
+                        <option
+                            value="Low"
+                            {% if issue.severity == "Low" %}selected{% endif %}>
+
+                            Low
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- DESCRIPTION -->
+
+            <div class="form-group">
+
+                <label for="editDescription">
+                    Description
+                </label>
+
+                <textarea
+                    id="editDescription"
+                    name="description"
+                    required>{{ issue.description }}</textarea>
+
+            </div>
+
+
+            <!-- DUE DATE -->
+
+            <div class="form-group">
+
+                <label for="editDueDate">
+                    Due Date
+                </label>
+
+                <input
+                    type="date"
+                    id="editDueDate"
+                    name="due_date"
+                    value="{% if issue.due_date %}{{ issue.due_date.strftime('%Y-%m-%d') }}{% endif %}"
+                    required>
+
+            </div>
+
+
+            <!-- SPRINT + ASSIGNED TO -->
+
+            <div class="form-row">
+
+
+                <!-- SPRINT -->
+
+                <div class="form-group">
+
+                    <label for="editSprint">
+                        Sprint
+                    </label>
+
+                    <select
+                        id="editSprint"
+                        name="sprint_id">
+
+                        <option value="">
+                            No Sprint
+                        </option>
+
+                        {% for sprint in sprints %}
+
+                            <option
+                                value="{{ sprint.id }}"
+                                {% if issue.sprint_id == sprint.id %}
+                                selected
+                                {% endif %}
+                            >
+
+                                {{ sprint.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                <!-- ASSIGNED MEMBER -->
+
+                <div class="form-group">
+
+                    <label for="editAssignedTo">
+                        Assigned To
+                    </label>
+
+                    <select
+                        id="editAssignedTo"
+                        name="assigned_to">
+
+                        <option value="">
+                            Unassigned
+                        </option>
+
+                        {% for user in users %}
+
+                            <option
+                                value="{{ user.id }}"
+                                {% if issue.assigned_to == user.id %}
+                                selected
+                                {% endif %}
+                            >
+
+                                {{ user.name }}
+
+                            </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- SCREENSHOT -->
+
+            <div class="form-group">
+
+                <label for="editScreenshot">
+                    Replace Screenshot
+                </label>
+
+                <input
+                    type="file"
+                    id="editScreenshot"
+                    name="screenshot"
+                    class="file-input">
+
+
+                {% if issue.screenshot %}
+
+                    <div class="current-file">
+
+                        Current screenshot:
+                        {{ issue.screenshot }}
+
+                    </div>
+
+                {% else %}
+
+                    <div class="current-file">
+
+                        No screenshot currently attached.
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- ACTIONS -->
+
+            <div class="modal-actions">
+
+                <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeEditModal()">
+
+                    Cancel
+
+                </button>
+
+                <button
+                    type="submit"
+                    class="save-btn">
+
+                    💾 Save Changes
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     SCREENSHOT VIEWER MODAL
+========================= -->
+
+<div
+    id="screenshotModal"
+    class="screenshot-modal"
+    onclick="closeScreenshotModal()">
+
+    <span class="screenshot-close">
+        &times;
+    </span>
+
+    {% if issue.screenshot %}
+
+        <img
+            src="/uploads/{{ issue.screenshot }}"
+            alt="Full Size Screenshot"
+            onclick="event.stopPropagation()">
+
+    {% endif %}
+
+</div>
+
+
+<script>
+
+
+/* ==================================================
+   ISSUE DATA FOR AI
+================================================== */
+
+const issueData = {
+
+    id: {{ issue.id }},
+
+    title: {{ issue.title | tojson }},
+
+    project: {{ issue.project | tojson }},
+
+    description: {{ (issue.description or "") | tojson }},
+
+    category: {{ (issue.category or "Other") | tojson }},
+
+    module: {{ (issue.module or "General") | tojson }},
+
+    defect_type: {{ (issue.defect_type or "Other") | tojson }},
+
+    severity: {{ (issue.severity or "Medium") | tojson }},
+
+    priority: {{ (issue.priority or "P2") | tojson }},
+
+    ai_root_cause:
+        {{ (issue.ai_root_cause or "") | tojson }},
+
+    ai_suggested_fix:
+        {{ (issue.ai_suggested_fix or "") | tojson }},
+
+    ai_recommended_solution:
+        {{ (issue.ai_recommended_solution or "") | tojson }},
+
+    ai_investigation_steps:
+        {{ (issue.ai_investigation_steps or "") | tojson }},
+
+    ai_confidence:
+        {{ (issue.ai_confidence or "") | tojson }},
+
+    ai_explanation:
+        {{ (issue.ai_explanation or "") | tojson }},
+
+    ai_prevention:
+        {{ (issue.ai_prevention or "") | tojson }}
+
+};
+
+/* ==================================================
+   EDIT MODAL
+================================================== */
+
+function openEditModal() {
+
+    document.getElementById(
+        "editModal"
+    ).style.display = "block";
+
+}
+
+
+function closeEditModal() {
+
+    document.getElementById(
+        "editModal"
+    ).style.display = "none";
+
+}
+
+
+/* ==================================================
+   CLOSE EDIT MODAL OUTSIDE CLICK
+================================================== */
+
+window.addEventListener(
+    "click",
+    function(event) {
+
+        const modal =
+            document.getElementById("editModal");
+
+        if (event.target === modal) {
+
+            closeEditModal();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   UPDATE ISSUE
+================================================== */
+
+document.getElementById(
+    "editIssueForm"
+).addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const confirmed = confirm(
+            "Are you sure you want to save these changes?"
+        );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        const form =
+            document.getElementById(
+                "editIssueForm"
+            );
+
+
+        const formData =
+            new FormData(form);
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/issues/{{ issue.id }}",
+                    {
+                        method: "PUT",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.ok) {
+
+                alert(
+                    data.message ||
+                    "Issue updated successfully!"
+                );
+
+
+                closeEditModal();
+
+
+                window.location.reload();
+
+            }
+
+            else {
+
+                alert(
+                    data.message ||
+                    data.detail ||
+                    "Failed to update issue."
+                );
+
+            }
+
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Something went wrong while updating the issue."
+            );
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   DELETE ATTACHMENT
+================================================== */
+
+async function deleteAttachment(
+    attachmentId
+) {
+
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this attachment?"
+        );
+
+
+    if (!confirmed) {
+
+        return;
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                `/attachments/${attachmentId}`,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (response.ok) {
+
+            alert(
+                "Attachment deleted successfully."
+            );
+
+
+            window.location.reload();
+
+        }
+
+        else {
+
+            alert(
+                data.message ||
+                data.detail ||
+                "Failed to delete attachment."
+            );
+
+        }
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Something went wrong while deleting the attachment."
+        );
+
+    }
+
+}
+
+
+/* ==================================================
+   ADD COMMENT
+================================================== */
+
+document.getElementById(
+    "commentForm"
+).addEventListener(
+    "submit",
+    async function(event) {
+
+        event.preventDefault();
+
+
+        const commentText =
+            document.getElementById(
+                "commentText"
+            ).value.trim();
+
+
+        if (!commentText) {
+
+            alert(
+                "Please write a comment."
+            );
+
+            return;
+
+        }
+
+
+        const formData =
+            new FormData();
+
+
+        formData.append(
+            "comment",
+            commentText
+        );
+
+
+        try {
+
+            const response =
+                await fetch(
+                    "/issues/{{ issue.id }}/comments",
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+
+            const data =
+                await response.json();
+
+
+            if (response.ok) {
+
+                alert(
+                    "Comment added successfully!"
+                );
+
+
+                window.location.reload();
+
+            }
+
+            else {
+
+                alert(
+                    data.message ||
+                    data.detail ||
+                    "Failed to add comment."
+                );
+
+            }
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+            alert(
+                "Something went wrong while adding the comment."
+            );
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   SCREENSHOT VIEWER
+================================================== */
+
+function openScreenshotModal() {
+
+    document.getElementById(
+        "screenshotModal"
+    ).style.display = "flex";
+
+}
+
+
+function closeScreenshotModal() {
+
+    document.getElementById(
+        "screenshotModal"
+    ).style.display = "none";
+
+}
+
+
+/* ==================================================
+   ESC KEY
+================================================== */
+
+document.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (event.key === "Escape") {
+
+            closeScreenshotModal();
+            closeEditModal();
+
+        }
+
+    }
+);
+
+
+/* ==================================================
+   AI - FIND SIMILAR DEFECTS
+================================================== */
+
+async function findSimilarDefects() {
+
+    const button =
+        document.getElementById(
+            "similarDefectsButton"
+        );
+
+    const loading =
+        document.getElementById(
+            "similarDefectsLoading"
+        );
+
+    const errorBox =
+        document.getElementById(
+            "similarDefectsError"
+        );
+
+    const resultBox =
+        document.getElementById(
+            "similarDefectsResult"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "🔄 Analyzing...";
+
+    loading.style.display =
+        "block";
+
+    errorBox.style.display =
+        "none";
+
+    resultBox.innerHTML = "";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/ai/similar-defects",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        issue_id:
+                            issueData.id,
+
+                        title:
+                            issueData.title,
+
+                        description:
+                            issueData.description
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to find similar defects."
+            );
+
+        }
+
+
+        const similar =
+            data.similar_defects || [];
+
+
+        if (
+            !Array.isArray(similar) ||
+            similar.length === 0
+        ) {
+
+            resultBox.innerHTML = `
+
+                <div class="ai-empty">
+
+                    ✅ No meaningfully similar defects were found.
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        let html = "";
+
+
+        similar.forEach(
+            function(item) {
+
+                const defectId =
+                    item.id;
+
+                const similarity =
+                    item.similarity || 0;
+                const title =
+                    escapeHtml(
+                        item.title ||
+                            `Issue #${defectId}`
+                    );
+
+                const description =
+                    escapeHtml(
+                        item.description ||
+                            "No description available."
+                    );
+
+                const reason =
+                    `Semantic similarity based on defect embeddings.`;
+                    
+                html += `
+
+                    <a
+                        href="/issues/${defectId}/details"
+                        class="similar-defect"
+                        style="
+                            display: block;
+                            text-decoration: none;
+                            color: inherit;
+                            cursor: pointer;
+                            transition: 0.2s;
+                        "
+                    >
+
+                        <div class="similar-top">
+
+                            <div>
+
+                                <div class="similar-title">
+
+                                    Issue #${defectId}
+
+                                </div>
+
+                                <div
+                                    style="
+                                        color:#f8fafc;
+                                        font-weight:bold;
+                                        margin-top:5px;
+                                    "
+                                >
+
+                                    ${title}
+
+                                </div>
+
+                            </div>
+
+
+                            <span class="similar-score">
+
+                                ${similarity}% Similar
+
+                            </span>
+
+                        </div>
+
+
+                        <div
+                            style="
+                                color:#cbd5e1;
+                                font-size:13px;
+                                line-height:1.5;
+                                margin-top:10px;
+                            "
+                        >
+
+                            ${description}
+
+                        </div>
+
+
+                        <div class="similar-reason">
+
+                            🔍 ${reason}
+
+                        </div>
+
+
+                        <div
+                            style="
+                                color:#60a5fa;
+                                font-size:13px;
+                                font-weight:bold;
+                                margin-top:12px;
+                            "
+                        >
+
+                            View Issue →
+
+                        </div>
+
+                    </a>
+
+                `;
+
+            }
+        );
+
+
+                
+
+
+        resultBox.innerHTML =
+            html;
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Similar defect error:",
+            error
+        );
+
+
+        errorBox.textContent =
+            error.message ||
+            "Unable to find similar defects.";
+
+
+        errorBox.style.display =
+            "block";
+
+
+        resultBox.innerHTML = "";
+
+    }
+
+    finally {
+
+        loading.style.display =
+            "none";
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "🤖 Find Similar Defects";
+
+    }
+
+}
+
+
+/* ==================================================
+   AI - RESOLUTION ASSISTANCE
+================================================== */
+
+async function generateResolution() {
+
+    const button =
+        document.getElementById(
+            "resolutionButton"
+        );
+
+    const loading =
+        document.getElementById(
+            "resolutionLoading"
+        );
+
+    const errorBox =
+        document.getElementById(
+            "resolutionError"
+        );
+
+    const resultBox =
+        document.getElementById(
+            "resolutionResult"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "🔄 Analyzing...";
+
+
+    loading.style.display =
+        "block";
+
+
+    errorBox.style.display =
+        "none";
+
+
+    resultBox.innerHTML = "";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/ai/resolve",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        title:
+                            issueData.title,
+
+                        project:
+                            issueData.project,
+
+                        description:
+                            issueData.description,
+
+                        category:
+                            issueData.category,
+
+                        module:
+                            issueData.module,
+
+                        defect_type:
+                            issueData.defect_type,
+
+                        severity:
+                            issueData.severity,
+
+                        priority:
+                            issueData.priority
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to generate resolution assistance."
+            );
+
+        }
+
+
+        const rootCause =
+            escapeHtml(
+                data.root_cause ||
+                "The exact root cause could not be determined."
+            );
+
+
+        const recommendedSolution =
+            escapeHtml(
+                data.recommended_solution ||
+                "No recommended solution was returned."
+            );
+
+
+        const prevention =
+            escapeHtml(
+                data.prevention ||
+                "No prevention recommendations were returned."
+            );
+
+
+        const confidence =
+            escapeHtml(
+                data.confidence ||
+                "Medium"
+            );
+
+
+        resultBox.innerHTML = `
+
+            <div class="resolution-section">
+
+                <div class="resolution-label">
+                    🔎 Root Cause Analysis
+                </div>
+
+                <div class="resolution-content">
+                    ${rootCause}
+                </div>
+
+            </div>
+
+
+            <div class="resolution-section">
+
+                <div class="resolution-label">
+                    🔍 Investigation Steps
+                </div>
+
+                <div class="resolution-content">
+
+                ${
+                    Array.isArray(data.investigation_steps) &&
+                    data.investigation_steps.length > 0
+
+                    ?
+
+                    `<ol style="
+                        margin:0;
+                        padding-left:20px;
+                        color:#cbd5e1;
+                    ">
+                        ${
+                            data.investigation_steps
+                                .map(
+                                    step =>
+                                        `<li style="margin-bottom:8px;">
+                                            ${escapeHtml(step)}
+                                        </li>`
+                                )
+                                .join("")
+                        }
+                    </ol>`
+
+                    :
+
+                    "No specific investigation steps were returned."
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🛠 Recommended Solution
+            </div>
+
+            <div class="resolution-content">
+                ${recommendedSolution}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🔧 Suggested Fix
+            </div>
+
+            <div class="resolution-content">
+
+                ${
+                    escapeHtml(
+                        data.suggested_fix ||
+                        "No specific fix was suggested."
+                    )
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🛡 Prevention
+            </div>
+
+            <div class="resolution-content">
+                ${prevention}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                💡 Explanation
+            </div>
+
+            <div class="resolution-content">
+
+                ${
+                    escapeHtml(
+                        data.explanation ||
+                        "No additional explanation was provided."
+                    )
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🎯 AI Confidence
+            </div>
+
+            <span class="confidence-badge">
+                ${confidence}
+            </span>
+
+        </div>
+
+    `;
+
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Resolution assistance error:",
+            error
+        );
+
+
+        errorBox.textContent =
+            error.message ||
+            "Unable to generate resolution assistance.";
+
+
+        errorBox.style.display =
+            "block";
+
+
+        resultBox.innerHTML = "";
+
+    }
+
+    finally {
+
+        loading.style.display =
+            "none";
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "🤖 Analyze & Suggest Resolution";
+
+    }
+
+}
+/* ==================================================
+   LOAD SAVED AI RESOLUTION
+================================================== */
+
+function loadSavedResolution() {
+
+    // Check whether an AI resolution has already
+    // been saved for this issue.
+
+    if (!issueData.ai_root_cause) {
+
+        return;
+
+    }
+
+
+    const resultBox =
+        document.getElementById(
+            "resolutionResult"
+        );
+
+
+    if (!resultBox) {
+
+        return;
+
+    }
+
+
+    const rootCause =
+        escapeHtml(
+            issueData.ai_root_cause
+        );
+
+
+    const recommendedSolution =
+        escapeHtml(
+            issueData.ai_recommended_solution ||
+            "No recommended solution was saved."
+        );
+
+
+    const suggestedFix =
+        escapeHtml(
+            issueData.ai_suggested_fix ||
+            "No suggested fix was saved."
+        );
+
+
+    const prevention =
+        escapeHtml(
+            issueData.ai_prevention ||
+            "No prevention recommendations were saved."
+        );
+
+
+    const explanation =
+        escapeHtml(
+            issueData.ai_explanation ||
+            "No additional explanation was saved."
+        );
+
+
+    const confidence =
+        escapeHtml(
+            issueData.ai_confidence ||
+            "Medium"
+        );
+
+
+    let investigationSteps = [];
+
+    if (issueData.ai_investigation_steps) {
+
+        investigationSteps =
+            issueData.ai_investigation_steps
+                .split("\n")
+                .filter(
+                    step => step.trim() !== ""
+                );
+
+    }
+
+
+    resultBox.innerHTML = `
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🔎 Root Cause Analysis
+            </div>
+
+            <div class="resolution-content">
+                ${rootCause}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🔍 Investigation Steps
+            </div>
+
+            <div class="resolution-content">
+
+                ${
+                    investigationSteps.length > 0
+
+                    ?
+
+                    `<ol style="
+                        margin:0;
+                        padding-left:20px;
+                        color:#cbd5e1;
+                    ">
+
+                        ${
+                            investigationSteps
+                                .map(
+                                    step =>
+                                        `<li style="margin-bottom:8px;">
+                                            ${escapeHtml(step)}
+                                        </li>`
+                                )
+                                .join("")
+                        }
+
+                    </ol>`
+
+                    :
+
+                    "No investigation steps were saved."
+                }
+
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🛠 Recommended Solution
+            </div>
+
+            <div class="resolution-content">
+                ${recommendedSolution}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🔧 Suggested Fix
+            </div>
+
+            <div class="resolution-content">
+                ${suggestedFix}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🛡 Prevention
+            </div>
+
+            <div class="resolution-content">
+                ${prevention}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                💡 Explanation
+            </div>
+
+            <div class="resolution-content">
+                ${explanation}
+            </div>
+
+        </div>
+
+
+        <div class="resolution-section">
+
+            <div class="resolution-label">
+                🎯 AI Confidence
+            </div>
+
+            <span class="confidence-badge">
+                ${confidence}
+            </span>
+
+        </div>
+
+    `;
+
+}
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        loadSavedResolution();
+
+    }
+);
+/* ==================================================
+   ESCAPE HTML
+================================================== */
+
+function escapeHtml(value) {
+
+    if (value === null ||
+        value === undefined) {
+
+        return "";
+
+    }
+
+
+    return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+
+}
+/* ==================================================
+   AUTO LOAD SIMILAR DEFECTS
+================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function() {
+
+        findSimilarDefects();
+
+    }
+);
+
+</script>
+
+
+</body>
+
+</html>
