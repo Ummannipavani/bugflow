@@ -1,9 +1,20 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, Request
+
+from fastapi import (
+    APIRouter,
+    Depends,
+    UploadFile,
+    File,
+    Form,
+    Request,
+    HTTPException,
+    status
+)
+
 from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 
-
 from app.database.database import get_db
+
 from app.models.issue import Issue
 from app.models.project import Project
 from app.models.activity import Activity
@@ -11,9 +22,24 @@ from app.models.user import User
 from app.models.sprint import Sprint
 from app.models.attachment import Attachment
 from app.models.comment import Comment
-from app.ai.gemini import generate_embedding,analyze_bug
 
-from datetime import date
+from app.ai.gemini import (
+    generate_embedding,
+    analyze_bug
+)
+
+# IMPORTANT:
+# rbac.py was renamed to dependencies.py
+from app.auth.dependencies import require_roles
+from app.schemas.issue import (
+    IssueResponse,
+    StatusUpdate,
+    AssigneeUpdate,
+    SprintUpdate,
+    CommentCreate,
+    MessageResponse
+)
+from datetime import date, datetime
 
 import os
 import shutil
@@ -33,14 +59,19 @@ templates = Jinja2Templates(
 
 @router.post("/issues")
 def create_issue(
+
     title: str = Form(...),
+
     project: str = Form(...),
 
     priority: str = Form(...),
+
     severity: str = Form(...),
 
     category: str = Form(None),
+
     module: str = Form(None),
+
     defect_type: str = Form(None),
 
     description: str = Form(...),
@@ -48,18 +79,29 @@ def create_issue(
     due_date: date = Form(...),
 
     sprint_id: int = Form(None),
+
     assigned_to: int = Form(None),
 
     screenshot: UploadFile = File(None),
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
 ):
 
     print("Sprint ID received:", sprint_id)
-
     print("Category:", category)
     print("Module:", module)
     print("Defect Type:", defect_type)
+
 
     filename = None
 
@@ -68,11 +110,16 @@ def create_issue(
     # SAVE SCREENSHOT
     # =====================================================
 
-    if screenshot:
+    if screenshot and screenshot.filename:
 
         ext = screenshot.filename.split(".")[-1]
 
         filename = f"{uuid.uuid4()}.{ext}"
+
+        os.makedirs(
+            "static/uploads",
+            exist_ok=True
+        )
 
         with open(
             f"static/uploads/{filename}",
@@ -107,19 +154,54 @@ def create_issue(
 
 
     # =====================================================
-    # CREATE ISSUE
+    # CHECK ASSIGNED USER
     # =====================================================
+
+    assigned_user = None
+
+
+    if assigned_to:
+
+        assigned_user = db.query(User).filter(
+            User.id == assigned_to
+        ).first()
+
+
+        if not assigned_user:
+
+            raise HTTPException(
+                status_code=400,
+                detail="Assigned user not found."
+            )
+
+
+        # Only developers should receive bug assignments
+        if assigned_user.role != "Developer":
+
+            raise HTTPException(
+                status_code=400,
+                detail="Issues can only be assigned to Developers."
+            )
+
+
     # =====================================================
     # AI DEFECT ANALYSIS
     # =====================================================
 
     ai_result = analyze_bug(
+
         title=title,
+
         project=project,
+
         description=description
     )
 
-    print("\n========== AI DEFECT ANALYSIS ==========")
+
+    print(
+        "\n========== AI DEFECT ANALYSIS =========="
+    )
+
 
     print(
         "Category:",
@@ -151,36 +233,61 @@ def create_issue(
         ai_result["improved_description"]
     )
 
-    print("========================================\n")
+
+    print(
+        "========================================\n"
+    )
+
 
     # =====================================================
-    # GENERATE AI EMBEDDING
+    # GENERATE EMBEDDING
     # =====================================================
 
     embedding = generate_embedding(
+
         title,
+
         description
     )
+
 
     print(
         "Embedding generated:",
         embedding is not None
     )
 
+
     if embedding:
+
         print(
             "Embedding dimensions:",
             len(embedding)
         )
+
+
+    # =====================================================
+    # AUTOMATIC INITIAL STATUS
+    #
+    # Assigned developer -> In Progress
+    # No developer -> Open
+    # =====================================================
+
+    initial_status = (
+        "In Progress"
+        if assigned_user
+        else "Open"
+    )
+
+
+    # =====================================================
+    # CREATE ISSUE
+    # =====================================================
+
     new_issue = Issue(
 
         title=title,
 
         project=project,
-
-        # =================================================
-        # AI-GENERATED CLASSIFICATION
-        # =================================================
 
         priority=ai_result["priority"],
 
@@ -192,21 +299,26 @@ def create_issue(
 
         defect_type=ai_result["defect_type"],
 
-        
-        # =================================================
-        # AI-IMPROVED DESCRIPTION
-        # =================================================
-
         description=ai_result["improved_description"],
 
         screenshot=filename,
 
         due_date=due_date,
 
-        sprint_id=sprint_id if sprint_id else None,
+        sprint_id=(
+            sprint_id
+            if sprint_id
+            else None
+        ),
 
-        assigned_to=assigned_to if assigned_to else None,
-        
+        assigned_to=(
+            assigned_to
+            if assigned_user
+            else None
+        ),
+
+        status=initial_status,
+
         embedding=embedding
     )
 
@@ -226,7 +338,10 @@ def create_issue(
 
         issue_id=new_issue.id,
 
-        action=f"🐞 New issue '{title}' created"
+        action=(
+            f"🐞 New issue '{title}' created "
+            f"with status '{initial_status}'"
+        )
     )
 
 
@@ -235,10 +350,38 @@ def create_issue(
     db.commit()
 
 
+    # =====================================================
+    # ASSIGNMENT ACTIVITY
+    # =====================================================
+
+    if assigned_user:
+
+        activity = Activity(
+
+            issue_id=new_issue.id,
+
+            action=(
+                f"👤 Issue assigned to "
+                f"{assigned_user.name}"
+            )
+        )
+
+
+        db.add(activity)
+
+        db.commit()
+
+
     return {
 
         "message":
-            "Issue reported successfully!"
+            "Issue reported successfully!",
+
+        "issue_id":
+            new_issue.id,
+
+        "status":
+            new_issue.status
 
     }
 
@@ -249,8 +392,20 @@ def create_issue(
 
 @router.get("/issues/{issue_id}")
 def get_issue(
+
     issue_id: int,
-    db: Session = Depends(get_db)
+
+    db: Session = Depends(get_db),
+
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -260,10 +415,10 @@ def get_issue(
 
     if not issue:
 
-        return {
-            "message":
-                "Issue not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     return issue
@@ -275,9 +430,22 @@ def get_issue(
 
 @router.get("/issues/{issue_id}/details")
 def issue_details(
+
     issue_id: int,
+
     request: Request,
-    db: Session = Depends(get_db)
+
+    db: Session = Depends(get_db),
+
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -287,10 +455,10 @@ def issue_details(
 
     if not issue:
 
-        return {
-            "message":
-                "Issue not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     # =====================================================
@@ -331,58 +499,21 @@ def issue_details(
 
 
     # =====================================================
-    # USERS & SPRINTS
+    # SPRINTS
     # =====================================================
 
-    sprints = db.query(Sprint).all()
+    sprints = db.query(
+        Sprint
+    ).all()
 
-    users = db.query(User).all()
 
+    # =====================================================
+    # USERS
+    # =====================================================
 
-    print("\n==============================")
-
-    print("ISSUE DETAILS ROUTE")
-
-    print("==============================")
-
-    print("Issue ID:", issue.id)
-
-    print(
-        "Sprints:",
-        [(s.id, s.name) for s in sprints]
-    )
-
-    print(
-        "Users:",
-        [(u.id, u.name) for u in users]
-    )
-
-    print(
-        "Issue sprint_id:",
-        issue.sprint_id
-    )
-
-    print(
-        "Issue assigned_to:",
-        issue.assigned_to
-    )
-
-    print(
-        "Category:",
-        issue.category
-    )
-
-    print(
-        "Module:",
-        issue.module
-    )
-
-    print(
-        "Defect Type:",
-        issue.defect_type
-    )
-
-    print("==============================\n")
+    users = db.query(
+        User
+    ).all()
 
 
     return templates.TemplateResponse(
@@ -410,13 +541,32 @@ def issue_details(
                 sprints,
 
             "users":
-                users
+                users,
+
+            "current_user":
+                current_user
         }
     )
 
 
 # =========================================================
 # UPDATE ISSUE
+#
+# Admin:
+#     Can edit any issue
+#
+# Project Manager:
+#     Can edit any issue
+#
+# Developer:
+#     Can edit ONLY assigned issues
+#
+# QA:
+#     Cannot edit issue information
+#     Can only manage testing status
+#
+# Reporter:
+#     Cannot edit
 # =========================================================
 
 @router.put("/issues/{issue_id}")
@@ -448,8 +598,15 @@ def update_issue(
 
     screenshot: UploadFile = File(None),
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -459,10 +616,79 @@ def update_issue(
 
     if not issue:
 
-        return {
-            "message":
-                "Issue not found"
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
+
+
+    role = current_user.get("role")
+
+
+    # =====================================================
+    # DEVELOPER RBAC
+    #
+    # Developer can ONLY update assigned issue
+    # =====================================================
+
+    if role == "Developer":
+
+        if issue.assigned_to is None:
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "You can only update "
+                    "issues assigned to you."
+                )
+            )
+
+
+        if str(issue.assigned_to) != str(
+            current_user.get("id")
+        ):
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "You can only update "
+                    "issues assigned to you."
+                )
+            )
+
+
+        # Developer cannot reassign the issue
+
+        if assigned_to is not None:
+
+            if str(assigned_to) != str(
+                issue.assigned_to
+            ):
+
+                raise HTTPException(
+                    status_code=403,
+                    detail=(
+                        "Developers cannot "
+                        "reassign issues."
+                    )
+                )
+
+
+        # Developer cannot change sprint assignment
+
+        if sprint_id is not None:
+
+            if str(sprint_id) != str(
+                issue.sprint_id
+            ):
+
+                raise HTTPException(
+                    status_code=403,
+                    detail=(
+                        "Developers cannot "
+                        "change sprint assignment."
+                    )
+                )
 
 
     # =====================================================
@@ -487,33 +713,144 @@ def update_issue(
 
     issue.due_date = due_date
 
-    issue.sprint_id = (
-        sprint_id
-        if sprint_id
-        else None
-    )
 
-    issue.assigned_to = (
-        assigned_to
-        if assigned_to
-        else None
-    )
-    # =========================================================
+    # =====================================================
+    # SPRINT
+    #
+    # Only Admin / Project Manager can change it
+    # =====================================================
+
+    if role in [
+        "Admin",
+        "Project Manager"
+    ]:
+
+        issue.sprint_id = (
+            sprint_id
+            if sprint_id
+            else None
+        )
+
+
+    # =====================================================
+    # ASSIGNMENT
+    #
+    # Only Admin / Project Manager can change it
+    # =====================================================
+
+    if role in [
+        "Admin",
+        "Project Manager"
+    ]:
+
+        if assigned_to:
+
+            user = db.query(User).filter(
+                User.id == assigned_to
+            ).first()
+
+
+            if not user:
+
+                raise HTTPException(
+                    status_code=400,
+                    detail="Assigned user not found."
+                )
+
+
+            if user.role != "Developer":
+
+                raise HTTPException(
+                    status_code=400,
+                    detail=(
+                        "Issues can only be "
+                        "assigned to Developers."
+                    )
+                )
+
+
+            old_assignee = issue.assigned_to
+
+            issue.assigned_to = user.id
+
+
+            # =================================================
+            # AUTOMATIC STATUS
+            #
+            # Open/Reopened + developer assigned
+            # -> In Progress
+            # =================================================
+
+            if (
+                issue.status in [
+                    "Open",
+                    "Reopened"
+                ]
+            ):
+
+                old_status = issue.status
+
+                issue.status = "In Progress"
+
+
+                db.add(
+                    Activity(
+
+                        issue_id=issue.id,
+
+                        action=(
+                            f"🔄 Issue status changed "
+                            f"from {old_status} "
+                            f"to In Progress because "
+                            f"it was assigned to "
+                            f"{user.name}"
+                        )
+                    )
+                )
+
+
+            if old_assignee != user.id:
+
+                db.add(
+                    Activity(
+
+                        issue_id=issue.id,
+
+                        action=(
+                            f"👤 Issue assigned to "
+                            f"{user.name}"
+                        )
+                    )
+                )
+
+
+        else:
+
+            issue.assigned_to = None
+
+
+    # =====================================================
     # CLEAR OLD AI ANALYSIS
-    # =========================================================
+    # =====================================================
 
     issue.ai_root_cause = None
+
     issue.ai_suggested_fix = None
+
     issue.ai_recommended_solution = None
+
     issue.ai_investigation_steps = None
+
     issue.ai_confidence = None
+
     issue.ai_explanation = None
+
     issue.ai_prevention = None
 
 
-    # =========================================================
-    # AUTOMATIC RE-EMBEDDING AFTER ISSUE EDIT
-    # =========================================================
+    # =====================================================
+    # AUTOMATIC RE-EMBEDDING
+    # =====================================================
 
     try:
 
@@ -522,15 +859,16 @@ def update_issue(
             title=issue.title,
 
             description=issue.description or ""
-
         )
+
 
         if new_embedding:
 
             issue.embedding = new_embedding
 
             print(
-                "Embedding regenerated successfully after issue update."
+                "Embedding regenerated successfully "
+                "after issue update."
             )
 
         else:
@@ -538,8 +876,10 @@ def update_issue(
             issue.embedding = None
 
             print(
-                "Embedding generation returned no result."
+                "Embedding generation returned "
+                "no result."
             )
+
 
     except Exception as e:
 
@@ -548,18 +888,24 @@ def update_issue(
         print(
             f"Embedding regeneration failed: {e}"
         )
-    
+
 
     # =====================================================
     # UPDATE SCREENSHOT
     # =====================================================
 
-    if screenshot:
+    if screenshot and screenshot.filename:
 
         ext = screenshot.filename.split(".")[-1]
 
         filename = (
             f"{uuid.uuid4()}.{ext}"
+        )
+
+
+        os.makedirs(
+            "static/uploads",
+            exist_ok=True
         )
 
 
@@ -609,8 +955,10 @@ def update_issue(
 
         issue_id=issue.id,
 
-        action=
-            f"✏ Issue '{title}' updated"
+        action=(
+            f"✏ Issue '{title}' updated "
+            f"by {role}"
+        )
     )
 
 
@@ -622,13 +970,17 @@ def update_issue(
     return {
 
         "message":
-            "Issue updated successfully!"
+            "Issue updated successfully!",
 
+        "status":
+            issue.status
     }
 
 
 # =========================================================
 # DELETE ISSUE
+#
+# Only Admin / Project Manager
 # =========================================================
 
 @router.delete("/issues/{issue_id}")
@@ -636,8 +988,14 @@ def delete_issue(
 
     issue_id: int,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -647,12 +1005,10 @@ def delete_issue(
 
     if not issue:
 
-        return {
-
-            "message":
-                "Issue not found"
-
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     issue_title = issue.title
@@ -675,38 +1031,85 @@ def delete_issue(
             os.remove(path)
 
 
-    # Save information before deleting
+    # =====================================================
+    # DELETE ATTACHMENTS
+    # =====================================================
 
-    issue_id_value = issue.id
+    attachments = db.query(
+        Attachment
+    ).filter(
+        Attachment.issue_id == issue.id
+    ).all()
 
+
+    for attachment in attachments:
+
+        if attachment.file_path:
+
+            if os.path.exists(
+                attachment.file_path
+            ):
+
+                os.remove(
+                    attachment.file_path
+                )
+
+
+        db.delete(attachment)
+
+
+    # =====================================================
+    # DELETE ACTIVITIES
+    # =====================================================
+
+    db.query(Activity).filter(
+        Activity.issue_id == issue.id
+    ).delete(
+        synchronize_session=False
+    )
+
+
+    # =====================================================
+    # DELETE COMMENTS
+    # =====================================================
+
+    db.query(Comment).filter(
+        Comment.issue_id == issue.id
+    ).delete(
+        synchronize_session=False
+    )
+
+
+    # =====================================================
+    # DELETE ISSUE
+    # =====================================================
 
     db.delete(issue)
 
     db.commit()
 
 
-    # =====================================================
-    # ACTIVITY
-    # =====================================================
-
-    # NOTE:
-    # If Activity has a foreign key to Issue,
-    # creating this after deleting the Issue can
-    # cause a foreign-key error.
-    #
-    # Keeping the existing behavior for now.
-
-
     return {
 
         "message":
-            "Issue deleted successfully!"
-
+            f"Issue '{issue_title}' deleted successfully!"
     }
 
 
 # =========================================================
 # UPDATE STATUS
+#
+# Developer:
+#     In Progress -> In Review
+#     Reopened -> In Progress
+#
+# QA / Tester:
+#     In Review -> Resolved
+#     Resolved -> Verified
+#     Resolved -> Reopened
+#
+# Admin / Project Manager:
+#     Can perform all valid transitions
 # =========================================================
 
 @router.put("/issues/{issue_id}/status")
@@ -716,8 +1119,16 @@ def update_status(
 
     data: dict,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -727,25 +1138,28 @@ def update_status(
 
     if not issue:
 
-        return {
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
-            "message":
-                "Issue not found"
 
-        }
+    role = current_user.get("role")
 
+
+    # =====================================================
+    # GET NEW STATUS
+    # =====================================================
 
     new_status = data.get("status")
 
 
     if not new_status:
 
-        return {
-
-            "message":
-                "Status is required"
-
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="Status is required"
+        )
 
 
     # =====================================================
@@ -773,70 +1187,243 @@ def update_status(
 
     if new_status not in allowed_statuses:
 
-        return {
-
-            "message":
-                "Invalid status"
-
-        }
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid status"
+        )
 
 
     current_status = issue.status
 
 
     # =====================================================
-    # VALID STATUS TRANSITIONS
+    # NO CHANGE
     # =====================================================
 
-    valid_transitions = {
-
-        "Open":
-            ["In Progress"],
-
-        "In Progress":
-            ["In Review"],
-
-        "In Review":
-            ["Resolved"],
-
-        "Resolved":
-            ["Verified","Reopened"],
-        
-        "Reopened": 
-            ["In Progress"],
-
-        "Verified":
-            ["Closed","Reopened"],
-
-        "Closed":
-            []
-
-    }
-
-
-    if new_status not in (
-        valid_transitions.get(
-            current_status,
-            []
-        )
-    ):
+    if new_status == current_status:
 
         return {
 
             "message":
-                f"Cannot change status from "
-                f"{current_status} to "
-                f"{new_status}"
+                "Issue is already in this status.",
+
+            "status":
+                current_status
+        }
+
+
+    # =====================================================
+    # DEVELOPER OWNERSHIP CHECK
+    # =====================================================
+
+    if role == "Developer":
+
+        if issue.assigned_to is None:
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "You can only update "
+                    "status of issues assigned to you."
+                )
+            )
+
+
+        if str(issue.assigned_to) != str(
+            current_user.get("id")
+        ):
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "You can only update "
+                    "status of issues assigned to you."
+                )
+            )
+
+
+    # =====================================================
+    # STATUS TRANSITIONS
+    # =====================================================
+
+    valid_transitions = {
+
+        "Open": [
+
+            "In Progress"
+
+        ],
+
+        "In Progress": [
+
+            "In Review"
+
+        ],
+
+        "In Review": [
+
+            "Resolved"
+
+        ],
+
+        "Resolved": [
+
+            "Verified",
+
+            "Reopened"
+
+        ],
+
+        "Reopened": [
+
+            "In Progress"
+
+        ],
+
+        "Verified": [
+
+            "Closed",
+
+            "Reopened"
+
+        ],
+
+        "Closed": []
+
+    }
+
+
+    # =====================================================
+    # ROLE-SPECIFIC STATUS CONTROL
+    # =====================================================
+
+    if role == "Developer":
+
+        allowed_for_role = {
+
+            "In Progress": [
+                "In Review"
+            ],
+
+            "Reopened": [
+                "In Progress"
+            ]
 
         }
+
+
+        if new_status not in allowed_for_role.get(
+            current_status,
+            []
+        ):
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "Developers can move their "
+                    "assigned issues only from "
+                    "In Progress to In Review "
+                    "or Reopened to In Progress."
+                )
+            )
+
+
+    elif role == "QA / Tester":
+
+        allowed_for_role = {
+
+            "In Review": [
+                "Resolved"
+            ],
+
+            "Resolved": [
+
+                "Verified",
+
+                "Reopened"
+            ]
+
+        }
+
+
+        if new_status not in allowed_for_role.get(
+            current_status,
+            []
+        ):
+
+            raise HTTPException(
+                status_code=403,
+                detail=(
+                    "QA / Tester can move issues "
+                    "from In Review to Resolved, "
+                    "or from Resolved to Verified "
+                    "or Reopened."
+                )
+            )
+
+
+    else:
+
+        # Admin / Project Manager
+
+        if new_status not in valid_transitions.get(
+            current_status,
+            []
+        ):
+
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    f"Cannot change status from "
+                    f"{current_status} to "
+                    f"{new_status}"
+                )
+            )
+
 
     # =====================================================
     # UPDATE STATUS
     # =====================================================
 
     issue.status = new_status
+    # Record resolution time
+    if new_status == "Resolved":
+        issue.resolved_at = datetime.utcnow()
+
+# Record closing time
+    if new_status == "Closed":
+        issue.closed_at = datetime.utcnow()
+    # =====================================================
+    # RESOLUTION TIMESTAMP
+    # =====================================================
+
+    if new_status == "Resolved":
+
+        if issue.resolved_at is None:
+
+            issue.resolved_at = datetime.utcnow()
 
 
+# =====================================================
+# CLOSED TIMESTAMP
+# =====================================================
+
+    if new_status == "Closed":
+
+        if issue.closed_at is None:
+
+            issue.closed_at = datetime.utcnow()
+
+
+# =====================================================
+# REOPENED ISSUE
+# =====================================================
+
+    if new_status == "Reopened":
+
+        issue.resolved_at = None
+
+        issue.closed_at = None
     db.commit()
 
     db.refresh(issue)
@@ -850,11 +1437,12 @@ def update_status(
 
         issue_id=issue.id,
 
-        action=
-            f"🔄 Issue '{issue.title}' moved "
-            f"from {current_status} to "
-            f"{new_status}"
-
+        action=(
+            f"🔄 Issue '{issue.title}' "
+            f"moved from {current_status} "
+            f"to {new_status} "
+            f"by {role}"
+        )
     )
 
 
@@ -868,14 +1456,21 @@ def update_status(
         "message":
             "Status updated successfully",
 
+        "old_status":
+            current_status,
+
         "status":
             new_status
-
     }
 
 
 # =========================================================
 # UPDATE ASSIGNEE
+#
+# Only Admin / Project Manager
+#
+# Assigning an Open/Reopened issue to a Developer
+# automatically changes status to In Progress.
 # =========================================================
 
 @router.put("/issues/{issue_id}/assignee")
@@ -885,8 +1480,14 @@ def update_assignee(
 
     data: dict,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -896,12 +1497,10 @@ def update_assignee(
 
     if not issue:
 
-        return {
-
-            "message":
-                "Issue not found"
-
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     new_assignee = data.get(
@@ -926,7 +1525,6 @@ def update_assignee(
             if issue.assignee
 
             else "Unassigned"
-
         )
 
 
@@ -940,11 +1538,11 @@ def update_assignee(
 
             issue_id=issue.id,
 
-            action=
+            action=(
                 f"👤 Issue '{issue.title}' "
                 f"was unassigned from "
                 f"{old_assignee}"
-
+            )
         )
 
 
@@ -959,8 +1557,10 @@ def update_assignee(
                 "Issue unassigned successfully",
 
             "assigned_to":
-                None
+                None,
 
+            "status":
+                issue.status
         }
 
 
@@ -968,21 +1568,46 @@ def update_assignee(
     # CHECK USER
     # =====================================================
 
+    try:
+
+        new_assignee = int(
+            new_assignee
+        )
+
+    except (TypeError, ValueError):
+
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid assignee."
+        )
+
+
     user = db.query(User).filter(
-
-        User.id == int(new_assignee)
-
+        User.id == new_assignee
     ).first()
 
 
     if not user:
 
-        return {
+        raise HTTPException(
+            status_code=404,
+            detail="User not found"
+        )
 
-            "message":
-                "User not found"
 
-        }
+    # =====================================================
+    # ONLY DEVELOPERS CAN BE ASSIGNED
+    # =====================================================
+
+    if user.role != "Developer":
+
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Only users with the Developer "
+                "role can be assigned to issues."
+            )
+        )
 
 
     old_assignee = (
@@ -992,11 +1617,27 @@ def update_assignee(
         if issue.assignee
 
         else "Unassigned"
-
     )
 
 
+    old_status = issue.status
+
+
     issue.assigned_to = user.id
+
+
+    # =====================================================
+    # AUTOMATIC STATUS
+    #
+    # Open/Reopened -> In Progress
+    # =====================================================
+
+    if issue.status in [
+        "Open",
+        "Reopened"
+    ]:
+
+        issue.status = "In Progress"
 
 
     db.commit()
@@ -1005,23 +1646,45 @@ def update_assignee(
 
 
     # =====================================================
-    # ACTIVITY
+    # ASSIGNMENT ACTIVITY
     # =====================================================
 
     activity = Activity(
 
         issue_id=issue.id,
 
-        action=
+        action=(
             f"👤 Issue '{issue.title}' "
             f"assigned from "
             f"{old_assignee} to "
             f"{user.name}"
-
+        )
     )
 
 
     db.add(activity)
+
+
+    # =====================================================
+    # STATUS ACTIVITY
+    # =====================================================
+
+    if old_status != issue.status:
+
+        db.add(
+            Activity(
+
+                issue_id=issue.id,
+
+                action=(
+                    f"🔄 Issue status automatically "
+                    f"changed from {old_status} "
+                    f"to {issue.status} "
+                    f"after assignment"
+                )
+            )
+        )
+
 
     db.commit()
 
@@ -1035,13 +1698,17 @@ def update_assignee(
             user.id,
 
         "assignee":
-            user.name
+            user.name,
 
+        "status":
+            issue.status
     }
 
 
 # =========================================================
 # ADD COMMENT
+#
+# All authenticated roles can comment
 # =========================================================
 
 @router.post("/issues/{issue_id}/comments")
@@ -1051,8 +1718,17 @@ def add_comment(
 
     comment: str = Form(...),
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -1062,12 +1738,10 @@ def add_comment(
 
     if not issue:
 
-        return {
-
-            "message":
-                "Issue not found"
-
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     new_comment = Comment(
@@ -1075,7 +1749,6 @@ def add_comment(
         issue_id=issue_id,
 
         comment=comment
-
     )
 
 
@@ -1084,16 +1757,34 @@ def add_comment(
     db.commit()
 
 
+    # =====================================================
+    # ACTIVITY
+    # =====================================================
+
+    db.add(
+        Activity(
+
+            issue_id=issue_id,
+
+            action="💬 New comment added"
+        )
+    )
+
+
+    db.commit()
+
+
     return {
 
         "message":
             "Comment added successfully!"
-
     }
 
 
 # =========================================================
 # UPDATE SPRINT
+#
+# Only Admin / Project Manager
 # =========================================================
 
 @router.put("/issues/{issue_id}/sprint")
@@ -1103,8 +1794,14 @@ def update_sprint(
 
     data: dict,
 
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager"
+        )
+    )
 ):
 
     issue = db.query(Issue).filter(
@@ -1114,12 +1811,10 @@ def update_sprint(
 
     if not issue:
 
-        return {
-
-            "message":
-                "Issue not found"
-
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
 
 
     sprint_id = data.get(
@@ -1147,10 +1842,10 @@ def update_sprint(
 
             issue_id=issue.id,
 
-            action=
+            action=(
                 f"🏃 Issue '{issue.title}' "
                 f"removed from sprint"
-
+            )
         )
 
 
@@ -1163,7 +1858,6 @@ def update_sprint(
 
             "message":
                 "Sprint removed successfully"
-
         }
 
 
@@ -1171,21 +1865,31 @@ def update_sprint(
     # CHECK SPRINT
     # =====================================================
 
+    try:
+
+        sprint_id = int(
+            sprint_id
+        )
+
+    except (TypeError, ValueError):
+
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid sprint."
+        )
+
+
     sprint = db.query(Sprint).filter(
-
-        Sprint.id == int(sprint_id)
-
+        Sprint.id == sprint_id
     ).first()
 
 
     if not sprint:
 
-        return {
-
-            "message":
-                "Sprint not found"
-
-        }
+        raise HTTPException(
+            status_code=404,
+            detail="Sprint not found"
+        )
 
 
     # =====================================================
@@ -1208,11 +1912,11 @@ def update_sprint(
 
         issue_id=issue.id,
 
-        action=
+        action=(
             f"🏃 Issue '{issue.title}' "
             f"assigned to sprint "
             f"'{sprint.name}'"
-
+        )
     )
 
 
@@ -1231,5 +1935,5 @@ def update_sprint(
 
         "sprint":
             sprint.name
-
     }
+

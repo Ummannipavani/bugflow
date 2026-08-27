@@ -480,7 +480,10 @@
         }
 
     }
-
+    #submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
 </style>
 
 </head>
@@ -786,22 +789,26 @@
                         <label for="assigned_to">
                             Assignee
                         </label>
-
                         <select id="assigned_to">
 
-                            <option value="">
-                                Unassigned
-                            </option>
+    <option value="">
+        Unassigned
+    </option>
 
-                            {% for user in users %}
+    {% for user in users %}
 
-                            <option value="{{ user.id }}">
-                                {{ user.name }}
-                            </option>
+        {% if user.role == "Developer" %}
 
-                            {% endfor %}
+            <option value="{{ user.id }}">
+                {{ user.name }}
+            </option>
 
-                        </select>
+        {% endif %}
+
+    {% endfor %}
+
+</select>
+                        
 
                     </div>
 
@@ -1795,7 +1802,7 @@ aiButton.addEventListener(
 // =====================================
 // SUBMIT DEFECT
 // =====================================
-
+let isSubmitting = false;
 document
     .getElementById("issueForm")
     .addEventListener(
@@ -1804,7 +1811,13 @@ document
 
             e.preventDefault();
 
+             // =====================================
+            // PREVENT DOUBLE SUBMISSION
+            // =====================================
 
+            if (isSubmitting) {
+                return;
+            }
             // Basic validation
 
             if (!category.value) {
@@ -1827,6 +1840,18 @@ document
                 return;
 
             }
+            // =====================================
+            // LOCK SUBMISSION
+            // =====================================
+
+            isSubmitting = true;
+
+            submitBtn.disabled = true;
+
+            submitBtn.innerText =
+                issueId
+                    ? "Updating..."
+                    : "Reporting...";
 
 
             const formData =

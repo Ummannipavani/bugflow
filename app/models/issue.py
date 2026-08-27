@@ -1,8 +1,9 @@
-from sqlalchemy import Column, Integer, String, Text, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from pgvector.sqlalchemy import Vector
 
 from app.database.database import Base
+from datetime import datetime
 
 
 class Issue(Base):
@@ -111,7 +112,24 @@ class Issue(Base):
         String(20),
         default="Reported"
     )
+    # ==========================
+# TIMESTAMPS
+# ==========================
 
+    created_at = Column(
+        DateTime,
+        default=datetime.utcnow
+    )
+
+    resolved_at = Column(
+        DateTime,
+        nullable=True
+    )
+
+    closed_at = Column(
+        DateTime,
+        nullable=True
+    )
     # ==========================
     # SCREENSHOT
     # ==========================

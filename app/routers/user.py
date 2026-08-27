@@ -65,11 +65,13 @@ def login(request:Request,user: UserLogin, db: Session = Depends(get_db)):
 
     token = create_access_token(
         data={
+            "id": db_user.id,
             "sub": db_user.email,
             "role": db_user.role
         }
     )
     request.session["user"] = {
+        "id": db_user.id,
         "name": db_user.name,
         "email": db_user.email,
         "role": db_user.role

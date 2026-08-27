@@ -5,11 +5,500 @@
 
     <title>BugFlow Dashboard</title>
 
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link
+        rel="stylesheet"
+        href="/static/css/style.css"
+    >
+
+    <style>
+
+        /* =====================================================
+           DASHBOARD PROFESSIONAL STYLES
+        ===================================================== */
+
+        .dashboard-subtitle {
+            color: #64748b;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        /* =====================================================
+           TOP STATISTICS
+        ===================================================== */
+
+        .dashboard-stat-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(4, minmax(0, 1fr));
+
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .dashboard-stat-card {
+            background: #1e293b;
+            border: 1px solid #263449;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-stat-card::after {
+            content: "";
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            right: -20px;
+            top: -20px;
+            background: rgba(96,165,250,0.06);
+            border-radius: 50%;
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #263449;
+            font-size: 18px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: 700;
+            color: #f8fafc;
+            margin-top: 12px;
+        }
+
+        .stat-description {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .stat-danger {
+            color: #f87171;
+        }
+
+        .stat-success {
+            color: #34d399;
+        }
+
+        .stat-warning {
+            color: #fbbf24;
+        }
+
+        .stat-blue {
+            color: #60a5fa;
+        }
+
+        /* =====================================================
+           LIFECYCLE
+        ===================================================== */
+
+        .section-card {
+            background: #111827;
+            border: 1px solid #1e293b;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 22px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .section-header h2 {
+            margin: 0;
+            color: #f8fafc;
+            font-size: 19px;
+        }
+
+        .section-header p {
+            color: #64748b;
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .lifecycle-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(7, minmax(100px, 1fr));
+
+            gap: 10px;
+        }
+
+        .lifecycle-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 11px;
+            padding: 15px;
+            transition: 0.2s;
+        }
+
+        .lifecycle-card:hover {
+            transform: translateY(-2px);
+            border-color: #334155;
+        }
+
+        .lifecycle-name {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .lifecycle-number {
+            color: #f8fafc;
+            font-size: 24px;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        .lifecycle-bar {
+            width: 100%;
+            height: 5px;
+            background: #1e293b;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .lifecycle-fill {
+            height: 100%;
+            background: #60a5fa;
+            border-radius: 10px;
+        }
+
+        .reported-fill {
+            background: #94a3b8;
+        }
+
+        .progress-fill {
+            background: #f59e0b;
+        }
+
+        .review-fill {
+            background: #60a5fa;
+        }
+
+        .resolved-fill {
+            background: #34d399;
+        }
+
+        .reopened-fill {
+            background: #f97316;
+        }
+
+        .verified-fill {
+            background: #a78bfa;
+        }
+
+        .closed-fill {
+            background: #22c55e;
+        }
+
+        /* =====================================================
+           ANALYTICS GRID
+        ===================================================== */
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+            margin-bottom: 22px;
+        }
+
+        /* =====================================================
+           PRIORITY
+        ===================================================== */
+
+        .priority-row {
+            margin-bottom: 18px;
+        }
+
+        .priority-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+        }
+
+        .priority-name {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .priority-count {
+            color: #f8fafc;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .progress-background {
+            width: 100%;
+            height: 9px;
+            background: #0f172a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            border-radius: 10px;
+        }
+
+        .p1-bar {
+            background: #ef4444;
+        }
+
+        .p2-bar {
+            background: #f59e0b;
+        }
+
+        .p3-bar {
+            background: #22c55e;
+        }
+
+        /* =====================================================
+           PROJECTS
+        ===================================================== */
+
+        .project-row {
+            margin-bottom: 15px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .project-name {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .project-count {
+            color: #60a5fa;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .project-progress {
+            height: 7px;
+            background: #0f172a;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .project-fill {
+            height: 100%;
+            background: #6366f1;
+            border-radius: 10px;
+        }
+
+        /* =====================================================
+           WORKLOAD
+        ===================================================== */
+
+        .workload-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+        }
+
+        .workload-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 15px;
+        }
+
+        .workload-icon {
+            font-size: 20px;
+        }
+
+        .workload-value {
+            color: #f8fafc;
+            font-size: 23px;
+            font-weight: bold;
+            margin-top: 7px;
+        }
+
+        .workload-label {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        /* =====================================================
+           QUICK ACTIONS
+        ===================================================== */
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .action-card {
+            background: #1e293b;
+            border: 1px solid #263449;
+            border-radius: 13px;
+            padding: 20px;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .action-card:hover {
+            transform: translateY(-2px);
+            border-color: #3b82f6;
+            background: #202d42;
+        }
+
+        .action-icon {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .action-card h3 {
+            color: #f8fafc;
+            margin: 0 0 5px;
+        }
+
+        .action-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin: 0;
+        }
+
+        /* =====================================================
+           STATUS BADGES
+        ===================================================== */
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .status-reported {
+            background: #334155;
+            color: #cbd5e1;
+        }
+
+        .status-progress {
+            background: #78350f;
+            color: #fed7aa;
+        }
+
+        .status-review {
+            background: #1e3a8a;
+            color: #bfdbfe;
+        }
+
+        .status-resolved {
+            background: #14532d;
+            color: #bbf7d0;
+        }
+
+        .status-reopened {
+            background: #7c2d12;
+            color: #fed7aa;
+        }
+
+        .status-verified {
+            background: #4c1d95;
+            color: #ddd6fe;
+        }
+
+        .status-closed {
+            background: #166534;
+            color: #bbf7d0;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+        ===================================================== */
+
+        @media (max-width: 1100px) {
+
+            .dashboard-stat-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .lifecycle-grid {
+                grid-template-columns:
+                    repeat(4, 1fr);
+            }
+
+        }
+
+        @media (max-width: 800px) {
+
+            .analytics-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .workload-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+        @media (max-width: 600px) {
+
+            .dashboard-stat-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .lifecycle-grid {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+        }
+
+    </style>
 
 </head>
 
+
 <body>
+
+
+<!-- =========================================================
+     SIDEBAR
+========================================================= -->
 
 <div class="sidebar">
 
@@ -19,124 +508,244 @@
 
     <nav>
 
-        <a href="/dashboard" class="active">Dashboard</a>
+        <a
+            href="/dashboard"
+            class="active">
+            Dashboard
+        </a>
 
-        <a href="/report-issue">Report Issue</a>
+        <a href="/report-issue">
+            Report Issue
+        </a>
 
-        <a href="/issues">Issues</a>
+        <a href="/issues">
+            Issues
+        </a>
 
-        <a href="/projects">Projects</a>
+        <a href="/projects">
+            Projects
+        </a>
 
-        <a href="/sprints">Sprints</a>
+        <a href="/sprints">
+            Sprints
+        </a>
+        <a href="/analytics">
+            Analytics
+        </a>
 
-        <a href="/">Logout</a>
+        <a href="/logout">
+            Logout
+        </a>
 
     </nav>
 
 </div>
 
+
+<!-- =========================================================
+     MAIN
+========================================================= -->
+
 <div class="main">
 
-    <!-- Top Bar -->
+
+    <!-- =====================================================
+         TOP BAR
+    ===================================================== -->
+
     <div class="topbar">
 
-        <h1>Dashboard</h1>
+        <div>
+
+            <h1>
+                Dashboard
+            </h1>
+
+            <p class="dashboard-subtitle">
+                Software defect overview and project health
+            </p>
+
+        </div>
+
 
         <div class="topbar-right">
 
-            <!-- Notification -->
+
+            <!-- =================================================
+                 NOTIFICATIONS
+            ================================================= -->
+
             <div class="notification-wrapper">
 
-                <button type="button"
-                        class="notification-btn"
-                        onclick="toggleNotifications()">
+                <button
+                    type="button"
+                    class="notification-btn"
+                    onclick="toggleNotifications()">
+
                     🔔
 
                     {% if notifications and notifications|length > 0 %}
+
                     <span class="notification-count">
-                        {{ "9+" if notifications|length > 9 else notifications|length }}
+
+                        {{
+                            "9+"
+                            if notifications|length > 9
+                            else notifications|length
+                        }}
+
                     </span>
+
                     {% endif %}
+
                 </button>
+
 
                 <div id="notificationDropdown" class="notification-dropdown">
 
-                    <h4>Notifications</h4>
+    <div style="
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+        padding:0 0 10px 0;
+    ">
 
-                    {% if notifications %}
+        <h4 style="margin:0;">
+            Notifications
+        </h4>
 
-                        {% for notification in notifications %}
+        {% if notifications %}
 
-                        <div class="notification-item">
-                            {{ notification }}
-                        </div>
+        <button
+            type="button"
+            onclick="clearNotifications()"
+            style="
+                background:none;
+                border:none;
+                color:#60a5fa;
+                cursor:pointer;
+                font-size:12px;
+                font-weight:600;
+            "
+        >
+            View All
+        </button>
 
-                        {% endfor %}
+        {% endif %}
 
-                    {% else %}
+    </div>
 
-                        <div class="notification-item">
-                            No new notifications
-                        </div>
 
-                    {% endif %}
+    {% if notifications %}
 
-                </div>
+        {% for notification in notifications %}
+
+        <div class="notification-item">
+            {{ notification }}
+        </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="notification-item">
+            No new notifications
+        </div>
+
+    {% endif %}
+
+</div>
 
             </div>
 
-            <!-- Profile -->
+
+            <!-- =================================================
+                 PROFILE
+            ================================================= -->
+
             <div class="profile-wrapper">
 
-                <div class="profile-info" onclick="toggleProfileMenu()">
+                <div
+                    class="profile-info"
+                    onclick="toggleProfileMenu()">
 
                     <div class="profile-circle">
+
                         {% if user %}
+
                             {{ user["name"][0]|upper }}
+
                         {% else %}
+
                             G
+
                         {% endif %}
+
                     </div>
 
+
                     <div class="profile-name">
+
                         {% if user %}
+
                             {{ user["name"] }} ▼
+
                         {% else %}
+
                             Guest ▼
+
                         {% endif %}
+
                     </div>
 
                 </div>
 
-                <div id="profileDropdown" class="profile-dropdown">
+
+                <div
+                    id="profileDropdown"
+                    class="profile-dropdown">
 
                     {% if user %}
 
                     <div class="profile-header">
 
                         <div class="profile-circle large">
+
                             {{ user["name"][0]|upper }}
+
                         </div>
 
-                        <h4>{{ user["name"] }}</h4>
+                        <h4>
+                            {{ user["name"] }}
+                        </h4>
 
-                        <p>{{ user["email"] }}</p>
+                        <p>
+                            {{ user["email"] }}
+                        </p>
 
                         <span class="role-badge">
+
                             {{ user["role"] }}
+
                         </span>
 
                     </div>
 
                     <hr>
 
-                    <a href="/logout" class="logout-link">
+                    <a
+                        href="/logout"
+                        class="logout-link">
+
                         🚪 Logout
+
                     </a>
 
                     {% else %}
 
-                    <p style="padding:15px;">Guest User</p>
+                    <p style="padding:15px;">
+                        Guest User
+                    </p>
 
                     {% endif %}
 
@@ -148,83 +757,702 @@
 
     </div>
 
-            
-    <!-- Statistics -->
 
-    <div class="cards">
+    <!-- =====================================================
+         MAIN KPI CARDS
+    ===================================================== -->
 
-        <div class="card">
+    <div class="dashboard-stat-grid">
 
-            <p>Total Issues</p>
 
-            <h2>{{ total_issues }}</h2>
+        <div class="dashboard-stat-card">
+
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Total Issues
+                </span>
+
+                <div class="stat-icon">
+                    🐞
+                </div>
+
+            </div>
+
+            <div class="stat-number stat-blue">
+                {{ total_issues }}
+            </div>
+
+            <div class="stat-description">
+                All reported defects
+            </div>
 
         </div>
 
-        <div class="card">
 
-            <p>Total Projects</p>
+        <div class="dashboard-stat-card">
 
-            <h2>{{ total_projects }}</h2>
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Active Issues
+                </span>
+
+                <div class="stat-icon">
+                    ⚙️
+                </div>
+
+            </div>
+
+            <div class="stat-number stat-warning">
+                {{ active_issues }}
+            </div>
+
+            <div class="stat-description">
+                Currently being worked on
+            </div>
 
         </div>
 
-        <div class="card">
 
-            <p>Critical Bugs</p>
+        <div class="dashboard-stat-card">
 
-            <h2 class="danger">{{ critical_bugs }}</h2>
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Critical Bugs
+                </span>
+
+                <div class="stat-icon">
+                    🚨
+                </div>
+
+            </div>
+
+            <div class="stat-number stat-danger">
+                {{ critical_bugs }}
+            </div>
+
+            <div class="stat-description">
+                Critical severity defects
+            </div>
 
         </div>
 
-        <div class="card">
 
-            <p>Resolved</p>
+        <div class="dashboard-stat-card">
 
-            <h2 class="success">{{ resolved }}</h2>
+            <div class="stat-top">
+
+                <span class="stat-label">
+                    Completed
+                </span>
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+            </div>
+
+            <div class="stat-number stat-success">
+                {{ completed_issues }}
+            </div>
+
+            <div class="stat-description">
+                Resolved, verified or closed
+            </div>
 
         </div>
 
     </div>
 
-    <!-- Quick Actions -->
+
+    <!-- =====================================================
+         ISSUE LIFECYCLE
+    ===================================================== -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Issue Lifecycle
+                </h2>
+
+                <p>
+                    Current distribution of issues across the defect workflow
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="lifecycle-grid">
+
+
+            <!-- REPORTED -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    Reported
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ reported }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill reported-fill"
+                        style="width:
+                        {{ (reported / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- IN PROGRESS -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    In Progress
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ in_progress }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill progress-fill"
+                        style="width:
+                        {{ (in_progress / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- IN REVIEW -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    In Review
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ in_review }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill review-fill"
+                        style="width:
+                        {{ (in_review / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RESOLVED -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    Resolved
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ resolved }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill resolved-fill"
+                        style="width:
+                        {{ (resolved / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- REOPENED -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    Reopened
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ reopened }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill reopened-fill"
+                        style="width:
+                        {{ (reopened / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- VERIFIED -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    Verified
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ verified }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill verified-fill"
+                        style="width:
+                        {{ (verified / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CLOSED -->
+
+            <div class="lifecycle-card">
+
+                <div class="lifecycle-name">
+                    Closed
+                </div>
+
+                <div class="lifecycle-number">
+                    {{ closed }}
+                </div>
+
+                <div class="lifecycle-bar">
+
+                    <div
+                        class="lifecycle-fill closed-fill"
+                        style="width:
+                        {{ (closed / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         WORKLOAD / HEALTH
+    ===================================================== -->
+
+    <div class="section-card">
+
+        <div class="section-header">
+
+            <div>
+
+                <h2>
+                    Project Health
+                </h2>
+
+                <p>
+                    Important workload indicators
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="workload-grid">
+
+
+            <div class="workload-card">
+
+                <div class="workload-icon">
+                    👤
+                </div>
+
+                <div class="workload-value">
+                    {{ my_assigned_issues }}
+                </div>
+
+                <div class="workload-label">
+                    My Assigned Issues
+                </div>
+
+            </div>
+
+
+            <div class="workload-card">
+
+                <div class="workload-icon">
+                    ⚙️
+                </div>
+
+                <div class="workload-value">
+                    {{ my_active_issues }}
+                </div>
+
+                <div class="workload-label">
+                    My Active Issues
+                </div>
+
+            </div>
+
+
+            <div class="workload-card">
+
+                <div class="workload-icon">
+                    ⏰
+                </div>
+
+                <div class="workload-value stat-danger">
+                    {{ overdue_issues }}
+                </div>
+
+                <div class="workload-label">
+                    Overdue Issues
+                </div>
+
+            </div>
+
+
+            <div class="workload-card">
+
+                <div class="workload-icon">
+                    👥
+                </div>
+
+                <div class="workload-value">
+                    {{ unassigned_issues }}
+                </div>
+
+                <div class="workload-label">
+                    Unassigned Issues
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         ANALYTICS
+    ===================================================== -->
+
+    <div class="analytics-grid">
+
+
+        <!-- =================================================
+             PRIORITY DISTRIBUTION
+        ================================================= -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Priority Distribution
+                    </h2>
+
+                    <p>
+                        Issues grouped by priority
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- P1 -->
+
+            <div class="priority-row">
+
+                <div class="priority-header">
+
+                    <span class="priority-name">
+                        P1 — Critical
+                    </span>
+
+                    <span class="priority-count">
+                        {{ p1_count }}
+                    </span>
+
+                </div>
+
+                <div class="progress-background">
+
+                    <div
+                        class="progress-bar p1-bar"
+                        style="width:
+                        {{ (p1_count / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- P2 -->
+
+            <div class="priority-row">
+
+                <div class="priority-header">
+
+                    <span class="priority-name">
+                        P2 — High
+                    </span>
+
+                    <span class="priority-count">
+                        {{ p2_count }}
+                    </span>
+
+                </div>
+
+                <div class="progress-background">
+
+                    <div
+                        class="progress-bar p2-bar"
+                        style="width:
+                        {{ (p2_count / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- P3 -->
+
+            <div class="priority-row">
+
+                <div class="priority-header">
+
+                    <span class="priority-name">
+                        P3 — Normal
+                    </span>
+
+                    <span class="priority-count">
+                        {{ p3_count }}
+                    </span>
+
+                </div>
+
+                <div class="progress-background">
+
+                    <div
+                        class="progress-bar p3-bar"
+                        style="width:
+                        {{ (p3_count / lifecycle_total * 100)|round(0) }}%;">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div style="
+                margin-top:20px;
+                color:#64748b;
+                font-size:12px;
+            ">
+
+                {{ high_priority }}
+                high-priority issues require attention.
+
+            </div>
+
+        </div>
+
+
+        <!-- =================================================
+             PROJECT DISTRIBUTION
+        ================================================= -->
+
+        <div class="section-card">
+
+            <div class="section-header">
+
+                <div>
+
+                    <h2>
+                        Top Projects
+                    </h2>
+
+                    <p>
+                        Projects with the highest issue count
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            {% if project_stats %}
+
+                {% for project_name, project_count in project_stats %}
+
+                <div class="project-row">
+
+                    <div class="project-header">
+
+                        <span class="project-name">
+                            {{ project_name }}
+                        </span>
+
+                        <span class="project-count">
+                            {{ project_count }}
+                        </span>
+
+                    </div>
+
+
+                    <div class="project-progress">
+
+                        <div
+                            class="project-fill"
+                            style="width:
+                            {{ (project_count / lifecycle_total * 100)|round(0) }}%;">
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            {% else %}
+
+                <p style="color:#64748b;">
+                    No project data available.
+                </p>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         QUICK ACTIONS
+    ===================================================== -->
 
     <div class="quick-actions">
 
-        <a href="/report-issue" class="action-card">
 
-            <div class="action-icon">🐞</div>
+        <a
+            href="/report-issue"
+            class="action-card">
 
-            <h3>Report Issue</h3>
+            <div class="action-icon">
+                🐞
+            </div>
 
-            <p>Create a new bug report</p>
+            <h3>
+                Report Issue
+            </h3>
+
+            <p>
+                Create a new bug report
+            </p>
 
         </a>
 
-        <a href="/issues" class="action-card">
 
-            <div class="action-icon">📋</div>
+        <a
+            href="/issues"
+            class="action-card">
 
-            <h3>View Issues</h3>
+            <div class="action-icon">
+                📋
+            </div>
 
-            <p>Manage all reported issues</p>
+            <h3>
+                View Issues
+            </h3>
+
+            <p>
+                Manage all reported issues
+            </p>
 
         </a>
 
-        <a href="/projects" class="action-card">
 
-            <div class="action-icon">📁</div>
+        <a
+            href="/projects"
+            class="action-card">
 
-            <h3>Projects</h3>
+            <div class="action-icon">
+                📁
+            </div>
 
-            <p>View project details</p>
+            <h3>
+                Projects
+            </h3>
+
+            <p>
+                View project details
+            </p>
 
         </a>
 
     </div>
 
-    <!-- Recent Issues -->
+
+    <!-- =====================================================
+         RECENT ISSUES
+    ===================================================== -->
+
     <div class="table-container">
+
 
         <div style="
             display:flex;
@@ -233,22 +1461,40 @@
             margin-bottom:20px;
         ">
 
-            <h2 style="margin:0;">
-                Recent Issues
-            </h2>
+            <div>
 
-            <a href="/issues" style="
-                color:#60a5fa;
-                text-decoration:none;
-                font-size:14px;
-                font-weight:600;
-            ">
+                <h2 style="margin:0;">
+                    Recent Issues
+                </h2>
+
+                <p style="
+                    color:#64748b;
+                    font-size:13px;
+                    margin-top:5px;
+                ">
+
+                    Latest reported defects
+
+                </p>
+
+            </div>
+
+
+            <a
+                href="/issues"
+                style="
+                    color:#60a5fa;
+                    text-decoration:none;
+                    font-size:14px;
+                    font-weight:600;
+                ">
+
                 View All →
+
             </a>
 
         </div>
 
-    
 
         <table>
 
@@ -256,134 +1502,243 @@
 
             <tr>
 
-                <th>ID</th>
+                <th>
+                    ID
+                </th>
 
-                <th>Title</th>
+                <th>
+                    Title
+                </th>
 
-                <th>Project</th>
+                <th>
+                    Project
+                </th>
 
-                <th>Priority</th>
+                <th>
+                    Priority
+                </th>
 
-                <th>Severity</th>
+                <th>
+                    Severity
+                </th>
 
-                <th>Status</th>
+                <th>
+                    Status
+                </th>
 
             </tr>
 
             </thead>
 
+
             <tbody>
+
 
             {% if issues %}
 
-            {% for issue in issues %}
 
-            <tr>
+                {% for issue in issues %}
 
-                <td>#{{ issue.id }}</td>
+                <tr>
 
-                <td>{{ issue.title }}</td>
 
-                <td>{{ issue.project }}</td>
+                    <td>
+                        #{{ issue.id }}
+                    </td>
 
-                <td>
 
-                    {% if issue.priority=="P1" %}
+                    <td>
 
-                    <span class="badge badge-red">P1</span>
+                        <strong>
+                            {{ issue.title }}
+                        </strong>
 
-                    {% elif issue.priority=="P2" %}
+                    </td>
 
-                    <span class="badge badge-orange">P2</span>
 
-                    {% else %}
+                    <td>
+                        {{ issue.project }}
+                    </td>
 
-                    <span class="badge badge-green">P3</span>
 
-                    {% endif %}
+                    <td>
 
-                </td>
-                
-                <td>
+                        {% if issue.priority == "P1" %}
 
-                    {% if issue.severity == "Critical" %}
+                            <span class="badge badge-red">
+                                P1
+                            </span>
 
-                    <span class="badge badge-red">
-                        Critical
-                    </span>
+                        {% elif issue.priority == "P2" %}
 
-                    {% elif issue.severity == "High" %}
+                            <span class="badge badge-orange">
+                                P2
+                            </span>
 
-                    <span class="badge badge-orange">
-                        High
-                    </span>
+                        {% else %}
 
-                    {% elif issue.severity == "Medium" %}
+                            <span class="badge badge-green">
+                                P3
+                            </span>
 
-                    <span class="badge badge-blue">
-                        Medium
-                    </span>
+                        {% endif %}
 
-                    {% elif issue.severity == "Low" %}
+                    </td>
 
-                    <span class="badge badge-green">
-                        Low
-                    </span>
 
-                    {% else %}
+                    <td>
 
-                    <span class="badge badge-gray">
-                        {{ issue.severity }}
-                    </span>
 
-                    {% endif %}
+                        {% if issue.severity == "Critical" %}
 
-                </td>
+                            <span class="badge badge-red">
+                                Critical
+                            </span>
 
-               
+                        {% elif issue.severity == "High" %}
 
-                <td>
+                            <span class="badge badge-orange">
+                                High
+                            </span>
 
-                    {% if issue.status=="Open" %}
+                        {% elif issue.severity == "Medium" %}
 
-                    <span class="badge badge-blue">
-                        Open
-                    </span>
+                            <span class="badge badge-blue">
+                                Medium
+                            </span>
 
-                    {% elif issue.status=="Resolved" %}
+                        {% elif issue.severity == "Low" %}
 
-                    <span class="badge badge-green">
-                        Resolved
-                    </span>
+                            <span class="badge badge-green">
+                                Low
+                            </span>
 
-                    {% else %}
+                        {% else %}
 
-                    <span class="badge badge-gray">
-                        {{ issue.status }}
-                    </span>
+                            <span class="badge badge-gray">
+                                {{ issue.severity }}
+                            </span>
 
-                    {% endif %}
+                        {% endif %}
 
-                </td>
 
-            </tr>
+                    </td>
 
-            {% endfor %}
+
+                    <td>
+
+
+                        {% if issue.status in ["Reported", "Open"] %}
+
+                            <span class="
+                                status-badge
+                                status-reported
+                            ">
+                                Reported
+                            </span>
+
+
+                        {% elif issue.status == "In Progress" %}
+
+                            <span class="
+                                status-badge
+                                status-progress
+                            ">
+                                In Progress
+                            </span>
+
+
+                        {% elif issue.status == "In Review" %}
+
+                            <span class="
+                                status-badge
+                                status-review
+                            ">
+                                In Review
+                            </span>
+
+
+                        {% elif issue.status == "Resolved" %}
+
+                            <span class="
+                                status-badge
+                                status-resolved
+                            ">
+                                Resolved
+                            </span>
+
+
+                        {% elif issue.status == "Reopened" %}
+
+                            <span class="
+                                status-badge
+                                status-reopened
+                            ">
+                                Reopened
+                            </span>
+
+
+                        {% elif issue.status == "Verified" %}
+
+                            <span class="
+                                status-badge
+                                status-verified
+                            ">
+                                Verified
+                            </span>
+
+
+                        {% elif issue.status == "Closed" %}
+
+                            <span class="
+                                status-badge
+                                status-closed
+                            ">
+                                Closed
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="
+                                status-badge
+                                status-reported
+                            ">
+                                {{ issue.status }}
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
 
             {% else %}
 
-            <tr>
 
-                <td colspan="6"
-                    style="text-align:center;padding:35px;">
+                <tr>
 
-                    No issues reported yet.
+                    <td
+                        colspan="6"
+                        style="
+                            text-align:center;
+                            padding:35px;
+                        ">
 
-                </td>
+                        No issues reported yet.
 
-            </tr>
+                    </td>
+
+                </tr>
+
 
             {% endif %}
+
 
             </tbody>
 
@@ -391,90 +1746,218 @@
 
     </div>
 
+
     <br>
 
-    <!-- Recent Activity -->
+
+    <!-- =====================================================
+         RECENT ACTIVITY
+    ===================================================== -->
+
     <div class="table-container">
 
-        <h2>Recent Activity</h2>
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:15px;
+        ">
+
+            <div>
+
+                <h2 style="margin:0;">
+                    Recent Activity
+                </h2>
+
+                <p style="
+                    color:#64748b;
+                    font-size:13px;
+                    margin-top:5px;
+                ">
+
+                    Latest changes across BugFlow
+
+                </p>
+
+            </div>
+
+        </div>
+
 
         {% if activities %}
 
             <ul class="activity-list">
 
+
             {% for activity in activities %}
+
 
                 <li>
 
-                    {{ activity.action }}
+                    <strong>
+                        {{ activity.action }}
+                    </strong>
 
                     <br>
 
                     <small>
 
-                        {{ activity.created_at.strftime("%d %b %Y %I:%M %p") }}
+                        {{ activity.created_at.strftime(
+                            "%d %b %Y %I:%M %p"
+                        ) }}
 
                     </small>
 
                 </li>
 
+
             {% endfor %}
+
 
             </ul>
 
+
         {% else %}
 
-            <p>No recent activity.</p>
+            <p>
+                No recent activity.
+            </p>
 
         {% endif %}
 
+
     </div>
 
-    
 
 </div>
+
+
+<!-- =========================================================
+     JAVASCRIPT
+========================================================= -->
+
 <script>
+function clearNotifications(){
+
+    fetch("/notifications/clear", {
+        method: "POST"
+    })
+    .then(response => {
+
+        if (!response.ok) {
+            throw new Error(
+                "Failed to clear notifications"
+            );
+        }
+
+        return response.json();
+
+    })
+    .then(data => {
+
+        // Close notification dropdown
+        document.getElementById(
+            "notificationDropdown"
+        ).style.display = "none";
+
+        // Reload dashboard
+        // so notification count disappears
+        window.location.reload();
+
+    })
+    .catch(error => {
+
+        console.error(
+            "Notification error:",
+            error
+        );
+
+    });
+
+}
+
 function toggleNotifications(){
 
-    const menu=document.getElementById("notificationDropdown");
+    const menu =
+        document.getElementById(
+            "notificationDropdown"
+        );
 
-    if(menu.style.display==="block"){
-
-        menu.style.display="none";
-
-    }
-
-    else{
-
-        menu.style.display="block";
-
-    }
-
-}
-function toggleProfileMenu(){
-
-    const menu = document.getElementById("profileDropdown");
 
     if(menu.style.display === "block"){
+
         menu.style.display = "none";
+
     }
+
     else{
+
         menu.style.display = "block";
+
     }
 
 }
+
+
+
+function toggleProfileMenu(){
+
+    const menu =
+        document.getElementById(
+            "profileDropdown"
+        );
+
+
+    if(menu.style.display === "block"){
+
+        menu.style.display = "none";
+
+    }
+
+    else{
+
+        menu.style.display = "block";
+
+    }
+
+}
+
+
+
 window.onclick = function(event){
 
-    if(!event.target.closest(".notification-wrapper")){
-        document.getElementById("notificationDropdown").style.display = "none";
+
+    if(
+        !event.target.closest(
+            ".notification-wrapper"
+        )
+    ){
+
+        document.getElementById(
+            "notificationDropdown"
+        ).style.display = "none";
+
     }
 
-    if(!event.target.closest(".profile-wrapper")){
-        document.getElementById("profileDropdown").style.display = "none";
+
+    if(
+        !event.target.closest(
+            ".profile-wrapper"
+        )
+    ){
+
+        document.getElementById(
+            "profileDropdown"
+        ).style.display = "none";
+
     }
 
 }
+
+
 </script>
+
+
 </body>
 
 </html>

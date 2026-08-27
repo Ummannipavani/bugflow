@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
@@ -11,7 +11,7 @@ from app.routers.ai import router as ai_router
 from app.routers.comment import router as comment_router
 from app.routers.sprint import router as sprint_router
 from app.routers.attachment import router as attachment_router
-
+from app.routers.analytics import router as analytics_router
 # Database
 from app.database.database import Base, engine, SessionLocal
 from sqlalchemy.orm import joinedload
@@ -28,7 +28,25 @@ from app.models.attachment import Attachment
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import date
 
-app = FastAPI()
+app = FastAPI(
+    title="BugFlow API",
+    description="""
+    BugFlow - Intelligent Software Defect Tracking System
+
+    REST API for managing:
+    - Users and authentication
+    - Software defects
+    - Projects
+    - Sprints
+    - Comments
+    - Attachments
+    - Analytics
+    - AI-assisted defect resolution
+    """,
+    version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
+)
 app.add_middleware(
     SessionMiddleware,
     secret_key="bugflow-secret-key"
@@ -45,6 +63,7 @@ app.include_router(ai_router)
 app.include_router(comment_router)
 app.include_router(sprint_router)
 app.include_router(attachment_router)
+app.include_router(analytics_router)
 
 # Static files
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -75,17 +94,19 @@ def register(request: Request):
     )
 
 
-
 @app.get("/dashboard")
 def dashboard(request: Request):
 
     user = request.session.get("user")
-
+    if not user:
+        return RedirectResponse(
+            url="/",
+            status_code=302
+        )
     db = SessionLocal()
 
     # =========================================================
     # ALL ISSUES
-    # Used for notifications
     # =========================================================
 
     all_issues = (
@@ -96,7 +117,6 @@ def dashboard(request: Request):
 
     # =========================================================
     # LATEST 5 ISSUES
-    # Used only for dashboard Recent Issues table
     # =========================================================
 
     issues = (
@@ -108,40 +128,71 @@ def dashboard(request: Request):
 
     today = date.today()
 
-    notifications = []
+    # =========================================================
+    # NOTIFICATIONS
+    # =========================================================
 
-    # Use ALL issues for notifications
+    generated_notifications = []
+
     for issue in all_issues:
 
-        if issue.status != "Resolved":
+        if issue.status not in [
+            "Resolved",
+            "Verified",
+            "Closed"
+        ]:
 
             if issue.due_date:
 
-                days = (issue.due_date - today).days
+                days = (
+                    issue.due_date - today
+                ).days
 
                 if days < 0:
 
-                    notifications.append(
+                    generated_notifications.append(
                         f"🔴 {issue.title} is overdue by {-days} day(s)."
                     )
 
                 elif days == 0:
 
-                    notifications.append(
+                    generated_notifications.append(
                         f"⚠ {issue.title} is due today."
                     )
 
                 elif days == 1:
 
-                    notifications.append(
+                    generated_notifications.append(
                         f"📅 {issue.title} is due tomorrow."
                     )
 
             if issue.severity == "Critical":
 
-                notifications.append(
+                generated_notifications.append(
                     f"🚨 Critical issue: {issue.title}"
                 )
+
+    # =========================================================
+    # REMOVE NOTIFICATIONS ALREADY VIEWED
+    # =========================================================
+
+    read_notifications = request.session.get(
+        "read_notifications",
+        []
+    )
+
+    notifications = [
+        notification
+        for notification in generated_notifications
+        if notification not in read_notifications
+    ]
+
+    # Save current notifications
+    # for the "View All" button
+
+    request.session["current_notifications"] = (
+        generated_notifications
+    )
 
     # =========================================================
     # RECENT ACTIVITY
@@ -155,20 +206,214 @@ def dashboard(request: Request):
     )
 
     # =========================================================
-    # DASHBOARD STATISTICS
+    # BASIC STATISTICS
     # =========================================================
 
-    total_issues = db.query(Issue).count()
+    total_issues = len(all_issues)
 
     total_projects = db.query(Project).count()
 
-    critical_bugs = db.query(Issue).filter(
-        Issue.severity == "Critical"
-    ).count()
+    critical_bugs = sum(
+        1
+        for issue in all_issues
+        if issue.severity == "Critical"
+    )
 
-    resolved = db.query(Issue).filter(
-        Issue.status == "Resolved"
-    ).count()
+    # =========================================================
+    # STATUS COUNTS
+    # =========================================================
+
+    reported = sum(
+        1
+        for issue in all_issues
+        if issue.status in ["Reported", "Open"]
+    )
+
+    in_progress = sum(
+        1
+        for issue in all_issues
+        if issue.status == "In Progress"
+    )
+
+    in_review = sum(
+        1
+        for issue in all_issues
+        if issue.status == "In Review"
+    )
+
+    resolved = sum(
+        1
+        for issue in all_issues
+        if issue.status == "Resolved"
+    )
+
+    reopened = sum(
+        1
+        for issue in all_issues
+        if issue.status == "Reopened"
+    )
+
+    verified = sum(
+        1
+        for issue in all_issues
+        if issue.status == "Verified"
+    )
+
+    closed = sum(
+        1
+        for issue in all_issues
+        if issue.status == "Closed"
+    )
+
+    # =========================================================
+    # ACTIVE / COMPLETED
+    # =========================================================
+
+    active_issues = sum(
+        1
+        for issue in all_issues
+        if issue.status not in [
+            "Resolved",
+            "Verified",
+            "Closed"
+        ]
+    )
+
+    completed_issues = (
+        resolved +
+        verified +
+        closed
+    )
+
+    # =========================================================
+    # OVERDUE ISSUES
+    # =========================================================
+
+    overdue_issues = sum(
+        1
+        for issue in all_issues
+        if (
+            issue.due_date
+            and issue.due_date < today
+            and issue.status not in [
+                "Resolved",
+                "Verified",
+                "Closed"
+            ]
+        )
+    )
+
+    # =========================================================
+    # UNASSIGNED ISSUES
+    # =========================================================
+
+    unassigned_issues = sum(
+        1
+        for issue in all_issues
+        if issue.assigned_to is None
+    )
+
+    # =========================================================
+    # HIGH PRIORITY ISSUES
+    # =========================================================
+
+    high_priority = sum(
+        1
+        for issue in all_issues
+        if issue.priority in ["P1", "P2"]
+    )
+
+    # =========================================================
+    # PRIORITY COUNTS
+    # =========================================================
+
+    p1_count = sum(
+        1
+        for issue in all_issues
+        if issue.priority == "P1"
+    )
+
+    p2_count = sum(
+        1
+        for issue in all_issues
+        if issue.priority == "P2"
+    )
+
+    p3_count = sum(
+        1
+        for issue in all_issues
+        if issue.priority == "P3"
+    )
+
+    # =========================================================
+    # MY ASSIGNED ISSUES
+    # =========================================================
+
+    my_assigned_issues = 0
+    my_active_issues = 0
+
+    if user:
+
+        current_user_id = user.get("id")
+
+        if current_user_id is not None:
+
+            my_assigned_issues = sum(
+                1
+                for issue in all_issues
+                if str(issue.assigned_to)
+                == str(current_user_id)
+            )
+
+            my_active_issues = sum(
+                1
+                for issue in all_issues
+                if (
+                    str(issue.assigned_to)
+                    == str(current_user_id)
+                    and issue.status not in [
+                        "Resolved",
+                        "Verified",
+                        "Closed"
+                    ]
+                )
+            )
+
+    # =========================================================
+    # PROJECT DISTRIBUTION
+    # =========================================================
+
+    project_counts = {}
+
+    for issue in all_issues:
+
+        project_name = issue.project or "Unknown"
+
+        if project_name not in project_counts:
+
+            project_counts[project_name] = 0
+
+        project_counts[project_name] += 1
+
+    project_stats = sorted(
+        project_counts.items(),
+        key=lambda x: x[1],
+        reverse=True
+    )[:5]
+
+    # =========================================================
+    # LIFECYCLE TOTAL
+    # =========================================================
+
+    lifecycle_total = (
+        total_issues
+        if total_issues > 0
+        else 1
+    )
+
+    # =========================================================
+    # CLOSE DATABASE
+    # =========================================================
 
     db.close()
 
@@ -177,24 +422,102 @@ def dashboard(request: Request):
     # =========================================================
 
     return templates.TemplateResponse(
+
         request=request,
+
         name="dashboard.html",
+
         context={
+
             "user": user,
 
-            # Only latest 5 are sent to Recent Issues
+            # Issues
             "issues": issues,
 
+            # Activity
             "activities": activities,
+
+            # Notifications
             "notifications": notifications,
 
+            # Basic statistics
             "total_issues": total_issues,
             "total_projects": total_projects,
             "critical_bugs": critical_bugs,
-            "resolved": resolved
+
+            # Lifecycle
+            "reported": reported,
+            "in_progress": in_progress,
+            "in_review": in_review,
+            "resolved": resolved,
+            "reopened": reopened,
+            "verified": verified,
+            "closed": closed,
+
+            # Overall
+            "active_issues": active_issues,
+            "completed_issues": completed_issues,
+
+            # Additional statistics
+            "overdue_issues": overdue_issues,
+            "unassigned_issues": unassigned_issues,
+            "high_priority": high_priority,
+
+            # Priority
+            "p1_count": p1_count,
+            "p2_count": p2_count,
+            "p3_count": p3_count,
+
+            # User workload
+            "my_assigned_issues": my_assigned_issues,
+            "my_active_issues": my_active_issues,
+
+            # Projects
+            "project_stats": project_stats,
+
+            # Lifecycle percentage denominator
+            "lifecycle_total": lifecycle_total
         }
     )
+    # =========================================================
+# MARK DASHBOARD NOTIFICATIONS AS READ
+# =========================================================
 
+@app.post("/notifications/clear")
+def clear_notifications(request: Request):
+
+    current_notifications = request.session.get(
+        "current_notifications",
+        []
+    )
+
+    read_notifications = request.session.get(
+        "read_notifications",
+        []
+    )
+
+    for notification in current_notifications:
+
+        if notification not in read_notifications:
+
+            read_notifications.append(
+                notification
+            )
+
+    request.session["read_notifications"] = (
+        read_notifications
+    )
+
+    request.session["current_notifications"] = []
+
+    return {
+        "message": "Notifications marked as read"
+    }
+
+
+# =========================================================
+# LOGOUT
+# =========================================================
 
 @app.get("/logout")
 def logout(request: Request):
@@ -205,8 +528,6 @@ def logout(request: Request):
         url="/",
         status_code=302
     )
-
-
 # ==========================
 # Report Issue Page
 # ==========================
@@ -218,7 +539,9 @@ def report_issue(request: Request):
 
     projects = db.query(Project).all()
     sprints = db.query(Sprint).all()
-    users = db.query(User).all()
+    developers = db.query(User).filter(
+    User.role == "Developer"
+).all()
 
     db.close()
 
@@ -228,7 +551,7 @@ def report_issue(request: Request):
         context={
             "projects": projects,
             "sprints": sprints,
-            "users": users,
+            "users": developers,
             "user": user
         }
     )
@@ -238,16 +561,85 @@ def report_issue(request: Request):
 # ==========================
 @app.get("/issues")
 def issues(request: Request):
+
     user = request.session.get("user")
+
+    # -----------------------------------------
+    # Authentication check
+    # -----------------------------------------
+
+    if not user:
+        return RedirectResponse("/", status_code=302)
 
     db = SessionLocal()
 
-    issues = (
+    role = user.get("role")
+    email = user.get("email")
+
+    # -----------------------------------------
+    # Base query
+    # -----------------------------------------
+
+    query = (
         db.query(Issue)
-        .options(joinedload(Issue.sprint), joinedload(Issue.assignee)
+        .options(
+            joinedload(Issue.sprint),
+            joinedload(Issue.assignee)
         )
-        .all()
     )
+
+    # -----------------------------------------
+    # ROLE BASED FILTERING
+    # -----------------------------------------
+
+    if role == "Admin":
+
+        # Admin can see everything
+        issues = query.all()
+
+    elif role == "Project Manager":
+
+        # Project Manager can see all issues
+        # for now.
+        #
+        # Later we can restrict this to only
+        # projects managed by this PM.
+
+        issues = query.all()
+
+    elif role == "Developer":
+
+        # Developer can see only issues
+        # assigned to them.
+
+        issues = (
+            query
+            .join(User, Issue.assigned_to == User.id)
+            .filter(User.email == email)
+            .all()
+        )
+
+    elif role == "QA / Tester":
+
+        # QA can see all issues for testing.
+        issues = query.all()
+
+    elif role == "Reporter":
+
+        # Reporter can currently see issues
+        # they reported.
+        #
+        # This requires Issue to have a
+        # reported_by/created_by field.
+        #
+        # Until that field exists, don't filter
+        # incorrectly.
+        issues = query.all()
+
+    else:
+
+        # Unknown role = no issues
+        issues = []
 
     db.close()
 
@@ -256,7 +648,7 @@ def issues(request: Request):
         name="issues.html",
         context={
             "issues": issues,
-            "user":user
+            "user": user
         }
     )
 @app.get("/issue/{issue_id}")
@@ -264,7 +656,18 @@ def issue_details(issue_id: int, request: Request):
 
     user = request.session.get("user")
 
+    # =========================================
+    # AUTHENTICATION CHECK
+    # =========================================
+
+    if not user:
+        return RedirectResponse("/", status_code=302)
+
     db = SessionLocal()
+
+    # =========================================
+    # GET ISSUE
+    # =========================================
 
     issue = (
         db.query(Issue)
@@ -275,12 +678,47 @@ def issue_details(issue_id: int, request: Request):
         .filter(Issue.id == issue_id)
         .first()
     )
-    users = db.query(User).all()
-    sprints = db.query(Sprint).all()
 
     if not issue:
         db.close()
         return RedirectResponse("/issues", status_code=302)
+
+    # =========================================
+    # RBAC CHECK
+    # =========================================
+
+    role = user.get("role")
+    email = user.get("email")
+
+    # Developer can only access issues
+    # assigned to that developer.
+    if role == "Developer":
+
+        if not issue.assignee:
+
+            db.close()
+
+            raise HTTPException(
+                status_code=403,
+                detail="You are not assigned to this issue."
+            )
+
+        if issue.assignee.email != email:
+
+            db.close()
+
+            raise HTTPException(
+                status_code=403,
+                detail="You do not have permission to access this issue."
+            )
+
+    # =========================================
+    # LOAD REQUIRED DATA
+    # =========================================
+
+    users = db.query(User).all()
+
+    sprints = db.query(Sprint).all()
 
     comments = (
         db.query(Comment)
@@ -288,6 +726,7 @@ def issue_details(issue_id: int, request: Request):
         .order_by(Comment.id.desc())
         .all()
     )
+
     attachments = (
         db.query(Attachment)
         .filter(Attachment.issue_id == issue_id)
@@ -302,11 +741,14 @@ def issue_details(issue_id: int, request: Request):
         .all()
     )
 
+    # =========================================
+    # RENDER ISSUE DETAILS
+    # =========================================
+
     response = templates.TemplateResponse(
         request=request,
         name="issue_details.html",
         context={
-            "request": request,
             "issue": issue,
             "comments": comments,
             "attachments": attachments,
@@ -320,7 +762,6 @@ def issue_details(issue_id: int, request: Request):
     db.close()
 
     return response
-
 # ==========================
 # Projects Page
 # ==========================

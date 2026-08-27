@@ -5,12 +5,13 @@ from app.database.database import get_db
 from app.models.project import Project
 from app.models.activity import Activity
 from app.schemas.project import ProjectCreate
+from app.auth.dependencies import require_roles
 
 router = APIRouter()
 
 
 @router.post("/projects")
-def create_project(project: ProjectCreate, db: Session = Depends(get_db)):
+def create_project(project: ProjectCreate, db: Session = Depends(get_db), current_user: dict = Depends(require_roles("Admin", "Project Manager"))):
 
     new_project = Project(
         name=project.name,

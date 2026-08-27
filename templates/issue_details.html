@@ -916,6 +916,74 @@
             }
 
         }
+        /* =========================
+   ACTIVITY HISTORY
+========================= */
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.activity-header h3 {
+    margin-bottom: 0;
+}
+
+.view-all-activity-btn {
+    background: transparent;
+    border: none;
+    color: #60a5fa;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 5px 0;
+}
+
+.view-all-activity-btn:hover {
+    color: #93c5fd;
+    text-decoration: underline;
+}
+
+.activity {
+    border-bottom: 1px solid #1e293b;
+    padding: 15px 0;
+}
+
+.activity:first-child {
+    padding-top: 0;
+}
+
+.activity:last-child {
+    border-bottom: none;
+}
+
+.activity-action {
+    color: #cbd5e1;
+    line-height: 1.5;
+}
+
+.activity-date {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.no-activity {
+    color: #64748b;
+    padding: 10px 0;
+}
+
+/* Hidden activities */
+.extra-activity {
+    display: none;
+}
+
+/* When View All is clicked */
+.extra-activity.show-activity {
+    display: block;
+}  
 
     </style>
 
@@ -1350,49 +1418,57 @@
                 {% endif %}
 
             </div>
-
-
             <!-- =========================
-                 ACTIVITY HISTORY
-            ========================= -->
+     ACTIVITY HISTORY
+========================= -->
 
-            <div class="card">
+<div class="card">
 
-                <h3>
-                    📜 Activity History
-                </h3>
+    <div class="activity-header">
 
-                {% if activities %}
+        <h3>
+            📜 Activity History
+        </h3>
 
-                    {% for activity in activities %}
+        {% if activities|length > 3 %}
 
-                        <div class="activity">
+        <button
+            type="button"
+            class="view-all-activity-btn"
+            id="viewAllActivityBtn"
+            onclick="toggleActivityHistory()">
 
-                            <div class="activity-action">
+            View All →
 
-                                {{ activity.action }}
+        </button>
 
-                            </div>
+        {% endif %}
 
-                            {% if activity.created_at %}
+    </div>
 
-                                <div class="activity-date">
 
-                                    {{ activity.created_at }}
+    {% if activities %}
 
-                                </div>
+        {% for activity in activities %}
 
-                            {% endif %}
+            <div
+                class="activity
+                {% if loop.index > 3 %}
+                    extra-activity
+                {% endif %}"
+                id="activity-{{ activity.id }}">
 
-                        </div>
+                <div class="activity-action">
 
-                    {% endfor %}
+                    {{ activity.action }}
 
-                {% else %}
+                </div>
 
-                    <div class="no-activity">
+                {% if activity.created_at %}
 
-                        No activity recorded yet.
+                    <div class="activity-date">
+
+                        {{ activity.created_at }}
 
                     </div>
 
@@ -1400,6 +1476,21 @@
 
             </div>
 
+        {% endfor %}
+
+    {% else %}
+
+        <div class="no-activity">
+
+            No activity recorded yet.
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+            
 
             <!-- =================================================
                  AI SIMILAR DEFECTS
@@ -2793,6 +2884,59 @@ function closeScreenshotModal() {
     document.getElementById(
         "screenshotModal"
     ).style.display = "none";
+
+}
+
+
+
+function toggleActivityHistory() {
+
+    const extraActivities =
+        document.querySelectorAll(".extra-activity");
+
+    const button =
+        document.getElementById("viewAllActivityBtn");
+
+
+    const isShowing =
+        extraActivities.length > 0 &&
+        extraActivities[0].classList.contains(
+            "show-activity"
+        );
+
+
+    extraActivities.forEach(function(activity) {
+
+        if (isShowing) {
+
+            activity.classList.remove(
+                "show-activity"
+            );
+
+        } else {
+
+            activity.classList.add(
+                "show-activity"
+            );
+
+        }
+
+    });
+
+
+    if (button) {
+
+        if (isShowing) {
+
+            button.textContent = "View All →";
+
+        } else {
+
+            button.textContent = "Show Less ↑";
+
+        }
+
+    }
 
 }
 
