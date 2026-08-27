@@ -1,3 +1,8 @@
+import os
+
+# Tell the application that we are running tests
+os.environ["TESTING"] = "1"
+
 import pytest
 from fastapi.testclient import TestClient
 
@@ -13,8 +18,6 @@ def client():
 def authenticated_client():
     client = TestClient(app)
 
-    # Create a session by calling the ASGI application
-    # through a custom session middleware-compatible approach.
     client.cookies.set(
         "session",
         ""
