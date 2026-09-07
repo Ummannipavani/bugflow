@@ -193,6 +193,8 @@ class IssueResponse(BaseModel):
     defect_type: Optional[str] = None
 
     description: str
+     
+    ai_summary: Optional[str] = None
 
     status: str
 

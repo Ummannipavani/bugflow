@@ -23,7 +23,7 @@ def get_gemini_client():
         return None
 
     return genai.Client(api_key=api_key)
-
+client = get_gemini_client()
 
 # =========================================================
 # HELPER: CLEAN GEMINI JSON RESPONSE
@@ -384,7 +384,66 @@ Use exactly this structure:
             "severity": "Medium"
         }
 
+# =========================================================
+# AI-GENERATED DEFECT SUMMARY
+# =========================================================
 
+def generate_defect_summary(
+    title: str,
+    description: str
+):
+    """
+    Generate a concise summary of a defect.
+    """
+
+    prompt = f"""
+You are an experienced software QA engineer.
+
+Create a concise, professional summary of the following
+software defect.
+
+DEFECT TITLE:
+"{title}"
+
+DEFECT DESCRIPTION:
+"{description}"
+
+REQUIREMENTS:
+
+- Summarize the defect in 1-3 sentences.
+- Clearly explain what is wrong.
+- Preserve the original meaning.
+- Use simple, professional developer-friendly language.
+- Do not invent technical details.
+- Do not invent error messages.
+- Do not invent root causes.
+- Do not provide a solution.
+- Do not provide investigation steps.
+- Return ONLY the summary text.
+"""
+
+    try:
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+
+        summary = response.text.strip()
+
+        if not summary:
+            return description
+
+        return summary
+
+    except Exception as e:
+
+        print(
+            "Gemini Defect Summary Error:",
+            e
+        )
+
+        return description
 # =========================================================
 # FIND SIMILAR DEFECTS
 # =========================================================
@@ -952,3 +1011,671 @@ Description: {description}
         )
 
         return None
+# =========================================================
+# ROOT CAUSE INVESTIGATION ASSISTANCE
+# =========================================================
+
+def generate_investigation_assistance(
+    title: str,
+    project: str,
+    description: str,
+    category: str = "Other",
+    module: str = "General",
+    defect_type: str = "Other"
+):
+
+    prompt = f"""
+You are an experienced Senior Software Developer
+and Software QA Engineer.
+
+Your task is to provide ROOT CAUSE INVESTIGATION
+ASSISTANCE for the following software defect.
+
+IMPORTANT:
+The suggestions are NOT confirmed root causes.
+They are only areas that developers should investigate.
+
+DEFECT INFORMATION
+
+Title:
+"{title}"
+
+Project:
+"{project}"
+
+Description:
+"{description}"
+
+Category:
+"{category}"
+
+Module:
+"{module}"
+
+Defect Type:
+"{defect_type}"
+
+
+TASK
+
+Suggest practical areas that a developer should
+investigate to understand the possible cause of
+this defect.
+
+Depending on the defect, consider areas such as:
+
+- affected module
+- recent code changes
+- API behavior
+- API timeout handling
+- database behavior
+- database connection errors
+- authentication
+- validation
+- error handling
+- application logs
+- configuration
+- integration points
+- user input processing
+- recent deployments
+
+
+IMPORTANT RULES
+
+- Suggestions must be related to the provided defect.
+- Do NOT claim that any suggestion is the confirmed root cause.
+- Do NOT invent technical details.
+- Do NOT invent APIs.
+- Do NOT invent database tables.
+- Do NOT invent error messages.
+- Do NOT invent frameworks or libraries.
+- Do NOT invent browser information.
+- Do NOT invent operating systems.
+- Do NOT invent configuration details.
+- Do NOT provide specific code.
+- Keep suggestions practical and developer-friendly.
+- Return between 3 and 5 investigation areas.
+
+
+OUTPUT
+
+Return ONLY valid JSON.
+
+Do not return Markdown.
+
+Do not return ```json.
+
+Use exactly this structure:
+
+{{
+    "investigation_areas": [
+        "Check API timeout handling.",
+        "Review recent changes related to the affected module.",
+        "Check application logs for errors."
+    ],
+    "explanation": "These are investigation suggestions based on the reported defect and are not confirmed root causes."
+}}
+"""
+
+    try:
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+
+        text = response.text.strip()
+
+        print(
+            "========== GEMINI INVESTIGATION RESPONSE =========="
+        )
+
+        print(text)
+
+        print(
+            "===================================================="
+        )
+
+        text = clean_json_response(text)
+
+        result = json.loads(text)
+
+        # =================================================
+        # INVESTIGATION AREAS
+        # =================================================
+
+        investigation_areas = result.get(
+            "investigation_areas",
+            []
+        )
+
+        if not isinstance(
+            investigation_areas,
+            list
+        ):
+            investigation_areas = []
+
+        investigation_areas = [
+            str(item).strip()
+            for item in investigation_areas
+            if item
+        ]
+
+        # Keep maximum 5 suggestions
+        investigation_areas = investigation_areas[:5]
+
+        # =================================================
+        # EXPLANATION
+        # =================================================
+
+        explanation = result.get(
+            "explanation",
+            "These are investigation suggestions, not confirmed root causes."
+        )
+
+        if not explanation:
+
+            explanation = (
+                "These are investigation suggestions, "
+                "not confirmed root causes."
+            )
+
+        # =================================================
+        # FINAL RESULT
+        # =================================================
+
+        return {
+
+            "investigation_areas":
+                investigation_areas,
+
+            "explanation":
+                explanation
+
+        }
+
+    except Exception as e:
+
+        print(
+            "Gemini Investigation Assistance Error:",
+            e
+        )
+
+        return {
+
+            "investigation_areas": [
+                "Review the affected functionality.",
+                "Check recent changes related to the defect.",
+                "Review application logs and error handling."
+            ],
+
+            "explanation": (
+                "These are general investigation suggestions "
+                "and are not confirmed root causes."
+            )
+
+        }
+# =========================================================
+# AI DEVELOPER ASSIGNMENT RECOMMENDATION
+# =========================================================
+
+def generate_developer_recommendation(
+    title: str,
+    project: str,
+    description: str,
+    category: str,
+    module: str,
+    defect_type: str,
+    priority: str,
+    severity: str,
+    developers: list
+):
+    """
+    Recommend the most suitable developer for an issue.
+
+    The developers list is prepared by the backend using
+    real BugFlow database information.
+
+    Gemini must only choose from the supplied developers
+    and must not invent developer information.
+    """
+
+    # =====================================================
+    # NO DEVELOPERS AVAILABLE
+    # =====================================================
+
+    if not developers:
+
+        return {
+            "recommended_developer_id": None,
+            "recommended_developer_name": None,
+            "match_score": 0,
+            "reasons": [],
+            "explanation": (
+                "No developers are currently available "
+                "for recommendation."
+            )
+        }
+
+    # =====================================================
+    # PREPARE DEVELOPER INFORMATION
+    # =====================================================
+
+    developer_text = ""
+
+    for developer in developers:
+
+        developer_text += f"""
+Developer ID:
+{developer.get("id")}
+
+Developer Name:
+{developer.get("name", "Unknown")}
+
+Previously Assigned Issues:
+{developer.get("total_assigned", 0)}
+
+Previously Resolved Issues:
+{developer.get("resolved_issues", 0)}
+
+Issues in Same Module:
+{developer.get("module_matches", 0)}
+
+Issues in Same Category:
+{developer.get("category_matches", 0)}
+
+Issues with Same Defect Type:
+{developer.get("defect_type_matches", 0)}
+
+Similar Severity Experience:
+{developer.get("severity_matches", 0)}
+
+Similar Priority Experience:
+{developer.get("priority_matches", 0)}
+
+Current Active Workload:
+{developer.get("active_issues", 0)}
+
+Backend Suitability Score:
+{developer.get("score", 0)}
+
+--------------------------------------------
+"""
+
+    # =====================================================
+    # PROMPT
+    # =====================================================
+
+    prompt = f"""
+You are an AI assistant inside BugFlow,
+an intelligent software defect tracking system.
+
+Your task is to recommend the most suitable developer
+for the provided software issue.
+
+IMPORTANT:
+
+The developer statistics below come from the real
+BugFlow database.
+
+You MUST use only the developers supplied below.
+
+Do NOT invent developers.
+
+Do NOT invent developer experience.
+
+Do NOT invent technologies, skills, projects,
+frameworks, or programming languages.
+
+Do NOT assume information that is not provided.
+
+The recommendation should mainly consider:
+
+1. Experience with the same module
+2. Experience with the same category
+3. Experience with the same defect type
+4. Number of successfully resolved issues
+5. Experience with similar severity and priority
+6. Current workload
+7. Backend suitability score
+
+A developer with relevant historical experience
+should generally be preferred.
+
+However, if two developers have similar experience,
+the developer with the lower active workload may
+be preferred.
+
+
+==================================================
+CURRENT ISSUE
+==================================================
+
+Title:
+"{title}"
+
+Project:
+"{project}"
+
+Description:
+"{description}"
+
+Category:
+"{category}"
+
+Module:
+"{module}"
+
+Defect Type:
+"{defect_type}"
+
+Priority:
+"{priority}"
+
+Severity:
+"{severity}"
+
+
+==================================================
+AVAILABLE DEVELOPERS
+==================================================
+
+{developer_text}
+
+
+==================================================
+TASK
+==================================================
+
+Select ONE most suitable developer.
+
+The recommended developer ID MUST exactly match
+one of the Developer IDs supplied above.
+
+Provide:
+
+1. Developer ID
+2. Developer name
+3. Match score from 0 to 100
+4. 2 to 4 short reasons explaining the recommendation
+5. A brief explanation
+
+The match score should represent suitability for
+THIS issue.
+
+Do not claim that the recommendation guarantees
+successful resolution.
+
+
+==================================================
+OUTPUT
+==================================================
+
+Return ONLY valid JSON.
+
+Do not return Markdown.
+
+Do not return ```json.
+
+Use exactly this structure:
+
+{{
+    "recommended_developer_id": 1,
+    "recommended_developer_name": "Developer Name",
+    "match_score": 85,
+    "reasons": [
+        "Has previous experience with this module.",
+        "Has resolved similar category issues.",
+        "Has a manageable current workload."
+    ],
+    "explanation": "This developer has the strongest relevant historical experience for the current issue."
+}}
+"""
+
+    try:
+
+        # =================================================
+        # GEMINI REQUEST
+        # =================================================
+
+        response = client.models.generate_content(
+            model="gemini-3.6-flash",
+            contents=prompt
+        )
+
+        text = response.text.strip()
+
+        print(
+            "========== GEMINI DEVELOPER RECOMMENDATION =========="
+        )
+
+        print(text)
+
+        print(
+            "====================================================="
+        )
+
+        text = clean_json_response(text)
+
+        result = json.loads(text)
+
+        # =================================================
+        # VALIDATE DEVELOPER ID
+        # =================================================
+
+        valid_developer_ids = {
+            developer.get("id")
+            for developer in developers
+        }
+
+        recommended_id = result.get(
+            "recommended_developer_id"
+        )
+
+        try:
+            recommended_id = int(recommended_id)
+
+        except (TypeError, ValueError):
+            recommended_id = None
+
+
+        # =================================================
+        # IF GEMINI RETURNS INVALID DEVELOPER
+        # USE BACKEND'S HIGHEST-SCORED DEVELOPER
+        # =================================================
+
+        if recommended_id not in valid_developer_ids:
+
+            best_developer = max(
+                developers,
+                key=lambda developer:
+                    developer.get("score", 0)
+            )
+
+            recommended_id = best_developer.get("id")
+
+            recommended_name = best_developer.get(
+                "name",
+                "Unknown"
+            )
+
+        else:
+
+            selected_developer = next(
+                (
+                    developer
+                    for developer in developers
+                    if developer.get("id")
+                    == recommended_id
+                ),
+                None
+            )
+
+            recommended_name = (
+                selected_developer.get(
+                    "name",
+                    "Unknown"
+                )
+                if selected_developer
+                else "Unknown"
+            )
+
+
+        # =================================================
+        # MATCH SCORE
+        # =================================================
+
+        match_score = result.get(
+            "match_score",
+            0
+        )
+
+        try:
+            match_score = int(match_score)
+
+        except (TypeError, ValueError):
+            match_score = 0
+
+
+        if match_score < 0:
+            match_score = 0
+
+        if match_score > 100:
+            match_score = 100
+
+
+        # =================================================
+        # REASONS
+        # =================================================
+
+        reasons = result.get(
+            "reasons",
+            []
+        )
+
+        if not isinstance(
+            reasons,
+            list
+        ):
+            reasons = []
+
+        reasons = [
+            str(reason).strip()
+            for reason in reasons
+            if reason
+        ]
+
+        reasons = reasons[:4]
+
+
+        # =================================================
+        # EXPLANATION
+        # =================================================
+
+        explanation = result.get(
+            "explanation",
+            (
+                "The recommendation is based on "
+                "the developer's historical defect "
+                "experience and current workload."
+            )
+        )
+
+        if not explanation:
+
+            explanation = (
+                "The recommendation is based on "
+                "the developer's historical defect "
+                "experience and current workload."
+            )
+
+
+        # =================================================
+        # FINAL RESULT
+        # =================================================
+
+        return {
+
+            "recommended_developer_id":
+                recommended_id,
+
+            "recommended_developer_name":
+                recommended_name,
+
+            "match_score":
+                match_score,
+
+            "reasons":
+                reasons,
+
+            "explanation":
+                explanation
+        }
+
+
+    except Exception as e:
+
+        print(
+            "Gemini Developer Recommendation Error:",
+            e
+        )
+
+        # =================================================
+        # SAFE FALLBACK
+        #
+        # If Gemini temporarily fails, use the developer
+        # with the highest score calculated by BugFlow.
+        # =================================================
+
+        best_developer = max(
+            developers,
+            key=lambda developer:
+                developer.get("score", 0)
+        )
+
+        fallback_score = best_developer.get(
+            "score",
+            0
+        )
+
+        try:
+            fallback_score = int(fallback_score)
+
+        except (TypeError, ValueError):
+            fallback_score = 0
+
+        fallback_score = max(
+            0,
+            min(
+                100,
+                fallback_score
+            )
+        )
+
+        return {
+
+            "recommended_developer_id":
+                best_developer.get("id"),
+
+            "recommended_developer_name":
+                best_developer.get(
+                    "name",
+                    "Unknown"
+                ),
+
+            "match_score":
+                fallback_score,
+
+            "reasons": [
+                (
+                    "Recommended using historical "
+                    "BugFlow assignment and resolution data."
+                )
+            ],
+
+            "explanation": (
+                "The AI service was unavailable, so "
+                "BugFlow selected the highest-scoring "
+                "developer using stored developer history."
+            )
+        }

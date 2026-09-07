@@ -1,6 +1,5 @@
 import os
 
-# Tell the application that we are running tests
 os.environ["TESTING"] = "1"
 
 import pytest

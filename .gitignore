@@ -6,3 +6,6 @@ venv/
 .vscode/
 .idea/
 static/uploads/
+!static/
+!static/uploads/
+!static/uploads/.gitkeep

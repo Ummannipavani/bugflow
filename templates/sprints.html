@@ -4,7 +4,6 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Sprints - BugFlow</title>
@@ -24,9 +23,9 @@
             min-height: 100vh;
         }
 
-        /* =========================
+        /* =========================================
            SIDEBAR
-        ========================= */
+        ========================================= */
 
         .sidebar {
             position: fixed;
@@ -34,9 +33,13 @@
             top: 0;
             width: 240px;
             height: 100vh;
+
             background: #111827;
             border-right: 1px solid #1e293b;
+
             padding: 25px 15px;
+
+            z-index: 100;
         }
 
         .logo {
@@ -45,6 +48,7 @@
 
         .logo h2 {
             color: #f8fafc;
+            font-size: 23px;
         }
 
         nav {
@@ -56,8 +60,11 @@
         nav a {
             text-decoration: none;
             color: #94a3b8;
+
             padding: 13px 15px;
+
             border-radius: 8px;
+
             transition: 0.2s;
         }
 
@@ -71,73 +78,111 @@
             color: white;
         }
 
-        /* =========================
+
+        /* =========================================
            MAIN CONTENT
-        ========================= */
+        ========================================= */
 
         .main {
             margin-left: 240px;
             padding: 35px;
+            min-height: 100vh;
         }
+
+
+        /* =========================================
+           TOP BAR
+        ========================================= */
 
         .topbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+
             margin-bottom: 30px;
         }
 
         .topbar h1 {
             font-size: 30px;
+            color: #f8fafc;
             margin-bottom: 8px;
         }
 
         .topbar p {
             color: #94a3b8;
+            font-size: 15px;
         }
-
-        /* =========================
-           BUTTON
-        ========================= */
 
         .create-btn {
             background: #2563eb;
             color: white;
+
             border: none;
-            padding: 12px 20px;
             border-radius: 8px;
-            cursor: pointer;
+
+            padding: 12px 20px;
+
             font-size: 14px;
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.2s;
         }
 
         .create-btn:hover {
             background: #1d4ed8;
         }
 
-        /* =========================
+
+        /* =========================================
            CREATE SPRINT CARD
-        ========================= */
+        ========================================= */
 
         .card {
             background: #111827;
+
             border: 1px solid #1e293b;
-            border-radius: 12px;
+            border-radius: 14px;
+
             padding: 25px;
+
             margin-bottom: 30px;
         }
 
-        .card h2 {
+        .card-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
             margin-bottom: 8px;
+        }
+
+        .card-title h2 {
+            font-size: 20px;
+            color: #f8fafc;
         }
 
         .card-description {
             color: #94a3b8;
+            font-size: 14px;
+
             margin-bottom: 25px;
         }
 
+
+        /* =========================================
+           FORM
+        ========================================= */
+
         .form-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+
+            grid-template-columns:
+                1.3fr
+                1fr
+                1fr;
+
             gap: 20px;
         }
 
@@ -148,18 +193,31 @@
 
         .form-group label {
             margin-bottom: 8px;
-            font-size: 14px;
+
             color: #cbd5e1;
+
+            font-size: 13px;
+            font-weight: 600;
         }
 
         input,
         select {
+
+            width: 100%;
+
             background: #0f172a;
+
             border: 1px solid #334155;
+
             color: white;
+
             padding: 12px;
-            border-radius: 7px;
+
+            border-radius: 8px;
+
             outline: none;
+
+            font-size: 14px;
         }
 
         input:focus,
@@ -171,169 +229,591 @@
             margin-top: 22px;
         }
 
-        /* =========================
-           STAT CARDS
-        ========================= */
+
+        /* =========================================
+           STATISTICS
+        ========================================= */
 
         .stats {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 18px;
+
             margin-bottom: 30px;
         }
 
         .stat-card {
+
             background: #111827;
+
             border: 1px solid #1e293b;
+
             border-radius: 12px;
+
             padding: 22px;
+
+            position: relative;
+
+            overflow: hidden;
+        }
+
+        .stat-card::after {
+
+            content: "";
+
+            position: absolute;
+
+            right: -20px;
+            bottom: -20px;
+
+            width: 70px;
+            height: 70px;
+
+            border-radius: 50%;
+
+            background: rgba(37, 99, 235, 0.08);
         }
 
         .stat-card p {
+
             color: #94a3b8;
-            font-size: 14px;
+
+            font-size: 13px;
+
             margin-bottom: 10px;
         }
 
         .stat-card h2 {
-            font-size: 28px;
+
+            color: #f8fafc;
+
+            font-size: 30px;
         }
 
-        /* =========================
-           SPRINT TABLE
-        ========================= */
+        .stat-icon {
+
+            font-size: 22px;
+
+            margin-bottom: 12px;
+        }
+
+
+        /* =========================================
+           SPRINT LIFECYCLE
+        ========================================= */
+
+        .lifecycle-card {
+
+            background: #111827;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 30px;
+        }
+
+        .section-header {
+
+            margin-bottom: 22px;
+        }
+
+        .section-header h2 {
+
+            color: #f8fafc;
+
+            font-size: 20px;
+
+            margin-bottom: 6px;
+        }
+
+        .section-header p {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+        }
+
+        .lifecycle {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            gap: 10px;
+
+            flex-wrap: wrap;
+        }
+
+        .lifecycle-step {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 9px;
+
+            padding: 11px 16px;
+
+            border-radius: 9px;
+
+            background: #0f172a;
+
+            border: 1px solid #334155;
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+        .lifecycle-number {
+
+            width: 24px;
+            height: 24px;
+
+            border-radius: 50%;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            background: #2563eb;
+
+            color: white;
+
+            font-size: 12px;
+        }
+
+        .lifecycle-arrow {
+
+            color: #64748b;
+
+            font-size: 18px;
+        }
+
+
+        /* =========================================
+           TABLE CARD
+        ========================================= */
 
         .table-card {
+
             background: #111827;
+
             border: 1px solid #1e293b;
-            border-radius: 12px;
+
+            border-radius: 14px;
+
             overflow: hidden;
         }
 
         .table-header {
+
             padding: 22px;
+
             border-bottom: 1px solid #1e293b;
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
         }
 
         .table-header h2 {
+
+            color: #f8fafc;
+
+            font-size: 20px;
+
             margin-bottom: 5px;
         }
 
         .table-header p {
+
             color: #94a3b8;
+
             font-size: 14px;
         }
 
+        .sprint-count {
+
+            color: #60a5fa;
+
+            font-size: 13px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           TABLE
+        ========================================= */
+
         table {
+
             width: 100%;
+
             border-collapse: collapse;
         }
 
         th {
+
             text-align: left;
-            padding: 15px 20px;
+
+            padding: 15px 18px;
+
             color: #94a3b8;
-            font-size: 13px;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
             background: #0f172a;
+
+            border-bottom: 1px solid #1e293b;
         }
 
         td {
-            padding: 17px 20px;
-            border-top: 1px solid #1e293b;
+
+            padding: 17px 18px;
+
+            border-bottom: 1px solid #1e293b;
+
+            font-size: 14px;
         }
 
-        tr:hover {
+        tbody tr {
+
+            transition: 0.2s;
+        }
+
+        tbody tr:hover {
+
             background: #172033;
         }
 
-        /* =========================
-           STATUS BADGES
-        ========================= */
 
-        .badge {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 20px;
+        /* =========================================
+           SPRINT NAME
+        ========================================= */
+
+        .sprint-name {
+
+            color: #60a5fa;
+
+            text-decoration: none;
+
+            font-weight: bold;
+
+            font-size: 14px;
+        }
+
+        .sprint-name:hover {
+
+            color: #93c5fd;
+
+            text-decoration: underline;
+        }
+
+        .sprint-id {
+
+            color: #64748b;
+
             font-size: 12px;
         }
 
+
+        /* =========================================
+           STATUS BADGES
+        ========================================= */
+
+        .badge {
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 6px;
+
+            padding: 6px 11px;
+
+            border-radius: 20px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .badge-dot {
+
+            width: 7px;
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+        }
+
         .active {
+
             background: #064e3b;
+
             color: #6ee7b7;
         }
 
         .completed {
-            background: #1e3a8a;
+
+            background: #172554;
+
             color: #93c5fd;
         }
 
         .planned {
+
             background: #713f12;
+
             color: #fde68a;
         }
 
-        /* =========================
-           DELETE BUTTON
-        ========================= */
+        .overdue {
+
+            background: #450a0a;
+
+            color: #fca5a5;
+        }
+
+
+        /* =========================================
+           DURATION
+        ========================================= */
+
+        .duration {
+
+            color: #cbd5e1;
+
+            font-size: 13px;
+        }
+
+
+        /* =========================================
+           ACTIONS
+        ========================================= */
+
+        .action-container {
+
+            display: flex;
+
+            gap: 8px;
+        }
+
+        .view-btn {
+
+            background: #172554;
+
+            color: #93c5fd;
+
+            border: 1px solid #1d4ed8;
+
+            padding: 7px 12px;
+
+            border-radius: 7px;
+
+            text-decoration: none;
+
+            font-size: 12px;
+
+            font-weight: 600;
+        }
+
+        .view-btn:hover {
+
+            background: #1e3a8a;
+        }
 
         .delete-btn {
-            background: #7f1d1d;
-            color: #fecaca;
-            border: none;
+
+            background: #450a0a;
+
+            color: #fca5a5;
+
+            border: 1px solid #7f1d1d;
+
             padding: 7px 12px;
-            border-radius: 6px;
+
+            border-radius: 7px;
+
             cursor: pointer;
+
+            font-size: 12px;
+
+            font-weight: 600;
         }
 
         .delete-btn:hover {
-            background: #991b1b;
+
+            background: #7f1d1d;
         }
 
-        /* =========================
+
+        /* =========================================
            EMPTY STATE
-        ========================= */
+        ========================================= */
 
         .empty {
+
             text-align: center;
-            padding: 50px;
+
+            padding: 55px 20px;
+
             color: #94a3b8;
         }
 
-        /* =========================
-           TOAST
-        ========================= */
+        .empty-icon {
 
-        .toast {
-            position: fixed;
-            right: 25px;
-            bottom: 25px;
-            background: #16a34a;
-            color: white;
-            padding: 14px 20px;
-            border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            z-index: 9999;
+            font-size: 42px;
+
+            margin-bottom: 15px;
         }
 
-        /* =========================
-           RESPONSIVE
-        ========================= */
+        .empty h3 {
 
-        @media (max-width: 900px) {
+            color: #e2e8f0;
+
+            margin-bottom: 8px;
+        }
+
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        .toast {
+
+            position: fixed;
+
+            right: 25px;
+
+            bottom: 25px;
+
+            background: #16a34a;
+
+            color: white;
+
+            padding: 14px 20px;
+
+            border-radius: 8px;
+
+            box-shadow:
+                0 5px 20px
+                rgba(0,0,0,0.3);
+
+            z-index: 9999;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1100px) {
+
+            .stats {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .form-grid {
+
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 800px) {
 
             .sidebar {
+
                 width: 200px;
             }
 
             .main {
+
                 margin-left: 200px;
+
+                padding: 25px;
             }
 
-            .form-grid,
+            .table-card {
+
+                overflow-x: auto;
+            }
+
+            table {
+
+                min-width: 900px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            .sidebar {
+
+                position: relative;
+
+                width: 100%;
+
+                height: auto;
+            }
+
+            .main {
+
+                margin-left: 0;
+
+                padding: 20px;
+            }
+
+            .topbar {
+
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 15px;
+            }
+
             .stats {
+
                 grid-template-columns: 1fr;
             }
 
+            .lifecycle {
+
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .lifecycle-arrow {
+
+                transform: rotate(90deg);
+
+                text-align: center;
+            }
         }
 
     </style>
@@ -344,9 +824,9 @@
 <body>
 
 
-<!-- =========================
+<!-- =========================================
      SIDEBAR
-========================= -->
+========================================= -->
 
 <div class="sidebar">
 
@@ -378,6 +858,9 @@
         <a href="/sprints" class="active">
             Sprints
         </a>
+        <a href="/analytics">
+            Analytics
+        </a>
 
         <a href="/">
             Logout
@@ -388,14 +871,16 @@
 </div>
 
 
-<!-- =========================
+<!-- =========================================
      MAIN
-========================= -->
+========================================= -->
 
 <div class="main">
 
 
-    <!-- TOP BAR -->
+    <!-- =====================================
+         TOPBAR
+    ===================================== -->
 
     <div class="topbar">
 
@@ -404,10 +889,11 @@
             <h1>Sprint Management</h1>
 
             <p>
-                Plan, organize and track your development sprints.
+                Plan, organize, monitor and complete development sprints.
             </p>
 
         </div>
+
 
         <button
             class="create-btn"
@@ -421,18 +907,25 @@
 
 
 
-    <!-- =========================
+    <!-- =====================================
          CREATE SPRINT
-    ========================= -->
+    ===================================== -->
 
     <div class="card">
 
-        <h2>Create New Sprint</h2>
+        <div class="card-title">
+
+            <span>🚀</span>
+
+            <h2>Create New Sprint</h2>
+
+        </div>
+
 
         <p class="card-description">
 
-            Create a sprint and assign issues to it from the
-            Report Issue page.
+            Create a sprint with a defined timeline and manage its
+            issues through the complete defect lifecycle.
 
         </p>
 
@@ -443,8 +936,6 @@
             <div class="form-grid">
 
 
-                <!-- Sprint Name -->
-
                 <div class="form-group">
 
                     <label>
@@ -454,14 +945,12 @@
                     <input
                         type="text"
                         id="sprintName"
-                        placeholder="Example: Sprint 2"
+                        placeholder="Example: Sprint 3"
                         required
                     >
 
                 </div>
 
-
-                <!-- Start Date -->
 
                 <div class="form-group">
 
@@ -477,8 +966,6 @@
 
                 </div>
 
-
-                <!-- End Date -->
 
                 <div class="form-group">
 
@@ -517,16 +1004,22 @@
 
 
 
-    <!-- =========================
+    <!-- =====================================
          STATISTICS
-    ========================= -->
+    ===================================== -->
 
     <div class="stats">
 
 
         <div class="stat-card">
 
-            <p>Total Sprints</p>
+            <div class="stat-icon">
+                📋
+            </div>
+
+            <p>
+                Total Sprints
+            </p>
 
             <h2 id="totalSprints">
                 0
@@ -537,7 +1030,13 @@
 
         <div class="stat-card">
 
-            <p>Active Sprints</p>
+            <div class="stat-icon">
+                🟢
+            </div>
+
+            <p>
+                Active Sprints
+            </p>
 
             <h2 id="activeSprints">
                 0
@@ -548,7 +1047,30 @@
 
         <div class="stat-card">
 
-            <p>Completed Sprints</p>
+            <div class="stat-icon">
+                📅
+            </div>
+
+            <p>
+                Planned Sprints
+            </p>
+
+            <h2 id="plannedSprints">
+                0
+            </h2>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <p>
+                Completed Sprints
+            </p>
 
             <h2 id="completedSprints">
                 0
@@ -561,22 +1083,141 @@
 
 
 
-    <!-- =========================
-         SPRINT LIST
-    ========================= -->
+    <!-- =====================================
+         SPRINT LIFECYCLE
+    ===================================== -->
+
+    <div class="lifecycle-card">
+
+        <div class="section-header">
+
+            <h2>
+                🔄 Sprint Lifecycle
+            </h2>
+
+            <p>
+                Track a sprint from planning to completion.
+            </p>
+
+        </div>
+
+
+        <div class="lifecycle">
+
+
+            <div class="lifecycle-step">
+
+                <span class="lifecycle-number">
+                    1
+                </span>
+
+                Planned
+
+            </div>
+
+
+            <div class="lifecycle-arrow">
+                →
+            </div>
+
+
+            <div class="lifecycle-step">
+
+                <span class="lifecycle-number">
+                    2
+                </span>
+
+                Active
+
+            </div>
+
+
+            <div class="lifecycle-arrow">
+                →
+            </div>
+
+
+            <div class="lifecycle-step">
+
+                <span class="lifecycle-number">
+                    3
+                </span>
+
+                Issues Assigned
+
+            </div>
+
+
+            <div class="lifecycle-arrow">
+                →
+            </div>
+
+
+            <div class="lifecycle-step">
+
+                <span class="lifecycle-number">
+                    4
+                </span>
+
+                Development
+
+            </div>
+
+
+            <div class="lifecycle-arrow">
+                →
+            </div>
+
+
+            <div class="lifecycle-step">
+
+                <span class="lifecycle-number">
+                    5
+                </span>
+
+                Completed
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         SPRINT TABLE
+    ===================================== -->
 
     <div class="table-card">
 
 
         <div class="table-header">
 
-            <h2>All Sprints</h2>
+            <div>
 
-            <p>
-                View and manage your development sprints.
-            </p>
+                <h2>
+                    All Sprints
+                </h2>
+
+                <p>
+                    View and manage your development sprint timelines.
+                </p>
+
+            </div>
+
+
+            <div
+                class="sprint-count"
+                id="sprintCount">
+
+                0 sprints
+
+            </div>
 
         </div>
+
 
 
         <table>
@@ -603,7 +1244,11 @@
                     </th>
 
                     <th>
-                        Status
+                        Duration
+                    </th>
+
+                    <th>
+                        Lifecycle
                     </th>
 
                     <th>
@@ -611,7 +1256,7 @@
                     </th>
 
                     <th>
-                        Action
+                        Actions
                     </th>
 
                 </tr>
@@ -624,9 +1269,13 @@
 
                 <tr>
 
-                    <td colspan="7">
+                    <td colspan="8">
 
                         <div class="empty">
+
+                            <div class="empty-icon">
+                                ⏳
+                            </div>
 
                             Loading sprints...
 
@@ -653,19 +1302,21 @@
 <script>
 
 
-// =====================================
-// Toast
-// =====================================
+/* =========================================
+   TOAST
+========================================= */
 
 function showToast(message) {
 
-    const toast = document.createElement("div");
+    const toast =
+        document.createElement("div");
 
     toast.className = "toast";
 
     toast.innerText = message;
 
     document.body.appendChild(toast);
+
 
     setTimeout(() => {
 
@@ -677,46 +1328,306 @@ function showToast(message) {
 
 
 
-// =====================================
-// Load Sprints
-// =====================================
+/* =========================================
+   ESCAPE HTML
+========================================= */
+
+function escapeHtml(value) {
+
+    if (value === null || value === undefined) {
+
+        return "";
+
+    }
+
+    return String(value)
+
+        .replace(/&/g, "&amp;")
+
+        .replace(/</g, "&lt;")
+
+        .replace(/>/g, "&gt;")
+
+        .replace(/"/g, "&quot;")
+
+        .replace(/'/g, "&#039;");
+}
+
+
+
+/* =========================================
+   CALCULATE DURATION
+========================================= */
+
+function calculateDuration(start, end) {
+
+    if (!start || !end) {
+
+        return "—";
+
+    }
+
+    const startDate =
+        new Date(start + "T00:00:00");
+
+    const endDate =
+        new Date(end + "T00:00:00");
+
+    const difference =
+        Math.round(
+            (endDate - startDate)
+            / (1000 * 60 * 60 * 24)
+        ) + 1;
+
+    if (difference === 1) {
+
+        return "1 day";
+
+    }
+
+    return difference + " days";
+}
+
+
+
+/* =========================================
+   GET DISPLAY STATUS
+========================================= */
+
+function getSprintStatus(sprint) {
+
+    const today =
+        new Date();
+
+    today.setHours(0, 0, 0, 0);
+
+
+    if (!sprint.start_date) {
+
+        return sprint.status || "Planned";
+
+    }
+
+
+    const start =
+        new Date(
+            sprint.start_date + "T00:00:00"
+        );
+
+
+    const end =
+        sprint.end_date
+            ? new Date(
+                sprint.end_date + "T23:59:59"
+            )
+            : null;
+
+
+    /*
+       If backend already says Completed,
+       keep it completed.
+    */
+
+    if (sprint.status === "Completed") {
+
+        return "Completed";
+
+    }
+
+
+    /*
+       Before start date
+    */
+
+    if (today < start) {
+
+        return "Planned";
+
+    }
+
+
+    /*
+       During sprint
+    */
+
+    if (!end || today <= end) {
+
+        return "Active";
+
+    }
+
+
+    /*
+       Date has passed.
+       We display Completed for the
+       sprint lifecycle view.
+    */
+
+    return "Completed";
+
+}
+
+
+
+/* =========================================
+   STATUS BADGE
+========================================= */
+
+function statusBadge(status) {
+
+    let cssClass = "active";
+
+    let icon = "●";
+
+
+    if (status === "Completed") {
+
+        cssClass = "completed";
+
+        icon = "✓";
+
+    }
+
+    else if (status === "Planned") {
+
+        cssClass = "planned";
+
+        icon = "○";
+
+    }
+
+    else if (status === "Overdue") {
+
+        cssClass = "overdue";
+
+        icon = "!";
+
+    }
+
+
+    return `
+
+        <span class="badge ${cssClass}">
+
+            <span class="badge-dot"></span>
+
+            ${icon}
+
+            ${escapeHtml(status)}
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   LOAD SPRINTS
+========================================= */
 
 async function loadSprints() {
 
     try {
 
-        const response = await fetch("/api/sprints");
+        const response =
+            await fetch(
+                "/api/sprints",
+                {
+                    cache: "no-store"
+                }
+            );
 
-        const sprints = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load sprints."
+            );
+
+        }
+
+
+        const sprints =
+            await response.json();
 
 
         const table =
-            document.getElementById("sprintTable");
+            document.getElementById(
+                "sprintTable"
+            );
 
 
         table.innerHTML = "";
 
 
-        // Statistics
+        /*
+           Calculate lifecycle statuses
+        */
 
-        document.getElementById("totalSprints").innerText =
-            sprints.length;
+        const processedSprints =
+            sprints.map(sprint => {
+
+                return {
+
+                    ...sprint,
+
+                    displayStatus:
+                        getSprintStatus(sprint)
+
+                };
+
+            });
 
 
-        document.getElementById("activeSprints").innerText =
-            sprints.filter(
-                sprint => sprint.status === "Active"
+        /*
+           Statistics
+        */
+
+        document.getElementById(
+            "totalSprints"
+        ).innerText =
+            processedSprints.length;
+
+
+        document.getElementById(
+            "activeSprints"
+        ).innerText =
+            processedSprints.filter(
+                sprint =>
+                    sprint.displayStatus === "Active"
             ).length;
 
 
-        document.getElementById("completedSprints").innerText =
-            sprints.filter(
-                sprint => sprint.status === "Completed"
+        document.getElementById(
+            "plannedSprints"
+        ).innerText =
+            processedSprints.filter(
+                sprint =>
+                    sprint.displayStatus === "Planned"
             ).length;
 
 
+        document.getElementById(
+            "completedSprints"
+        ).innerText =
+            processedSprints.filter(
+                sprint =>
+                    sprint.displayStatus === "Completed"
+            ).length;
 
-        // No sprints
+
+        document.getElementById(
+            "sprintCount"
+        ).innerText =
+            `${sprints.length} sprint${sprints.length === 1 ? "" : "s"}`;
+
+
+
+        /*
+           Empty state
+        */
 
         if (sprints.length === 0) {
 
@@ -724,15 +1635,22 @@ async function loadSprints() {
 
                 <tr>
 
-                    <td colspan="7">
+                    <td colspan="8">
 
                         <div class="empty">
 
-                            🏃 No sprints created yet.
+                            <div class="empty-icon">
+                                🏃
+                            </div>
 
-                            <br><br>
+                            <h3>
+                                No Sprints Created
+                            </h3>
 
-                            Create your first sprint above.
+                            <p>
+                                Create your first sprint above
+                                to start planning your development work.
+                            </p>
 
                         </div>
 
@@ -748,123 +1666,173 @@ async function loadSprints() {
 
 
 
-        // Display sprints
+        /*
+           Display rows
+        */
 
-        sprints.forEach((sprint, index) => {
+        processedSprints.forEach(
+            sprint => {
+
+                const createdDate =
+                    sprint.created_at
+
+                        ? new Date(
+                            sprint.created_at
+                        ).toLocaleDateString()
+
+                        : "—";
 
 
-            let statusClass = "active";
+                const status =
+                    sprint.displayStatus;
 
 
-            if (sprint.status === "Completed") {
+                table.innerHTML += `
 
-                statusClass = "completed";
+                    <tr>
+
+                        <td>
+
+                            <span class="sprint-id">
+
+                                #${escapeHtml(sprint.id)}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="/sprints/${sprint.id}"
+                                class="sprint-name">
+
+                                ${escapeHtml(sprint.name)}
+
+                            </a>
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                sprint.start_date || "—"
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            ${escapeHtml(
+                                sprint.end_date || "—"
+                            )}
+
+                        </td>
+
+
+                        <td>
+
+                            <span class="duration">
+
+                                ${calculateDuration(
+                                    sprint.start_date,
+                                    sprint.end_date
+                                )}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            ${statusBadge(status)}
+
+                        </td>
+
+
+                        <td>
+
+                            <span
+                                style="
+                                    color:#94a3b8;
+                                    font-size:13px;
+                                ">
+
+                                ${createdDate}
+
+                            </span>
+
+                        </td>
+
+
+                        <td>
+
+                            <div class="action-container">
+
+                                <a
+                                    href="/sprints/${sprint.id}"
+                                    class="view-btn">
+
+                                    View
+
+                                </a>
+
+
+                                <button
+                                    class="delete-btn"
+                                    onclick="deleteSprint(${sprint.id})">
+
+                                    Delete
+
+                                </button>
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                `;
 
             }
-
-            else if (sprint.status === "Planned") {
-
-                statusClass = "planned";
-
-            }
-
-
-            let createdDate = "—";
-
-
-            if (sprint.created_at) {
-
-                createdDate =
-                    new Date(
-                        sprint.created_at
-                    ).toLocaleDateString();
-
-            }
-
-
-            table.innerHTML += `
-
-                <tr>
-
-                    <td>
-                        ${sprint.id}
-                    </td>
-
-
-                    <td>
-
-                        <a href="/sprints/${sprint.id}"
-                            style="color:#60a5fa;
-                                text-decoration:none;
-                                font-weight:bold;">
-
-                            ${sprint.name}
-
-                        </a>
-
-                    </td>
-
-
-                    <td>
-                        ${sprint.start_date || "—"}
-                    </td>
-
-
-                    <td>
-                        ${sprint.end_date || "—"}
-                    </td>
-
-
-                    <td>
-
-                        <span class="badge ${statusClass}">
-
-                            ${sprint.status}
-
-                        </span>
-
-                    </td>
-
-
-                    <td>
-                        ${createdDate}
-                    </td>
-
-
-                    <td>
-
-                        <button
-                            class="delete-btn"
-                            onclick="deleteSprint(${sprint.id})">
-
-                            Delete
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
-
-        });
+        );
 
 
     }
 
     catch (error) {
 
-        console.error(error);
+        console.error(
+            "Sprint loading error:",
+            error
+        );
 
-        document.getElementById("sprintTable").innerHTML = `
+
+        document.getElementById(
+            "sprintTable"
+        ).innerHTML = `
 
             <tr>
 
-                <td colspan="7">
+                <td colspan="8">
 
                     <div class="empty">
 
-                        ❌ Unable to load sprints.
+                        <div class="empty-icon">
+                            ❌
+                        </div>
+
+                        <h3>
+                            Unable to Load Sprints
+                        </h3>
+
+                        <p>
+                            Please refresh the page and try again.
+                        </p>
 
                     </div>
 
@@ -880,127 +1848,154 @@ async function loadSprints() {
 
 
 
-// =====================================
-// Create Sprint
-// =====================================
+/* =========================================
+   CREATE SPRINT
+========================================= */
 
 document
-.getElementById("sprintForm")
-.addEventListener("submit", async function(e) {
+    .getElementById("sprintForm")
+    .addEventListener(
+        "submit",
+        async function(e) {
+
+            e.preventDefault();
 
 
-    e.preventDefault();
+            const name =
+                document.getElementById(
+                    "sprintName"
+                ).value.trim();
 
 
-    const name =
-        document.getElementById("sprintName").value;
+            const startDate =
+                document.getElementById(
+                    "startDate"
+                ).value;
 
 
-    const startDate =
-        document.getElementById("startDate").value;
+            const endDate =
+                document.getElementById(
+                    "endDate"
+                ).value;
 
 
-    const endDate =
-        document.getElementById("endDate").value;
+            if (!name) {
+
+                alert(
+                    "Please enter a sprint name."
+                );
+
+                return;
+
+            }
 
 
+            if (endDate < startDate) {
 
-    // Validate dates
+                alert(
+                    "End date cannot be before start date."
+                );
 
-    if (endDate < startDate) {
+                return;
 
-        alert(
-            "End date cannot be before start date."
-        );
-
-        return;
-
-    }
+            }
 
 
+            try {
 
-    try {
+                const response =
+                    await fetch(
+                        "/sprints",
+                        {
+
+                            method: "POST",
+
+                            headers: {
+
+                                "Content-Type":
+                                    "application/json",
+
+                                "Accept":
+                                    "application/json"
+
+                            },
+
+                            body:
+                                JSON.stringify({
+
+                                    name:
+                                        name,
+
+                                    start_date:
+                                        startDate,
+
+                                    end_date:
+                                        endDate
+
+                                })
+
+                        }
+                    );
 
 
-        const response = await fetch("/sprints", {
-
-            method: "POST",
-
-            headers: {
-
-                "Content-Type":
-                    "application/json"
-
-            },
-
-            body: JSON.stringify({
-
-                name: name,
-
-                start_date: startDate,
-
-                end_date: endDate
-
-            })
-
-        });
+                const result =
+                    await response.json();
 
 
-        const result =
-            await response.json();
+                if (!response.ok) {
+
+                    alert(
+                        result.detail ||
+                        "Failed to create sprint."
+                    );
+
+                    return;
+
+                }
 
 
-        if (!response.ok) {
+                showToast(
+                    "Sprint created successfully!"
+                );
 
-            alert(
-                result.detail ||
-                "Failed to create sprint."
-            );
 
-            return;
+                document
+                    .getElementById(
+                        "sprintForm"
+                    )
+                    .reset();
+
+
+                loadSprints();
+
+            }
+
+
+            catch (error) {
+
+                console.error(error);
+
+                alert(
+                    "Unable to create sprint."
+                );
+
+            }
 
         }
-
-
-        showToast(
-            "Sprint created successfully!"
-        );
-
-
-        document
-            .getElementById("sprintForm")
-            .reset();
-
-
-        loadSprints();
-
-
-    }
-
-    catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Unable to create sprint."
-        );
-
-    }
-
-});
+    );
 
 
 
-// =====================================
-// Delete Sprint
-// =====================================
+/* =========================================
+   DELETE SPRINT
+========================================= */
 
 async function deleteSprint(id) {
 
-
-    const confirmed = confirm(
-        "Are you sure you want to delete this sprint?"
-    );
+    const confirmed =
+        confirm(
+            "Are you sure you want to delete this sprint?"
+        );
 
 
     if (!confirmed) {
@@ -1011,7 +2006,6 @@ async function deleteSprint(id) {
 
 
     try {
-
 
         const response =
             await fetch(
@@ -1026,16 +2020,28 @@ async function deleteSprint(id) {
             await response.json();
 
 
+        if (!response.ok) {
+
+            alert(
+                result.detail ||
+                "Unable to delete sprint."
+            );
+
+            return;
+
+        }
+
+
         showToast(
             result.message ||
-            "Sprint deleted."
+            "Sprint deleted successfully."
         );
 
 
         loadSprints();
 
-
     }
+
 
     catch (error) {
 
@@ -1051,12 +2057,11 @@ async function deleteSprint(id) {
 
 
 
-// =====================================
-// Initial Load
-// =====================================
+/* =========================================
+   INITIAL LOAD
+========================================= */
 
 loadSprints();
-
 
 </script>
 

@@ -25,7 +25,8 @@ from app.models.comment import Comment
 
 from app.ai.gemini import (
     generate_embedding,
-    analyze_bug
+    analyze_bug,
+    generate_defect_summary
 )
 
 # IMPORTANT:
@@ -34,8 +35,11 @@ from app.auth.dependencies import require_roles
 from app.schemas.issue import (
     IssueResponse,
     StatusUpdate,
+    StatusResponse,
     AssigneeUpdate,
+    AssigneeResponse,
     SprintUpdate,
+    SprintResponse,
     CommentCreate,
     MessageResponse
 )
@@ -196,7 +200,10 @@ def create_issue(
 
         description=description
     )
-
+    ai_summary = generate_defect_summary(
+        title=title,
+        description=description
+    )
 
     print(
         "\n========== AI DEFECT ANALYSIS =========="
@@ -288,6 +295,8 @@ def create_issue(
         title=title,
 
         project=project,
+         
+        ai_summary=ai_summary,
 
         priority=ai_result["priority"],
 
@@ -389,8 +398,12 @@ def create_issue(
 # =========================================================
 # GET SINGLE ISSUE
 # =========================================================
-
-@router.get("/issues/{issue_id}")
+@router.get(
+    "/issues/{issue_id}",
+    response_model=IssueResponse,
+    summary="Get a single issue",
+    description="Returns complete information about a defect."
+)
 def get_issue(
 
     issue_id: int,
@@ -1111,13 +1124,17 @@ def delete_issue(
 # Admin / Project Manager:
 #     Can perform all valid transitions
 # =========================================================
-
-@router.put("/issues/{issue_id}/status")
+@router.put(
+    "/issues/{issue_id}/status",
+    response_model=StatusResponse,
+    summary="Update issue status",
+    description="Updates an issue status according to BugFlow role-based workflow rules."
+)
 def update_status(
 
     issue_id: int,
 
-    data: dict,
+    data: StatusUpdate,
 
     db: Session = Depends(get_db),
 
@@ -1151,7 +1168,7 @@ def update_status(
     # GET NEW STATUS
     # =====================================================
 
-    new_status = data.get("status")
+    new_status = data.status
 
 
     if not new_status:
@@ -1473,12 +1490,17 @@ def update_status(
 # automatically changes status to In Progress.
 # =========================================================
 
-@router.put("/issues/{issue_id}/assignee")
+@router.put(
+    "/issues/{issue_id}/assignee",
+    response_model=AssigneeResponse,
+    summary="Assign issue to developer",
+    description="Assigns or unassigns a defect. Only Admin and Project Manager can perform this operation."
+)
 def update_assignee(
 
     issue_id: int,
 
-    data: dict,
+    data: AssigneeUpdate,
 
     db: Session = Depends(get_db),
 
@@ -1503,9 +1525,8 @@ def update_assignee(
         )
 
 
-    new_assignee = data.get(
-        "assigned_to"
-    )
+    new_assignee = data.assigned_to
+    
 
 
     # =====================================================
@@ -1786,13 +1807,17 @@ def add_comment(
 #
 # Only Admin / Project Manager
 # =========================================================
-
-@router.put("/issues/{issue_id}/sprint")
+@router.put(
+    "/issues/{issue_id}/sprint",
+    response_model=SprintResponse,
+    summary="Update issue sprint",
+    description="Assigns or removes an issue from a sprint."
+)
 def update_sprint(
 
     issue_id: int,
 
-    data: dict,
+    data: SprintUpdate,
 
     db: Session = Depends(get_db),
 
@@ -1817,9 +1842,7 @@ def update_sprint(
         )
 
 
-    sprint_id = data.get(
-        "sprint_id"
-    )
+    sprint_id = data.sprint_id
 
 
     # =====================================================
@@ -1936,4 +1959,114 @@ def update_sprint(
         "sprint":
             sprint.name
     }
+# =========================================================
+# REST API - ADD COMMENT
+# =========================================================
 
+@router.post(
+    "/api/issues/{issue_id}/comments",
+    response_model=MessageResponse,
+    summary="Add comment to issue",
+    description="Adds a developer/team comment to an issue."
+)
+def create_comment_api(
+
+    issue_id: int,
+
+    data: CommentCreate,
+
+    db: Session = Depends(get_db),
+
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
+):
+
+    issue = db.query(Issue).filter(
+        Issue.id == issue_id
+    ).first()
+
+    if not issue:
+
+        raise HTTPException(
+            status_code=404,
+            detail="Issue not found"
+        )
+
+    new_comment = Comment(
+        issue_id=issue_id,
+        comment=data.comment
+    )
+
+    db.add(new_comment)
+
+    db.add(
+        Activity(
+            issue_id=issue_id,
+            action="💬 New comment added through REST API"
+        )
+    )
+
+    db.commit()
+
+    return {
+        "message": "Comment added successfully!"
+    }
+# =========================================================
+# REST API - LIST ISSUES
+# =========================================================
+
+@router.get(
+    "/api/issues",
+    response_model=list[IssueResponse],
+    summary="Get all issues",
+    description="Returns all defects available to the authenticated user."
+)
+def list_issues_api(
+
+    db: Session = Depends(get_db),
+
+    current_user: dict = Depends(
+        require_roles(
+            "Admin",
+            "Project Manager",
+            "Developer",
+            "QA / Tester",
+            "Reporter"
+        )
+    )
+):
+
+    query = db.query(Issue)
+
+    role = current_user.get("role")
+
+    # =====================================================
+    # DEVELOPER
+    # =====================================================
+
+    if role == "Developer":
+
+        user_id = current_user.get("id")
+
+        query = query.filter(
+            Issue.assigned_to == user_id
+        )
+
+    # =====================================================
+    # OTHER ROLES
+    # =====================================================
+
+    issues = (
+        query
+        .order_by(Issue.id.desc())
+        .all()
+    )
+
+    return issues

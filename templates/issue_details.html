@@ -633,6 +633,159 @@
             font-weight: bold;
             white-space: nowrap;
         }
+        /* =================================================
+   HISTORICAL RESOLUTION ASSISTANCE
+================================================= */
+
+.history-resolution-card {
+    position: relative;
+}
+
+.history-subtitle {
+    margin: 5px 0 0;
+    color: #94a3b8;
+    font-size: 13px;
+    font-weight: 400;
+}
+
+
+/* HISTORY RESULT */
+
+.history-result {
+    margin-top: 18px;
+}
+
+
+/* RELATED DEFECT */
+
+.history-related-defect {
+    padding: 16px;
+    border: 1px solid rgba(96, 165, 250, 0.25);
+    border-radius: 12px;
+    background: rgba(30, 41, 59, 0.55);
+    margin-bottom: 16px;
+}
+
+.history-related-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.history-related-title {
+    color: #f8fafc;
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.history-similarity {
+    padding: 5px 9px;
+    border-radius: 20px;
+    background: rgba(34, 197, 94, 0.12);
+    color: #86efac;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* HISTORY SECTIONS */
+
+.history-section {
+    margin-top: 14px;
+}
+
+.history-label {
+    margin-bottom: 7px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.history-content {
+    padding: 13px 15px;
+    border-radius: 9px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.6;
+
+    white-space: pre-wrap;
+}
+
+
+/* DEVELOPER COMMENTS */
+
+.history-comments {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.history-comment {
+    padding: 12px 14px;
+    border-left: 3px solid #60a5fa;
+    border-radius: 7px;
+    background: rgba(15, 23, 42, 0.65);
+
+    color: #cbd5e1;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* VIEW RELATED ISSUE */
+
+.history-view-link {
+    display: inline-flex;
+    margin-top: 14px;
+
+    color: #60a5fa;
+    font-size: 13px;
+    font-weight: 700;
+
+    text-decoration: none;
+}
+
+.history-view-link:hover {
+    text-decoration: underline;
+}
+
+
+/* NO HISTORY */
+
+.history-no-result {
+    padding: 18px;
+    text-align: center;
+
+    color: #94a3b8;
+    font-size: 13px;
+
+    border: 1px dashed rgba(148, 163, 184, 0.2);
+    border-radius: 10px;
+}
+
+
+/* STATUS BADGE */
+
+.history-closed-badge {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 4px 8px;
+
+    border-radius: 20px;
+
+    background: rgba(34, 197, 94, 0.12);
+    color: #86efac;
+
+    font-size: 11px;
+    font-weight: 700;
+}
 
         /* =========================
            RESOLUTION ASSISTANCE
@@ -916,6 +1069,27 @@
             }
 
         }
+        .ai-summary-card {
+    background: #111827;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 20px;
+    color: #f8fafc;
+}
+
+.ai-summary-header {
+    font-size: 18px;
+    font-weight: 700;
+    color: #60a5fa;
+    margin-bottom: 12px;
+}
+
+.ai-summary-content {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #e2e8f0;
+}
         /* =========================
    ACTIVITY HISTORY
 ========================= */
@@ -984,6 +1158,58 @@
 .extra-activity.show-activity {
     display: block;
 }  
+    /* ============================= */
+/* ROOT CAUSE INVESTIGATION */
+/* ============================= */
+
+.investigation-subtitle {
+    margin-top: 6px;
+    color: #94a3b8;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.investigation-result {
+    margin-top: 5px;
+}
+
+.investigation-item {
+    background: #0f172a;
+    border: 1px solid #1e293b;
+    border-radius: 9px;
+    padding: 16px;
+    margin-bottom: 12px;
+}
+
+.investigation-item:last-child {
+    margin-bottom: 0;
+}
+
+.investigation-item-title {
+    color: #60a5fa;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.investigation-item-text {
+    color: #cbd5e1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.investigation-disclaimer {
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+
+    background: rgba(120, 53, 15, 0.25);
+    border: 1px solid #92400e;
+
+    color: #fed7aa;
+    font-size: 13px;
+    line-height: 1.5;
+}
 
     </style>
 
@@ -1089,33 +1315,57 @@
 
         <div>
 
-            {% if issue.status == "Resolved" %}
+    {% if issue.status == "Open" %}
 
-                <span class="badge green">
-                    ✓ Resolved
-                </span>
+        <span class="badge blue">
+            🔵 Open
+        </span>
 
-            {% elif issue.status == "In Review" %}
+    {% elif issue.status == "In Progress" %}
 
-                <span class="badge blue">
-                    👀 In Review
-                </span>
+        <span class="badge orange">
+            ⏳ In Progress
+        </span>
 
-            {% elif issue.status == "In Progress" %}
+    {% elif issue.status == "In Review" %}
 
-                <span class="badge orange">
-                    ⏳ In Progress
-                </span>
+        <span class="badge blue">
+            👀 In Review
+        </span>
 
-            {% else %}
+    {% elif issue.status == "Resolved" %}
 
-                <span class="badge blue">
-                    Open
-                </span>
+        <span class="badge green">
+            ✓ Resolved
+        </span>
 
-            {% endif %}
+    {% elif issue.status == "Reopened" %}
 
-        </div>
+        <span class="badge orange">
+            🔄 Reopened
+        </span>
+
+    {% elif issue.status == "Verified" %}
+
+        <span class="badge green">
+            ✓ Verified
+        </span>
+
+    {% elif issue.status == "Closed" %}
+
+        <span class="badge gray">
+            🔒 Closed
+        </span>
+
+    {% else %}
+
+        <span class="badge gray">
+            {{ issue.status }}
+        </span>
+
+    {% endif %}
+
+</div>
 
     </div>
 
@@ -1157,6 +1407,19 @@
                 </div>
 
             </div>
+            {% if issue.ai_summary %}
+<div class="ai-summary-card">
+
+    <div class="ai-summary-header">
+        🤖 AI-Generated Defect Summary
+    </div>
+
+    <div class="ai-summary-content">
+        {{ issue.ai_summary }}
+    </div>
+
+</div>
+{% endif %}
 
 
             <!-- SCREENSHOT -->
@@ -1546,8 +1809,133 @@
                 </div>
 
             </div>
+            <!-- =================================================
+     HISTORICAL RESOLUTION ASSISTANCE
+================================================= -->
+
+<div class="ai-card history-resolution-card">
+
+    <div class="ai-header">
+
+        <div>
+            <h3>
+                📚 Historical Resolution Assistance
+            </h3>
+
+            <p class="history-subtitle">
+                Learn from previously resolved similar defects
+            </p>
+        </div>
+
+        <button
+            type="button"
+            class="ai-button"
+            id="historyResolutionButton"
+            onclick="findHistoricalResolution()">
+
+            📚 Find Previous Resolution
+
+        </button>
+
+    </div>
 
 
+    <div
+        id="historyResolutionLoading"
+        class="ai-loading">
+
+        🔄 Searching previously closed defects for relevant solutions...
+
+    </div>
+
+
+    <div
+        id="historyResolutionError"
+        class="ai-error">
+    </div>
+
+
+    <div id="historyResolutionResult">
+
+        <div class="ai-empty">
+
+            Click
+            <strong>Find Previous Resolution</strong>
+            to check whether a previously closed defect contains a useful solution.
+
+        </div>
+
+    </div>
+
+</div>
+            <!-- =================================================
+     ROOT CAUSE INVESTIGATION ASSISTANCE
+================================================= -->
+
+<div class="ai-card">
+
+    <div class="ai-header">
+
+        <div>
+            <h3>
+                🔎 Root Cause Investigation Assistance
+            </h3>
+
+            <div class="investigation-subtitle">
+                AI-guided areas to investigate for this issue.
+            </div>
+        </div>
+
+
+        <button
+            type="button"
+            class="ai-button"
+            id="investigationButton"
+            onclick="generateInvestigation()">
+
+            🔍 Generate Investigation Guidance
+
+        </button>
+
+    </div>
+
+
+    <!-- Loading -->
+    <div
+        id="investigationLoading"
+        class="ai-loading">
+
+        🔄 Analyzing this issue and preparing investigation guidance...
+
+    </div>
+
+
+    <!-- Error -->
+    <div
+        id="investigationError"
+        class="ai-error">
+    </div>
+
+
+    <!-- Results are hidden until button is clicked -->
+    <div
+        id="investigationResult"
+        style="display:none;">
+    </div>
+
+
+    <!-- Disclaimer also hidden until result is generated -->
+    <div
+        id="investigationDisclaimer"
+        class="investigation-disclaimer"
+        style="display:none;">
+
+        ⚠️ These are investigation suggestions,
+        not confirmed root causes.
+
+    </div>
+
+</div>
             <!-- =================================================
                  AI RESOLUTION ASSISTANCE
             ================================================= -->
@@ -1605,6 +1993,7 @@
 
 
         </div>
+        
 
 
         <!-- =========================
@@ -1825,45 +2214,67 @@
                     </div>
 
 
-                    <!-- STATUS -->
-
                     <div class="detail-item">
 
-                        <div class="detail-label">
-                            Status
-                        </div>
+    <div class="detail-label">
+        Status
+    </div>
 
-                        <div class="detail-value">
+    <div class="detail-value">
 
-                            {% if issue.status == "Resolved" %}
+        {% if issue.status == "Open" %}
 
-                                <span class="badge green">
-                                    Resolved
-                                </span>
+            <span class="badge blue">
+                🔵 Open
+            </span>
 
-                            {% elif issue.status == "In Review" %}
+        {% elif issue.status == "In Progress" %}
 
-                                <span class="badge blue">
-                                    In Review
-                                </span>
+            <span class="badge orange">
+                ⏳ In Progress
+            </span>
 
-                            {% elif issue.status == "In Progress" %}
+        {% elif issue.status == "In Review" %}
 
-                                <span class="badge orange">
-                                    In Progress
-                                </span>
+            <span class="badge blue">
+                👀 In Review
+            </span>
 
-                            {% else %}
+        {% elif issue.status == "Resolved" %}
 
-                                <span class="badge blue">
-                                    Open
-                                </span>
+            <span class="badge green">
+                ✓ Resolved
+            </span>
 
-                            {% endif %}
+        {% elif issue.status == "Reopened" %}
 
-                        </div>
+            <span class="badge orange">
+                🔄 Reopened
+            </span>
 
-                    </div>
+        {% elif issue.status == "Verified" %}
+
+            <span class="badge green">
+                ✓ Verified
+            </span>
+
+        {% elif issue.status == "Closed" %}
+
+            <span class="badge gray">
+                🔒 Closed
+            </span>
+
+        {% else %}
+
+            <span class="badge gray">
+                {{ issue.status }}
+            </span>
+
+        {% endif %}
+
+    </div>
+
+</div>
 
 
                     <!-- SPRINT -->
@@ -2111,6 +2522,36 @@
                 {% endif %}
 
             </div>
+            <!-- AI Developer Recommendation -->
+<div style="margin-top: 12px;">
+
+    <button
+        type="button"
+        class="ai-button"
+        id="developerRecommendationButton"
+        onclick="recommendDeveloper()">
+        👨‍💻 Recommend Developer
+    </button>
+
+    <div
+        id="developerRecommendationLoading"
+        class="ai-loading"
+        style="display:none;">
+        🔄 Finding the most suitable developer...
+    </div>
+
+    <div
+        id="developerRecommendationError"
+        class="ai-error"
+        style="display:none;">
+    </div>
+
+    <div
+        id="developerRecommendationResult"
+        style="display:none; margin-top:12px;">
+    </div>
+
+</div>
 
 
         </div>
@@ -3231,7 +3672,348 @@ async function findSimilarDefects() {
     }
 
 }
+/* ==================================================
+   HISTORICAL RESOLUTION ASSISTANCE
+================================================== */
 
+async function findHistoricalResolution() {
+
+    const button =
+        document.getElementById(
+            "historyResolutionButton"
+        );
+
+    const loading =
+        document.getElementById(
+            "historyResolutionLoading"
+        );
+
+    const errorBox =
+        document.getElementById(
+            "historyResolutionError"
+        );
+
+    const resultBox =
+        document.getElementById(
+            "historyResolutionResult"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "🔄 Searching...";
+
+    loading.style.display =
+        "block";
+
+    errorBox.style.display =
+        "none";
+
+    resultBox.innerHTML = "";
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/ai/historical-resolution",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body: JSON.stringify({
+
+                        issue_id:
+                            issueData.id,
+
+                        title:
+                            issueData.title,
+
+                        description:
+                            issueData.description,
+
+                        category:
+                            issueData.category,
+
+                        module:
+                            issueData.module,
+
+                        defect_type:
+                            issueData.defect_type
+
+                    })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to retrieve historical resolution."
+            );
+
+        }
+
+
+        const history =
+            data.historical_resolution;
+
+
+        if (
+            !history ||
+            !history.related_defect
+        ) {
+
+            resultBox.innerHTML = `
+
+                <div class="history-no-result">
+
+                    📭 No previously closed similar defect
+                    with a stored resolution was found.
+
+                </div>
+
+            `;
+
+            return;
+        }
+
+
+        const defect =
+            history.related_defect;
+
+
+        const rootCause =
+            escapeHtml(
+                history.previous_root_cause ||
+                "No previous root cause was recorded."
+            );
+
+
+        const resolution =
+            escapeHtml(
+                history.previous_resolution ||
+                "No previous resolution was recorded."
+            );
+
+
+        const comments =
+            history.relevant_developer_comments || [];
+
+
+        let commentsHtml = "";
+
+
+        if (
+            Array.isArray(comments) &&
+            comments.length > 0
+        ) {
+
+            commentsHtml = comments
+                .map(
+                    comment => `
+
+                        <div class="history-comment">
+
+                            ${escapeHtml(comment)}
+
+                        </div>
+
+                    `
+                )
+                .join("");
+
+        }
+
+        else {
+
+            commentsHtml = `
+
+                <div class="history-content">
+
+                    No relevant developer comments were recorded.
+
+                </div>
+
+            `;
+
+        }
+
+
+        const similarity =
+            Number(
+                defect.similarity || 0
+            );
+
+
+        resultBox.innerHTML = `
+
+            <div class="history-result">
+
+
+                <!-- RELATED DEFECT -->
+
+                <div class="history-related-defect">
+
+                    <div class="history-related-header">
+
+                        <div class="history-related-title">
+
+                            🔗 Related Defect
+
+                            <span class="history-closed-badge">
+
+                                CLOSED
+
+                            </span>
+
+                        </div>
+
+
+                        <span class="history-similarity">
+
+                            ${similarity}% Similar
+
+                        </span>
+
+                    </div>
+
+
+                    <div class="history-content">
+
+                        ${escapeHtml(
+                            defect.title ||
+                            "Untitled Defect"
+                        )}
+
+                    </div>
+
+
+                    <a
+                        href="/issues/${defect.id}/details"
+                        class="history-view-link">
+
+                        View Related Defect →
+
+                    </a>
+
+                </div>
+
+
+
+                <!-- PREVIOUS ROOT CAUSE -->
+
+                <div class="history-section">
+
+                    <div class="history-label">
+
+                        🔎 Previous Root Cause
+
+                    </div>
+
+                    <div class="history-content">
+
+                        ${rootCause}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PREVIOUS RESOLUTION -->
+
+                <div class="history-section">
+
+                    <div class="history-label">
+
+                        🛠 Previous Resolution
+
+                    </div>
+
+                    <div class="history-content">
+
+                        ${resolution}
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- DEVELOPER COMMENTS -->
+
+                <div class="history-section">
+
+                    <div class="history-label">
+
+                        💬 Relevant Developer Comments
+
+                    </div>
+
+                    <div class="history-comments">
+
+                        ${commentsHtml}
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        `;
+
+    }
+
+
+    catch (error) {
+
+        console.error(
+            "Historical resolution error:",
+            error
+        );
+
+
+        errorBox.textContent =
+            error.message ||
+            "Unable to retrieve historical resolution.";
+
+
+        errorBox.style.display =
+            "block";
+
+
+        resultBox.innerHTML = "";
+
+    }
+
+
+    finally {
+
+        loading.style.display =
+            "none";
+
+        button.disabled =
+            false;
+
+        button.textContent =
+            "📚 Find Previous Resolution";
+
+    }
+
+}
 
 /* ==================================================
    AI - RESOLUTION ASSISTANCE
@@ -3791,7 +4573,523 @@ document.addEventListener(
 
     }
 );
+/* ==================================================
+   ROOT CAUSE INVESTIGATION ASSISTANCE
+================================================== */
 
+async function generateInvestigation() {
+
+    const button =
+        document.getElementById("investigationButton");
+
+    const loading =
+        document.getElementById("investigationLoading");
+
+    const errorBox =
+        document.getElementById("investigationError");
+
+    const resultBox =
+        document.getElementById("investigationResult");
+
+    const disclaimer =
+        document.getElementById("investigationDisclaimer");
+
+
+    // Clear previous result
+    resultBox.innerHTML = "";
+    resultBox.style.display = "none";
+
+    disclaimer.style.display = "none";
+
+    errorBox.innerHTML = "";
+    errorBox.style.display = "none";
+
+
+    // Show loading
+    loading.style.display = "block";
+
+    button.disabled = true;
+    button.textContent = "🔄 Generating...";
+
+
+    try {
+
+        const response = await fetch(
+            "/ai/investigation",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+
+                    title:
+                        issueData.title,
+
+                    project:
+                        issueData.project,
+
+                    description:
+                        issueData.description,
+
+                    category:
+                        issueData.category || "Other",
+
+                    module:
+                        issueData.module || "General",
+
+                    defect_type:
+                        issueData.defect_type || "Other",
+
+                    severity:
+                        issueData.severity || "Medium",
+
+                    priority:
+                        issueData.priority || "P2"
+
+                })
+            }
+        );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to generate investigation guidance."
+            );
+
+        }
+
+
+        // Display result for THIS issue
+        renderInvestigationResults(data);
+
+
+        resultBox.style.display = "block";
+
+        disclaimer.style.display = "block";
+
+
+    }
+    catch (error) {
+
+        console.error(
+            "Investigation error:",
+            error
+        );
+
+
+        errorBox.textContent =
+            error.message ||
+            "Unable to generate investigation guidance.";
+
+        errorBox.style.display = "block";
+
+    }
+    finally {
+
+        loading.style.display = "none";
+
+        button.disabled = false;
+
+        button.textContent =
+            "🔍 Generate Investigation Guidance";
+
+    }
+
+}
+
+
+/* ==================================================
+   RENDER INVESTIGATION RESULTS
+================================================== */
+
+function renderInvestigationResults(data) {
+
+    const resultBox =
+        document.getElementById(
+            "investigationResult"
+        );
+
+
+    const areas =
+        data.investigation_areas || [];
+
+
+    if (
+        !Array.isArray(areas) ||
+        areas.length === 0
+    ) {
+
+        resultBox.innerHTML = `
+
+            <div class="ai-empty">
+
+                No investigation suggestions
+                were generated for this issue.
+
+            </div>
+
+        `;
+
+        return;
+    }
+
+
+    let html = `
+
+        <div class="investigation-result">
+
+    `;
+
+
+    areas.forEach(
+        function(area, index) {
+
+            html += `
+
+                <div class="investigation-item">
+
+                    <div class="investigation-item-title">
+
+                        🔍 Investigation Area ${index + 1}
+
+                    </div>
+
+                    <div class="investigation-item-text">
+
+                        ${escapeHtml(area)}
+
+                    </div>
+
+                </div>
+
+            `;
+
+        }
+    );
+
+
+    html += `
+
+        </div>
+
+    `;
+
+
+    resultBox.innerHTML = html;
+
+}
+async function recommendDeveloper() {
+
+    const button = document.getElementById(
+        "developerRecommendationButton"
+    );
+
+    const loading = document.getElementById(
+        "developerRecommendationLoading"
+    );
+
+    const errorBox = document.getElementById(
+        "developerRecommendationError"
+    );
+
+    const resultBox = document.getElementById(
+        "developerRecommendationResult"
+    );
+
+    // Reset
+    resultBox.innerHTML = "";
+    resultBox.style.display = "none";
+
+    errorBox.innerHTML = "";
+    errorBox.style.display = "none";
+
+    // Loading
+    loading.style.display = "block";
+
+    button.disabled = true;
+    button.textContent = "🔄 Finding Developer...";
+
+    try {
+
+        const response = await fetch(
+            "/ai/recommend-developer",
+            {
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+                    issue_id: issueData.id
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to recommend a developer."
+            );
+        }
+
+        renderDeveloperRecommendation(data);
+
+        resultBox.style.display = "block";
+
+    } catch (error) {
+
+        console.error(
+            "Developer recommendation error:",
+            error
+        );
+
+        errorBox.textContent =
+            error.message ||
+            "Unable to recommend a developer.";
+
+        errorBox.style.display = "block";
+
+    } finally {
+
+        loading.style.display = "none";
+
+        button.disabled = false;
+
+        button.textContent =
+            "👨‍💻 Recommend Developer";
+    }
+}
+function renderDeveloperRecommendation(data) {
+
+    const resultBox = document.getElementById(
+        "developerRecommendationResult"
+    );
+
+    const developer =
+        data.recommended_developer || {};
+
+    const developerId = developer.id;
+
+    const developerName =
+        escapeHtml(
+            developer.name || "Unknown Developer"
+        );
+
+    const score =
+        data.match_score !== undefined
+            ? data.match_score
+            : null;
+
+    const reasons =
+        Array.isArray(data.reasons)
+            ? data.reasons
+            : [];
+
+    let html = `
+        <div class="ai-card">
+
+            <div class="ai-header">
+
+                <div>
+                    <h3>🤖 Recommended Developer</h3>
+
+                    <div style="
+                        color:#60a5fa;
+                        font-size:18px;
+                        font-weight:bold;
+                        margin-top:8px;
+                    ">
+                        👨‍💻 ${developerName}
+                    </div>
+
+                    ${
+                        score !== null
+                        ? `
+                        <div style="
+                            color:#34d399;
+                            margin-top:6px;
+                            font-size:14px;
+                            font-weight:bold;
+                        ">
+                            Match Score: ${escapeHtml(String(score))}%
+                        </div>
+                        `
+                        : ""
+                    }
+
+                </div>
+
+                <button
+                    type="button"
+                    class="ai-button"
+                    onclick="assignRecommendedDeveloper(
+                        ${developerId},
+                        '${developerName.replace(/'/g, "\\'")}'
+                    )">
+                    ✅ Assign
+                </button>
+
+            </div>
+    `;
+
+    if (reasons.length > 0) {
+
+        html += `
+            <div style="margin-top:15px;">
+
+                <div style="
+                    color:#f1f5f9;
+                    font-weight:bold;
+                    margin-bottom:8px;
+                ">
+                    💡 Why this developer?
+                </div>
+        `;
+
+        reasons.forEach(function(reason) {
+
+            html += `
+                <div style="
+                    color:#cbd5e1;
+                    font-size:14px;
+                    line-height:1.6;
+                    margin-bottom:5px;
+                ">
+                    • ${escapeHtml(reason)}
+                </div>
+            `;
+
+        });
+
+        html += `</div>`;
+    }
+
+    html += `
+        </div>
+    `;
+
+    resultBox.innerHTML = html;
+}
+async function assignRecommendedDeveloper(
+    developerId,
+    developerName
+) {
+
+    const resultBox = document.getElementById(
+        "developerRecommendationResult"
+    );
+
+    try {
+
+        resultBox.innerHTML += `
+            <div
+                id="assignmentLoading"
+                class="ai-loading"
+                style="margin-top:12px;">
+                🔄 Assigning issue to ${escapeHtml(developerName)}...
+            </div>
+        `;
+
+        const response = await fetch(
+            `/issues/${issueData.id}/assignee`,
+            {
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+
+                body: JSON.stringify({
+                    assigned_to: developerId
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(
+                data.detail ||
+                data.message ||
+                "Unable to assign developer."
+            );
+        }
+
+        resultBox.innerHTML = `
+            <div class="ai-card">
+
+                <div style="
+                    color:#34d399;
+                    font-size:16px;
+                    font-weight:bold;
+                ">
+                    ✅ Developer Assigned Successfully
+                </div>
+
+                <div style="
+                    color:#cbd5e1;
+                    margin-top:8px;
+                ">
+                    ${escapeHtml(
+                        data.assignee || developerName
+                    )}
+                    has been assigned to this issue.
+                </div>
+
+            </div>
+        `;
+
+        // Reload the page so the existing
+        // Assignee section shows the new developer
+        setTimeout(() => {
+            window.location.reload();
+        }, 1200);
+
+    } catch (error) {
+
+        console.error(
+            "Assignment error:",
+            error
+        );
+
+        const loading =
+            document.getElementById(
+                "assignmentLoading"
+            );
+
+        if (loading) {
+            loading.remove();
+        }
+
+        resultBox.innerHTML += `
+            <div
+                class="ai-error"
+                style="display:block; margin-top:12px;">
+                ❌ ${escapeHtml(
+                    error.message ||
+                    "Unable to assign developer."
+                )}
+            </div>
+        `;
+    }
+}
 </script>
 
 

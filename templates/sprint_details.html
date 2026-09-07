@@ -5,390 +5,996 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>{{ sprint.name }} - BugFlow</title>
 
+
     <style>
 
+
         * {
+
             box-sizing: border-box;
+
             margin: 0;
+
             padding: 0;
+
         }
+
 
         body {
+
             font-family: Arial, sans-serif;
+
             background: #0f172a;
+
             color: #e2e8f0;
+
+            min-height: 100vh;
+
         }
 
-        /* =========================
-           Sidebar
-        ========================= */
+
+
+        /* =========================================
+           SIDEBAR
+        ========================================= */
 
         .sidebar {
+
             position: fixed;
+
             left: 0;
+
             top: 0;
+
             width: 240px;
+
             height: 100vh;
+
             background: #111827;
+
             border-right: 1px solid #1e293b;
+
             padding: 25px 15px;
+
+            z-index: 100;
+
         }
+
 
         .logo {
+
             padding: 0 15px 30px;
+
         }
+
 
         .logo h2 {
+
             color: #f8fafc;
+
+            font-size: 23px;
+
         }
+
 
         nav {
+
             display: flex;
+
             flex-direction: column;
+
             gap: 8px;
+
         }
+
 
         nav a {
+
             text-decoration: none;
+
             color: #94a3b8;
-            padding: 12px 15px;
+
+            padding: 13px 15px;
+
             border-radius: 8px;
+
             transition: 0.2s;
+
         }
 
-        nav a:hover,
-        nav a.active {
+
+        nav a:hover {
+
             background: #1e293b;
-            color: #ffffff;
+
+            color: white;
+
         }
 
-        /* =========================
-           Main Content
-        ========================= */
+
+        nav a.active {
+
+            background: #2563eb;
+
+            color: white;
+
+        }
+
+
+
+        /* =========================================
+           MAIN
+        ========================================= */
 
         .main {
+
             margin-left: 240px;
+
             padding: 35px;
+
             min-height: 100vh;
+
         }
 
-        /* =========================
-           Topbar
-        ========================= */
+
+
+        /* =========================================
+           TOPBAR
+        ========================================= */
 
         .topbar {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 25px;
+
         }
+
 
         .topbar h1 {
+
             font-size: 30px;
+
             color: #f8fafc;
+
         }
+
+
+        .topbar p {
+
+            color: #94a3b8;
+
+            margin-top: 6px;
+
+            font-size: 14px;
+
+        }
+
 
         .back-btn {
+
             text-decoration: none;
+
             background: #1e293b;
+
             color: #e2e8f0;
+
             padding: 10px 18px;
+
             border-radius: 8px;
+
             border: 1px solid #334155;
+
+            font-size: 13px;
+
         }
+
 
         .back-btn:hover {
+
             background: #334155;
+
         }
 
-        /* =========================
-           Sprint Information
-        ========================= */
+
+
+        /* =========================================
+           SPRINT HEADER
+        ========================================= */
 
         .sprint-header {
+
             background: #111827;
+
             border: 1px solid #1e293b;
+
             border-radius: 14px;
+
             padding: 25px;
+
             margin-bottom: 25px;
+
         }
 
-        .sprint-header h2 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            color: #f8fafc;
-        }
 
-        .sprint-info {
+        .sprint-header-top {
+
             display: flex;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-top: 15px;
+
+            justify-content: space-between;
+
+            align-items: flex-start;
+
+            gap: 20px;
+
         }
 
-        .info-item {
+
+        .sprint-title {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        .sprint-title h2 {
+
+            color: #f8fafc;
+
+            font-size: 24px;
+
+        }
+
+
+        .sprint-description {
+
             color: #94a3b8;
+
+            font-size: 14px;
+
+            line-height: 1.6;
+
         }
 
-        .info-item strong {
-            color: #e2e8f0;
-        }
 
         .status {
-            display: inline-block;
-            padding: 5px 12px;
+
+            display: inline-flex;
+
+            align-items: center;
+
+            gap: 7px;
+
+            padding: 7px 13px;
+
             border-radius: 20px;
-            background: #14532d;
-            color: #86efac;
-            font-size: 13px;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            background: #064e3b;
+
+            color: #6ee7b7;
+
         }
 
-        /* =========================
-           Statistics
-        ========================= */
+
+        .status-dot {
+
+            width: 7px;
+
+            height: 7px;
+
+            border-radius: 50%;
+
+            background: currentColor;
+
+        }
+
+
+        .sprint-info {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 15px;
+
+            margin-top: 25px;
+
+        }
+
+
+        .info-box {
+
+            background: #0f172a;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 10px;
+
+            padding: 15px;
+
+        }
+
+
+        .info-label {
+
+            color: #64748b;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
+        }
+
+
+        .info-value {
+
+            color: #e2e8f0;
+
+            font-size: 14px;
+
+            font-weight: 600;
+
+        }
+
+
+
+        /* =========================================
+           STATISTICS
+        ========================================= */
 
         .stats-grid {
+
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 20px;
+
+            grid-template-columns:
+                repeat(5, 1fr);
+
+            gap: 16px;
+
             margin-bottom: 25px;
+
         }
+
 
         .stat-card {
+
             background: #111827;
+
             border: 1px solid #1e293b;
+
             border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+
+            padding: 19px;
+
         }
+
 
         .stat-icon {
-            font-size: 28px;
+
+            font-size: 21px;
+
+            margin-bottom: 12px;
+
         }
+
 
         .stat-card p {
-            margin: 0;
+
             color: #94a3b8;
-            font-size: 14px;
+
+            font-size: 12px;
+
+            margin-bottom: 7px;
+
         }
+
 
         .stat-card h2 {
-            margin-top: 6px;
-            font-size: 28px;
+
             color: #f8fafc;
+
+            font-size: 27px;
+
         }
 
-        /* =========================
-           Progress
-        ========================= */
 
-        .table-container {
+
+        /* =========================================
+           DEFECT LIFECYCLE
+        ========================================= */
+
+        .lifecycle-card {
+
             background: #111827;
+
             border: 1px solid #1e293b;
+
             border-radius: 14px;
+
             padding: 25px;
+
             margin-bottom: 25px;
+
         }
+
+
+        .section-title {
+
+            margin-bottom: 22px;
+
+        }
+
+
+        .section-title h2 {
+
+            color: #f8fafc;
+
+            font-size: 20px;
+
+            margin-bottom: 6px;
+
+        }
+
+
+        .section-title p {
+
+            color: #94a3b8;
+
+            font-size: 14px;
+
+        }
+
+
+        .defect-lifecycle {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(6, 1fr);
+
+            gap: 10px;
+
+        }
+
+
+        .lifecycle-item {
+
+            background: #0f172a;
+
+            border: 1px solid #334155;
+
+            border-radius: 10px;
+
+            padding: 17px 10px;
+
+            text-align: center;
+
+        }
+
+
+        .lifecycle-icon {
+
+            font-size: 22px;
+
+            margin-bottom: 9px;
+
+        }
+
+
+        .lifecycle-name {
+
+            color: #cbd5e1;
+
+            font-size: 12px;
+
+            font-weight: 600;
+
+            margin-bottom: 7px;
+
+        }
+
+
+        .lifecycle-count {
+
+            color: #f8fafc;
+
+            font-size: 22px;
+
+            font-weight: bold;
+
+        }
+
+
+        .lifecycle-item.closed {
+
+            border-color: #166534;
+
+            background: #052e16;
+
+        }
+
+
+        .lifecycle-item.closed .lifecycle-count {
+
+            color: #86efac;
+
+        }
+
+
+
+        /* =========================================
+           PROGRESS
+        ========================================= */
+
+        .progress-card {
+
+            background: #111827;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 14px;
+
+            padding: 25px;
+
+            margin-bottom: 25px;
+
+        }
+
 
         .progress-header {
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
+
             margin-bottom: 15px;
+
         }
+
 
         .progress-header h2 {
+
             color: #f8fafc;
+
             font-size: 20px;
+
         }
+
 
         .progress-header p {
+
             color: #94a3b8;
+
             margin-top: 5px;
+
+            font-size: 13px;
+
         }
+
 
         .progress-percentage {
-            font-size: 22px;
+
+            font-size: 25px;
+
             font-weight: bold;
+
             color: #22c55e;
+
         }
+
 
         .progress-bar {
+
             width: 100%;
-            height: 12px;
+
+            height: 13px;
+
             background: #1e293b;
-            border-radius: 10px;
+
+            border-radius: 20px;
+
             overflow: hidden;
+
         }
+
 
         .progress-fill {
+
             height: 100%;
+
             background: #22c55e;
-            border-radius: 10px;
-            transition: width 0.4s ease;
+
+            border-radius: 20px;
+
+            transition: width 0.5s ease;
+
         }
 
-        /* =========================
-           Issues Table
-        ========================= */
 
-        .issues-title {
+        .progress-note {
+
+            margin-top: 12px;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+        }
+
+
+
+        /* =========================================
+           ISSUES
+        ========================================= */
+
+        .issues-card {
+
+            background: #111827;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 14px;
+
+            overflow: hidden;
+
+        }
+
+
+        .issues-header {
+
+            padding: 22px;
+
+            border-bottom: 1px solid #1e293b;
+
             display: flex;
+
             justify-content: space-between;
+
             align-items: center;
-            margin-bottom: 20px;
+
         }
 
-        .issues-title h2 {
+
+        .issues-header h2 {
+
             color: #f8fafc;
+
+            font-size: 20px;
+
         }
+
+
+        .issues-header p {
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            margin-top: 5px;
+
+        }
+
 
         .issue-count {
-            color: #94a3b8;
-            font-size: 14px;
+
+            color: #60a5fa;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
         }
+
+
+
+        /* =========================================
+           TABLE
+        ========================================= */
 
         table {
+
             width: 100%;
+
             border-collapse: collapse;
+
         }
+
 
         th {
+
             text-align: left;
-            padding: 14px;
+
+            padding: 14px 16px;
+
             color: #94a3b8;
-            font-size: 13px;
+
+            background: #0f172a;
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: 0.4px;
+
             border-bottom: 1px solid #1e293b;
+
         }
+
 
         td {
-            padding: 15px 14px;
+
+            padding: 16px;
+
             border-bottom: 1px solid #1e293b;
+
+            font-size: 13px;
+
         }
+
 
         tbody tr:hover {
+
             background: #172033;
+
         }
+
 
         .issue-link {
-            color: #f8fafc;
+
+            color: #60a5fa;
+
             text-decoration: none;
+
             font-weight: bold;
+
         }
+
 
         .issue-link:hover {
-            color: #60a5fa;
+
+            color: #93c5fd;
+
+            text-decoration: underline;
+
         }
 
-        /* =========================
-           Badges
-        ========================= */
+
+
+        /* =========================================
+           BADGES
+        ========================================= */
 
         .badge {
-            display: inline-block;
+
+            display: inline-flex;
+
+            align-items: center;
+
             padding: 5px 10px;
+
             border-radius: 15px;
-            font-size: 12px;
+
+            font-size: 11px;
+
             font-weight: 600;
+
         }
+
 
         .red {
+
             background: #450a0a;
+
             color: #fca5a5;
+
         }
+
 
         .orange {
+
             background: #431407;
+
             color: #fdba74;
+
         }
+
 
         .blue {
+
             background: #172554;
+
             color: #93c5fd;
+
         }
+
 
         .green {
+
             background: #052e16;
+
             color: #86efac;
+
         }
+
 
         .gray {
+
             background: #1e293b;
+
             color: #cbd5e1;
+
         }
 
-        /* =========================
-           Empty State
-        ========================= */
+
+
+        /* =========================================
+           EMPTY
+        ========================================= */
 
         .empty-state {
+
             text-align: center;
-            padding: 50px 20px;
+
+            padding: 60px 20px;
+
             color: #94a3b8;
+
         }
+
 
         .empty-state .icon {
+
             font-size: 45px;
+
             margin-bottom: 15px;
+
         }
+
 
         .empty-state h3 {
+
             color: #e2e8f0;
+
             margin-bottom: 8px;
+
         }
 
-        /* =========================
-           Responsive
-        ========================= */
 
-        @media (max-width: 1000px) {
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 1200px) {
 
             .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+
+            }
+
+
+            .defect-lifecycle {
+
+                grid-template-columns:
+                    repeat(3, 1fr);
+
             }
 
         }
+
+
+        @media (max-width: 900px) {
+
+            .sprint-info {
+
+                grid-template-columns: 1fr;
+
+            }
+
+
+            .stats-grid {
+
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+            }
+
+        }
+
 
         @media (max-width: 700px) {
 
             .sidebar {
+
                 position: relative;
+
                 width: 100%;
+
                 height: auto;
+
             }
+
 
             .main {
+
                 margin-left: 0;
+
                 padding: 20px;
+
             }
 
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
 
             .topbar {
+
                 flex-direction: column;
+
                 align-items: flex-start;
+
                 gap: 15px;
+
             }
 
-            .sprint-info {
+
+            .sprint-header-top {
+
                 flex-direction: column;
-                gap: 10px;
+
             }
 
-            .table-container {
-                overflow-x: auto;
+
+            .stats-grid {
+
+                grid-template-columns: 1fr;
+
             }
+
+
+            .defect-lifecycle {
+
+                grid-template-columns: 1fr 1fr;
+
+            }
+
+
+            .issues-card {
+
+                overflow-x: auto;
+
+            }
+
 
             table {
-                min-width: 750px;
+
+                min-width: 850px;
+
             }
 
         }
@@ -397,515 +1003,1190 @@
 
 </head>
 
+
+
 <body>
 
-    <!-- =========================
-         Sidebar
-    ========================= -->
 
-    <aside class="sidebar">
 
-        <div class="logo">
+<!-- =========================================
+     SIDEBAR
+========================================= -->
 
-            <h2>🐞 BugFlow</h2>
+<aside class="sidebar">
+
+
+    <div class="logo">
+
+        <h2>🐞 BugFlow</h2>
+
+    </div>
+
+
+    <nav>
+
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+
+        <a href="/report-issue">
+            Report Issue
+        </a>
+
+
+        <a href="/issues">
+            Issues
+        </a>
+
+
+        <a href="/projects">
+            Projects
+        </a>
+
+
+        <a href="/sprints" class="active">
+            Sprints
+        </a>
+
+
+        <a href="/">
+            Logout
+        </a>
+
+
+    </nav>
+
+
+</aside>
+
+
+
+<!-- =========================================
+     MAIN
+========================================= -->
+
+<main class="main">
+
+
+
+    <!-- =====================================
+         TOPBAR
+    ===================================== -->
+
+    <div class="topbar">
+
+
+        <div>
+
+            <h1>
+                {{ sprint.name }}
+            </h1>
+
+
+            <p>
+                Sprint overview, defect lifecycle and development progress
+            </p>
 
         </div>
 
-        <nav>
 
-            <a href="/dashboard">
-                Dashboard
-            </a>
+        <a
+            href="/sprints"
+            class="back-btn">
 
-            <a href="/report-issue">
-                Report Issue
-            </a>
+            ← Back to Sprints
 
-            <a href="/issues">
-                Issues
-            </a>
-
-            <a href="/projects">
-                Projects
-            </a>
-
-            <a href="/sprints" class="active">
-                Sprints
-            </a>
-
-            <a href="/">
-                Logout
-            </a>
-
-        </nav>
-
-    </aside>
+        </a>
 
 
-    <!-- =========================
-         Main Content
-    ========================= -->
+    </div>
 
-    <main class="main">
 
-        <!-- Topbar -->
 
-        <div class="topbar">
+    <!-- =====================================
+         SPRINT HEADER
+    ===================================== -->
+
+    <div class="sprint-header">
+
+
+        <div class="sprint-header-top">
+
 
             <div>
 
-                <h1>{{ sprint.name }}</h1>
+                <div class="sprint-title">
 
-                <p style="color:#94a3b8;margin-top:6px;">
-                    Sprint overview and issue progress
+                    <span>
+                        🚀
+                    </span>
+
+                    <h2>
+                        {{ sprint.name }}
+                    </h2>
+
+                </div>
+
+
+                <p class="sprint-description">
+
+                    Track the development progress,
+                    assigned defects and completion status
+                    of this sprint.
+
                 </p>
 
             </div>
 
-            <a href="/sprints" class="back-btn">
-                ← Back to Sprints
-            </a>
+
+            <div id="sprintStatus">
+
+                <span class="status">
+
+                    <span class="status-dot"></span>
+
+                    {{ sprint.status }}
+
+                </span>
+
+            </div>
+
 
         </div>
 
 
-        <!-- =========================
-             Sprint Information
-        ========================= -->
 
-        <div class="sprint-header">
+        <div class="sprint-info">
 
-            <h2>🚀 {{ sprint.name }}</h2>
 
-            <p style="color:#94a3b8;">
-                Track the progress and issues assigned to this sprint.
+            <div class="info-box">
+
+                <div class="info-label">
+                    Start Date
+                </div>
+
+                <div class="info-value">
+                    📅 {{ sprint.start_date }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    End Date
+                </div>
+
+                <div class="info-value">
+                    📅 {{ sprint.end_date }}
+                </div>
+
+            </div>
+
+
+            <div class="info-box">
+
+                <div class="info-label">
+                    Sprint Duration
+                </div>
+
+                <div
+                    class="info-value"
+                    id="sprintDuration">
+
+                    Calculating...
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================
+         STATISTICS
+    ===================================== -->
+
+    <div class="stats-grid">
+
+
+        <!-- TOTAL -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                📋
+            </div>
+
+            <p>
+                Total Issues
             </p>
 
-            <div class="sprint-info">
-
-                <div class="info-item">
-
-                    📅 <strong>Start Date:</strong>
-
-                    {{ sprint.start_date }}
-
-                </div>
-
-                <div class="info-item">
-
-                    📅 <strong>End Date:</strong>
-
-                    {{ sprint.end_date }}
-
-                </div>
-
-                <div class="info-item">
-
-                    📌 <strong>Status:</strong>
-
-                    <span class="status">
-                        {{ sprint.status }}
-                    </span>
-
-                </div>
-
-            </div>
+            <h2>
+                {{ issues | length }}
+            </h2>
 
         </div>
 
 
-        <!-- =========================
-             Statistics
-        ========================= -->
 
-        <div class="stats-grid">
+        <!-- OPEN -->
 
-            <!-- Total -->
+        <div class="stat-card">
 
-            <div class="stat-card">
+            <div class="stat-icon">
+                🟠
+            </div>
 
-                <div class="stat-icon">
-                    📋
+            <p>
+                Open
+            </p>
+
+            <h2>
+
+                {{
+                    issues
+                    | selectattr("status", "equalto", "Open")
+                    | list
+                    | length
+                }}
+
+            </h2>
+
+        </div>
+
+
+
+        <!-- IN PROGRESS -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔵
+            </div>
+
+            <p>
+                In Progress
+            </p>
+
+            <h2>
+
+                {{
+                    issues
+                    | selectattr("status", "equalto", "In Progress")
+                    | list
+                    | length
+                }}
+
+            </h2>
+
+        </div>
+
+
+
+        <!-- IN REVIEW -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                🔎
+            </div>
+
+            <p>
+                In Review
+            </p>
+
+            <h2>
+
+                {{
+                    issues
+                    | selectattr("status", "equalto", "In Review")
+                    | list
+                    | length
+                }}
+
+            </h2>
+
+        </div>
+
+
+
+        <!-- CLOSED -->
+
+        <div class="stat-card">
+
+            <div class="stat-icon">
+                ✅
+            </div>
+
+            <p>
+                Closed
+            </p>
+
+            <h2>
+
+                {{
+                    issues
+                    | selectattr("status", "equalto", "Closed")
+                    | list
+                    | length
+                }}
+
+            </h2>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================
+         DEFECT LIFECYCLE
+    ===================================== -->
+
+    <div class="lifecycle-card">
+
+
+        <div class="section-title">
+
+            <h2>
+                🔄 Defect Lifecycle
+            </h2>
+
+            <p>
+                Track how defects move through the development
+                and verification process.
+            </p>
+
+        </div>
+
+
+        <div class="defect-lifecycle">
+
+
+            <!-- OPEN -->
+
+            <div class="lifecycle-item">
+
+                <div class="lifecycle-icon">
+                    🟠
                 </div>
 
-                <div>
+                <div class="lifecycle-name">
+                    Open
+                </div>
 
-                    <p>Total Issues</p>
+                <div class="lifecycle-count">
 
-                    <h2>
-                        {{ total_issues }}
-                    </h2>
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "Open")
+                        | list
+                        | length
+                    }}
 
                 </div>
 
             </div>
 
 
-            <!-- Resolved -->
 
-            <div class="stat-card">
+            <!-- IN PROGRESS -->
 
-                <div class="stat-icon">
-                    🟢
-                </div>
+            <div class="lifecycle-item">
 
-                <div>
-
-                    <p>Resolved</p>
-
-                    <h2>
-                        {{ resolved_issues }}
-                    </h2>
-
-                </div>
-
-            </div>
-
-
-            <!-- In Progress -->
-
-            <div class="stat-card">
-
-                <div class="stat-icon">
+                <div class="lifecycle-icon">
                     🔵
                 </div>
 
-                <div>
+                <div class="lifecycle-name">
+                    In Progress
+                </div>
 
-                    <p>In Progress</p>
+                <div class="lifecycle-count">
 
-                    <h2>
-
-                        {{
-                            issues
-                            | selectattr("status", "equalto", "In Progress")
-                            | list
-                            | length
-                        }}
-
-                    </h2>
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "In Progress")
+                        | list
+                        | length
+                    }}
 
                 </div>
 
             </div>
 
 
-            <!-- Critical -->
 
-            <div class="stat-card">
+            <!-- IN REVIEW -->
 
-                <div class="stat-icon">
-                    🔴
+            <div class="lifecycle-item">
+
+                <div class="lifecycle-icon">
+                    🔎
                 </div>
 
-                <div>
+                <div class="lifecycle-name">
+                    In Review
+                </div>
 
-                    <p>Critical</p>
+                <div class="lifecycle-count">
 
-                    <h2>
-                        {{ critical_issues }}
-                    </h2>
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "In Review")
+                        | list
+                        | length
+                    }}
 
                 </div>
+
+            </div>
+
+
+
+            <!-- RESOLVED -->
+
+            <div class="lifecycle-item">
+
+                <div class="lifecycle-icon">
+                    🟡
+                </div>
+
+                <div class="lifecycle-name">
+                    Resolved
+                </div>
+
+                <div class="lifecycle-count">
+
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "Resolved")
+                        | list
+                        | length
+                    }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- REOPENED -->
+
+            <div class="lifecycle-item">
+
+                <div class="lifecycle-icon">
+                    🔁
+                </div>
+
+                <div class="lifecycle-name">
+                    Reopened
+                </div>
+
+                <div class="lifecycle-count">
+
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "Reopened")
+                        | list
+                        | length
+                    }}
+
+                </div>
+
+            </div>
+
+
+
+            <!-- CLOSED -->
+
+            <div class="lifecycle-item closed">
+
+                <div class="lifecycle-icon">
+                    ✅
+                </div>
+
+                <div class="lifecycle-name">
+                    Closed
+                </div>
+
+                <div class="lifecycle-count">
+
+                    {{
+                        issues
+                        | selectattr("status", "equalto", "Closed")
+                        | list
+                        | length
+                    }}
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================
+         SPRINT PROGRESS
+    ===================================== -->
+
+    {% set total_count = issues | length %}
+
+    {% set closed_count =
+        issues
+        | selectattr("status", "equalto", "Closed")
+        | list
+        | length
+    %}
+
+
+    {% if total_count > 0 %}
+
+        {% set progress =
+            ((closed_count / total_count) * 100)
+            | round(0)
+        %}
+
+    {% else %}
+
+        {% set progress = 0 %}
+
+    {% endif %}
+
+
+
+    <div class="progress-card">
+
+
+        <div class="progress-header">
+
+
+            <div>
+
+                <h2>
+                    Sprint Progress
+                </h2>
+
+                <p>
+                    Completion is calculated using only
+                    defects with <strong>Closed</strong> status.
+                </p>
+
+            </div>
+
+
+            <div class="progress-percentage">
+
+                {{ progress }}%
+
+            </div>
+
+
+        </div>
+
+
+        <div class="progress-bar">
+
+            <div
+                class="progress-fill"
+                style="width: {{ progress }}%;">
 
             </div>
 
         </div>
 
 
-        <!-- =========================
-             Sprint Progress
-        ========================= -->
+        <div class="progress-note">
 
-        <div class="table-container">
+            {{ closed_count }}
+            of
+            {{ total_count }}
+            issue(s) completely closed.
 
-            <div class="progress-header">
+            {% if total_count > 0 and closed_count == total_count %}
 
-                <div>
+                🎉 All sprint issues have been closed.
 
-                    <h2>Sprint Progress</h2>
+            {% elif total_count > 0 %}
 
-                    <p>
-                        Track how many issues have been resolved.
-                    </p>
-
-                </div>
-
-                <div class="progress-percentage">
-
-                    {% if total_issues > 0 %}
-
-                        {{ ((resolved_issues / total_issues) * 100) | round(0) }}%
-
-                    {% else %}
-
-                        0%
-
-                    {% endif %}
-
-                </div>
-
-            </div>
-
-
-            <div class="progress-bar">
-
-                <div
-                    class="progress-fill"
-                    style="width:
-                    {% if total_issues > 0 %}
-                        {{ (resolved_issues / total_issues) * 100 }}%
-                    {% else %}
-                        0%
-                    {% endif %};
-                    ">
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- =========================
-             Issues in Sprint
-        ========================= -->
-
-        <div class="table-container">
-
-            <div class="issues-title">
-
-                <div>
-
-                    <h2>🐞 Issues in this Sprint</h2>
-
-                </div>
-
-                <div class="issue-count">
-
-                    {{ total_issues }} issue(s)
-
-                </div>
-
-            </div>
-
-
-            {% if issues %}
-
-            <table>
-
-                <thead>
-
-                    <tr>
-
-                        <th>#</th>
-
-                        <th>Issue</th>
-
-                        <th>Project</th>
-
-                        <th>Priority</th>
-
-                        <th>Severity</th>
-
-                        <th>Status</th>
-
-                        <th>Due Date</th>
-
-                    </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                    {% for issue in issues %}
-
-                    <tr>
-
-                        <!-- ID -->
-
-                        <td>
-
-                            {{ issue.id }}
-
-                        </td>
-
-
-                        <!-- Issue -->
-
-                        <td>
-
-                            <a
-                                href="/issue/{{ issue.id }}"
-                                class="issue-link">
-
-                                {{ issue.title }}
-
-                            </a>
-
-                        </td>
-
-
-                        <!-- Project -->
-
-                        <td>
-
-                            {{ issue.project }}
-
-                        </td>
-
-
-                        <!-- Priority -->
-
-                        <td>
-
-                            {% if issue.priority == "P1" %}
-
-                                <span class="badge red">
-                                    {{ issue.priority }}
-                                </span>
-
-                            {% elif issue.priority == "P2" %}
-
-                                <span class="badge orange">
-                                    {{ issue.priority }}
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge green">
-                                    {{ issue.priority }}
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- Severity -->
-
-                        <td>
-
-                            {% if issue.severity == "Critical" %}
-
-                                <span class="badge red">
-                                    {{ issue.severity }}
-                                </span>
-
-                            {% elif issue.severity == "Major" %}
-
-                                <span class="badge orange">
-                                    {{ issue.severity }}
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge blue">
-                                    {{ issue.severity }}
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- Status -->
-
-                        <td>
-
-                            {% if issue.status == "Resolved" %}
-
-                                <span class="badge green">
-                                    ✓ Resolved
-                                </span>
-
-                            {% elif issue.status == "In Progress" %}
-
-                                <span class="badge blue">
-                                    In Progress
-                                </span>
-
-                            {% elif issue.status == "Open" %}
-
-                                <span class="badge orange">
-                                    Open
-                                </span>
-
-                            {% else %}
-
-                                <span class="badge gray">
-                                    {{ issue.status }}
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-
-                        <!-- Due Date -->
-
-                        <td>
-
-                            {% if issue.due_date %}
-
-                                {{ issue.due_date }}
-
-                            {% else %}
-
-                                <span style="color:#64748b;">
-                                    No due date
-                                </span>
-
-                            {% endif %}
-
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
+                Issues marked Resolved are not counted as completed
+                until they reach Closed status.
 
             {% else %}
 
-
-            <!-- Empty State -->
-
-            <div class="empty-state">
-
-                <div class="icon">
-                    📭
-                </div>
-
-                <h3>
-                    No Issues Assigned
-                </h3>
-
-                <p>
-                    There are currently no issues assigned to this sprint.
-                </p>
-
-                <br>
-
-                <a
-                    href="/report-issue"
-                    class="back-btn">
-
-                    + Report Issue
-
-                </a>
-
-            </div>
-
+                No issues have been assigned to this sprint yet.
 
             {% endif %}
 
         </div>
 
-    </main>
+
+    </div>
+
+
+
+    <!-- =====================================
+         ISSUES IN SPRINT
+    ===================================== -->
+
+    <div class="issues-card">
+
+
+        <div class="issues-header">
+
+
+            <div>
+
+                <h2>
+                    🐞 Issues in this Sprint
+                </h2>
+
+                <p>
+                    Monitor the current state of every defect.
+                </p>
+
+            </div>
+
+
+            <div class="issue-count">
+
+                {{ total_count }}
+                issue{{ "" if total_count == 1 else "s" }}
+
+            </div>
+
+
+        </div>
+
+
+
+        {% if issues %}
+
+
+        <table>
+
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        Issue
+                    </th>
+
+                    <th>
+                        Project
+                    </th>
+
+                    <th>
+                        Priority
+                    </th>
+
+                    <th>
+                        Severity
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Due Date
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for issue in issues %}
+
+
+                <tr>
+
+
+                    <!-- ID -->
+
+                    <td>
+
+                        <span
+                            style="
+                                color:#64748b;
+                                font-size:12px;
+                            ">
+
+                            #{{ issue.id }}
+
+                        </span>
+
+                    </td>
+
+
+
+                    <!-- ISSUE -->
+
+                    <td>
+
+                        <a
+                            href="/issue/{{ issue.id }}"
+                            class="issue-link">
+
+                            {{ issue.title }}
+
+                        </a>
+
+                    </td>
+
+
+
+                    <!-- PROJECT -->
+
+                    <td>
+
+                        {{ issue.project }}
+
+                    </td>
+
+
+
+                    <!-- PRIORITY -->
+
+                    <td>
+
+
+                        {% if issue.priority == "P1" %}
+
+                            <span class="badge red">
+                                P1
+                            </span>
+
+                        {% elif issue.priority == "P2" %}
+
+                            <span class="badge orange">
+                                P2
+                            </span>
+
+                        {% elif issue.priority == "P3" %}
+
+                            <span class="badge blue">
+                                P3
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge gray">
+                                {{ issue.priority }}
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+
+                    <!-- SEVERITY -->
+
+                    <td>
+
+
+                        {% if issue.severity == "Critical" %}
+
+                            <span class="badge red">
+                                Critical
+                            </span>
+
+                        {% elif issue.severity == "Major" %}
+
+                            <span class="badge orange">
+                                Major
+                            </span>
+
+                        {% elif issue.severity == "Minor" %}
+
+                            <span class="badge blue">
+                                Minor
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge gray">
+                                {{ issue.severity }}
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+
+                        {% if issue.status == "Closed" %}
+
+                            <span class="badge green">
+                                ✓ Closed
+                            </span>
+
+
+                        {% elif issue.status == "Resolved" %}
+
+                            <span class="badge blue">
+                                Resolved
+                            </span>
+
+
+                        {% elif issue.status == "In Review" %}
+
+                            <span class="badge blue">
+                                In Review
+                            </span>
+
+
+                        {% elif issue.status == "In Progress" %}
+
+                            <span class="badge blue">
+                                In Progress
+                            </span>
+
+
+                        {% elif issue.status == "Reopened" %}
+
+                            <span class="badge orange">
+                                Reopened
+                            </span>
+
+
+                        {% elif issue.status == "Open" %}
+
+                            <span class="badge orange">
+                                Open
+                            </span>
+
+
+                        {% else %}
+
+                            <span class="badge gray">
+                                {{ issue.status }}
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+
+                    <!-- DUE DATE -->
+
+                    <td>
+
+
+                        {% if issue.due_date %}
+
+                            {{ issue.due_date }}
+
+                        {% else %}
+
+                            <span
+                                style="
+                                    color:#64748b;
+                                ">
+
+                                No due date
+
+                            </span>
+
+                        {% endif %}
+
+
+                    </td>
+
+
+                </tr>
+
+
+                {% endfor %}
+
+
+            </tbody>
+
+
+        </table>
+
+
+        {% else %}
+
+
+        <!-- EMPTY -->
+
+        <div class="empty-state">
+
+
+            <div class="icon">
+                📭
+            </div>
+
+
+            <h3>
+                No Issues Assigned
+            </h3>
+
+
+            <p>
+                There are currently no issues assigned
+                to this sprint.
+            </p>
+
+
+            <br>
+
+
+            <a
+                href="/report-issue"
+                class="back-btn">
+
+                + Report Issue
+
+            </a>
+
+
+        </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+
+</main>
+
+
+
+<script>
+
+
+/* =========================================
+   SPRINT DURATION
+========================================= */
+
+function calculateSprintDuration() {
+
+    const start =
+        "{{ sprint.start_date }}";
+
+    const end =
+        "{{ sprint.end_date }}";
+
+
+    if (!start || !end) {
+
+        document.getElementById(
+            "sprintDuration"
+        ).innerText = "—";
+
+        return;
+
+    }
+
+
+    const startDate =
+        new Date(
+            start + "T00:00:00"
+        );
+
+
+    const endDate =
+        new Date(
+            end + "T00:00:00"
+        );
+
+
+    const difference =
+        Math.round(
+            (endDate - startDate)
+            / (1000 * 60 * 60 * 24)
+        ) + 1;
+
+
+    document.getElementById(
+        "sprintDuration"
+    ).innerText =
+        difference +
+        (difference === 1
+            ? " day"
+            : " days");
+
+}
+
+
+
+/* =========================================
+   UPDATE SPRINT LIFECYCLE STATUS
+========================================= */
+
+function updateSprintStatus() {
+
+    const start =
+        "{{ sprint.start_date }}";
+
+    const end =
+        "{{ sprint.end_date }}";
+
+
+    if (!start || !end) {
+
+        return;
+
+    }
+
+
+    const totalIssues =
+        {{ total_count }};
+
+
+    const closedIssues =
+        {{ closed_count }};
+
+
+    const today =
+        new Date();
+
+
+    today.setHours(
+        0, 0, 0, 0
+    );
+
+
+    const startDate =
+        new Date(
+            start + "T00:00:00"
+        );
+
+
+    const endDate =
+        new Date(
+            end + "T23:59:59"
+        );
+
+
+    let status =
+        "Active";
+
+
+    /*
+       All issues closed
+       = sprint completed
+    */
+
+    if (
+        totalIssues > 0 &&
+        closedIssues === totalIssues
+    ) {
+
+        status = "Completed";
+
+    }
+
+
+    /*
+       Sprint hasn't started
+    */
+
+    else if (
+        today < startDate
+    ) {
+
+        status = "Planned";
+
+    }
+
+
+    /*
+       Sprint date has passed but
+       issues are still open
+    */
+
+    else if (
+        today > endDate
+    ) {
+
+        status = "Active";
+
+    }
+
+
+    const statusBox =
+        document.getElementById(
+            "sprintStatus"
+        );
+
+
+    let cssClass =
+        "status";
+
+
+    if (status === "Completed") {
+
+        cssClass =
+            "status";
+
+    }
+
+
+    statusBox.innerHTML = `
+
+        <span class="${cssClass}">
+
+            <span class="status-dot"></span>
+
+            ${status}
+
+        </span>
+
+    `;
+
+}
+
+
+
+/* =========================================
+   INITIALIZE
+========================================= */
+
+calculateSprintDuration();
+
+updateSprintStatus();
+
+</script>
+
+
 
 </body>
 

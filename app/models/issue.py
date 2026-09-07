@@ -50,6 +50,10 @@ class Issue(Base):
         String(100),
         nullable=True
     )
+    ai_summary = Column(
+        Text,
+        nullable=True
+    )
     embedding = Column(
         Vector(3072),
         nullable=True
