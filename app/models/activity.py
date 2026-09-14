@@ -10,7 +10,8 @@ class Activity(Base):
 
     issue_id = Column(
     Integer,
-    ForeignKey("issues.id", ondelete="CASCADE")
+    ForeignKey("issues.id", ondelete="CASCADE"),
+    index=True
 )
 
     action = Column(String(255))

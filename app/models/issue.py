@@ -25,7 +25,8 @@ class Issue(Base):
     )
 
     project = Column(
-        String(100)
+        String(100),
+        index=True
     )
 
     description = Column(
@@ -38,17 +39,20 @@ class Issue(Base):
 
     category = Column(
         String(50),
-        nullable=True
+        nullable=True,
+        index=True
     )
 
     defect_type = Column(
         String(50),
-        nullable=True
+        nullable=True,
+        index=True
     )
 
     module = Column(
         String(100),
-        nullable=True
+        nullable=True,
+        index=True
     )
     ai_summary = Column(
         Text,
@@ -101,11 +105,13 @@ class Issue(Base):
     # ==========================
 
     priority = Column(
-        String(20)
+        String(20),
+        index=True
     )
 
     severity = Column(
-        String(20)
+        String(20),
+        index=True
     )
 
     # ==========================
@@ -114,7 +120,8 @@ class Issue(Base):
 
     status = Column(
         String(20),
-        default="Reported"
+        default="Reported",
+        index=True
     )
     # ==========================
 # TIMESTAMPS
@@ -158,7 +165,8 @@ class Issue(Base):
     sprint_id = Column(
         Integer,
         ForeignKey("sprints.id"),
-        nullable=True
+        nullable=True,
+        index=True
     )
 
     sprint = relationship(
@@ -173,7 +181,8 @@ class Issue(Base):
     assigned_to = Column(
         Integer,
         ForeignKey("users.id"),
-        nullable=True
+        nullable=True,
+        index=True
     )
 
     assignee = relationship(

@@ -1,3 +1,5 @@
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -27,7 +29,14 @@ from app.models.attachment import Attachment
 
 from starlette.middleware.sessions import SessionMiddleware
 from datetime import date
+load_dotenv()
 
+SESSION_SECRET = os.getenv("SECRET_KEY")
+
+if not SESSION_SECRET:
+    raise RuntimeError(
+        "SECRET_KEY is not configured in the environment."
+    )
 app = FastAPI(
     title="BugFlow API",
     description="""
@@ -49,7 +58,7 @@ app = FastAPI(
 )
 app.add_middleware(
     SessionMiddleware,
-    secret_key="bugflow-secret-key"
+    secret_key=SESSION_SECRET
 )
 
 # Create database tables

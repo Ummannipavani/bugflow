@@ -25,7 +25,26 @@ import uuid
 
 router = APIRouter()
 
+# =========================================================
+# FILE UPLOAD SECURITY
+# =========================================================
 
+ALLOWED_ATTACHMENT_EXTENSIONS = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp",
+    ".pdf",
+    ".doc",
+    ".docx",
+    ".xls",
+    ".xlsx",
+    ".csv",
+    ".txt"
+}
+
+MAX_ATTACHMENT_SIZE = 10 * 1024 * 1024  # 10 MB
 # =========================================================
 # RBAC HELPER
 # =========================================================
@@ -131,7 +150,6 @@ def upload_attachment(
             )
         )
 
-
     # =====================================================
     # CHECK FILE
     # =====================================================
@@ -139,10 +157,43 @@ def upload_attachment(
     if not file.filename:
 
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No file selected"
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="No file selected"
         )
 
+
+# =====================================================
+# SAFE ORIGINAL FILENAME
+# =====================================================
+
+    original_filename = os.path.basename(file.filename).strip()
+
+    if not original_filename:
+
+        raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail="Invalid filename"
+        )
+
+
+# =====================================================
+# CHECK FILE EXTENSION
+# =====================================================
+
+    extension = os.path.splitext(
+        original_filename
+    )[1].lower()
+
+    if extension not in ALLOWED_ATTACHMENT_EXTENSIONS:
+
+        raise HTTPException(
+        status_code=status.HTTP_400_BAD_REQUEST,
+        detail=(
+            "Unsupported file type. "
+            "Allowed formats: PNG, JPG, JPEG, GIF, WEBP, "
+            "PDF, DOC, DOCX, XLS, XLSX, CSV and TXT."
+            )
+        )
 
     # =====================================================
     # CREATE UPLOAD DIRECTORY
@@ -155,26 +206,6 @@ def upload_attachment(
         exist_ok=True
     )
 
-
-    # =====================================================
-    # ORIGINAL FILENAME
-    # =====================================================
-
-    original_filename = file.filename
-
-
-    # =====================================================
-    # FILE EXTENSION
-    # =====================================================
-
-    extension = ""
-
-    if "." in original_filename:
-
-        extension = (
-            "." +
-            original_filename.rsplit(".", 1)[1]
-        )
 
 
     # =====================================================
@@ -195,32 +226,59 @@ def upload_attachment(
         unique_filename
     )
 
-
     # =====================================================
-    # SAVE FILE
+    # SAVE FILE WITH SIZE LIMIT
     # =====================================================
 
     try:
 
+        total_size = 0
+
         with open(
-            file_path,
-            "wb"
+        file_path,
+        "wb"
         ) as buffer:
 
-            shutil.copyfileobj(
-                file.file,
-                buffer
-            )
+            while True:
 
-    except Exception as e:
+                chunk = file.file.read(1024 * 1024)
+
+                if not chunk:
+                    break
+
+                total_size += len(chunk)
+
+                if total_size > MAX_ATTACHMENT_SIZE:
+
+                    buffer.close()
+
+                    if os.path.exists(file_path):
+                        os.remove(file_path)
+
+                    raise HTTPException(
+                    status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+                    detail="File size must not exceed 10 MB."
+                    )
+
+                buffer.write(chunk)
+
+    except HTTPException:
+        raise
+
+    except Exception:
+
+        if os.path.exists(file_path):
+
+            try:
+                os.remove(file_path)
+            except Exception:
+                pass
 
         raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=(
-                f"Unable to save attachment: {str(e)}"
-            )
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        detail="Unable to save attachment."
         )
-
+    
 
     # =====================================================
     # SAVE DATABASE RECORD

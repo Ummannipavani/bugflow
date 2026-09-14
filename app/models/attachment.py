@@ -17,7 +17,8 @@ class Attachment(Base):
     issue_id = Column(
         Integer,
         ForeignKey("issues.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
 
     filename = Column(

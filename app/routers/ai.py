@@ -15,7 +15,7 @@ from app.database.database import get_db
 from app.models.issue import Issue
 from app.models.comment import Comment
 from app.models.user import User
-
+from app.auth.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -74,7 +74,8 @@ class DeveloperRecommendationRequest(BaseModel):
 
 @router.post("/ai/analyze")
 def analyze(
-    request: AnalyzeRequest
+    request: AnalyzeRequest,
+    current_user: dict = Depends(get_current_user)
 ):
 
     result = analyze_bug(
@@ -116,13 +117,10 @@ def analyze(
 
 @router.post("/ai/similar-defects")
 def similar_defects(
-
     request: SimilarDefectsRequest,
-
-    db: Session = Depends(get_db)
-
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
-
     # =====================================================
     # GENERATE EMBEDDING FOR CURRENT ISSUE
     # =====================================================
@@ -254,11 +252,9 @@ def similar_defects(
 
 @router.post("/ai/historical-resolution")
 def historical_resolution(
-
     request: SimilarDefectsRequest,
-
-    db: Session = Depends(get_db)
-
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
 
     # =====================================================
@@ -588,7 +584,8 @@ def historical_resolution(
 @router.post("/ai/resolve")
 def resolve_defect(
     request: ResolutionRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
 
     # =====================================================
@@ -734,7 +731,8 @@ def resolve_defect(
 
 @router.post("/ai/investigation")
 def investigation_assistance(
-    request: ResolutionRequest
+    request: ResolutionRequest,
+    current_user: dict = Depends(get_current_user)
 ):
 
     result = generate_investigation_assistance(
@@ -775,7 +773,8 @@ def investigation_assistance(
 @router.post("/ai/recommend-developer")
 def recommend_developer(
     request: DeveloperRecommendationRequest,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: dict = Depends(get_current_user)
 ):
 
     # =====================================================

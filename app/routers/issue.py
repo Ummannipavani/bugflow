@@ -48,7 +48,17 @@ from datetime import date, datetime
 import os
 import shutil
 import uuid
+# =========================================================
+# ALLOWED IMAGE FILE TYPES
+# =========================================================
 
+ALLOWED_IMAGE_EXTENSIONS = {
+    ".png",
+    ".jpg",
+    ".jpeg",
+    ".gif",
+    ".webp"
+}
 
 router = APIRouter()
 
@@ -109,33 +119,32 @@ def create_issue(
 
     filename = None
 
-
     # =====================================================
     # SAVE SCREENSHOT
     # =====================================================
 
     if screenshot and screenshot.filename:
 
-        ext = screenshot.filename.split(".")[-1]
+        original_filename = screenshot.filename
 
-        filename = f"{uuid.uuid4()}.{ext}"
+        ext = os.path.splitext(original_filename)[1].lower()
 
-        os.makedirs(
-            "static/uploads",
-            exist_ok=True
-        )
-
-        with open(
-            f"static/uploads/{filename}",
-            "wb"
-        ) as buffer:
-
-            shutil.copyfileobj(
-                screenshot.file,
-                buffer
+        if ext not in ALLOWED_IMAGE_EXTENSIONS:
+            raise HTTPException(
+                status_code=400,
+                detail="Invalid screenshot format. Allowed formats: PNG, JPG, JPEG, GIF, WEBP."
             )
 
+        filename = f"{uuid.uuid4().hex}{ext}"
 
+        upload_dir = "static/uploads"
+        os.makedirs(upload_dir, exist_ok=True)
+
+        file_path = os.path.join(upload_dir, filename)
+
+        with open(file_path, "wb") as buffer:
+            shutil.copyfileobj(screenshot.file, buffer)
+    
     # =====================================================
     # CHECK PROJECT
     # =====================================================
@@ -906,51 +915,76 @@ def update_issue(
     # =====================================================
     # UPDATE SCREENSHOT
     # =====================================================
-
     if screenshot and screenshot.filename:
 
-        ext = screenshot.filename.split(".")[-1]
+        original_filename = screenshot.filename
 
-        filename = (
-            f"{uuid.uuid4()}.{ext}"
+        ext = os.path.splitext(
+            original_filename
+        )[1].lower()
+
+
+    # =====================================================
+    # VALIDATE FILE EXTENSION
+    # =====================================================
+
+    if ext not in ALLOWED_IMAGE_EXTENSIONS:
+
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                "Invalid screenshot format. "
+                "Only PNG, JPG, JPEG, GIF and WEBP "
+                "images are allowed."
+            )
         )
 
 
-        os.makedirs(
-            "static/uploads",
-            exist_ok=True
+    # =====================================================
+    # GENERATE SAFE RANDOM FILENAME
+    # =====================================================
+
+    filename = (
+        f"{uuid.uuid4()}{ext}"
+    )
+
+
+    os.makedirs(
+        "static/uploads",
+        exist_ok=True
+    )
+
+
+    with open(
+        f"static/uploads/{filename}",
+        "wb"
+    ) as buffer:
+
+        shutil.copyfileobj(
+            screenshot.file,
+            buffer
         )
 
 
-        with open(
-            f"static/uploads/{filename}",
-            "wb"
-        ) as buffer:
+    # =====================================================
+    # DELETE OLD SCREENSHOT
+    # =====================================================
 
-            shutil.copyfileobj(
-                screenshot.file,
-                buffer
-            )
+    if issue.screenshot:
 
-
-        # Delete old screenshot
-
-        if issue.screenshot:
-
-            old_path = (
-                f"static/uploads/"
-                f"{issue.screenshot}"
-            )
+        old_path = (
+            f"static/uploads/"
+            f"{issue.screenshot}"
+        )
 
 
-            if os.path.exists(old_path):
+        if os.path.exists(old_path):
 
-                os.remove(old_path)
-
-
-        issue.screenshot = filename
+            os.remove(old_path)
 
 
+    issue.screenshot = filename
+    
     # =====================================================
     # SAVE
     # =====================================================
@@ -1737,7 +1771,11 @@ def add_comment(
 
     issue_id: int,
 
-    comment: str = Form(...),
+    comment: str = Form(
+    ...,
+    min_length=1,
+    max_length=2000
+    ),
 
     db: Session = Depends(get_db),
 

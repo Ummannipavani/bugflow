@@ -169,12 +169,6 @@
             margin-top: 5px;
         }
 
-
-        /* =====================================================
-           KPI NUMBER COLORS
-           Use unique names to avoid conflicts with style.css
-        ===================================================== */
-
         .stat-blue {
             color: #60a5fa !important;
             background: transparent !important;
@@ -467,6 +461,297 @@
 
 
         /* =====================================================
+           INSIGHT LIST / ANALYTICS DATA
+        ===================================================== */
+
+        .analytics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .analytics-list-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 12px 14px;
+
+            background: #0b1220;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 9px;
+        }
+
+        .analytics-list-name {
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .analytics-list-value {
+            color: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .analytics-progress-bg {
+            width: 100%;
+            height: 7px;
+
+            background: #0b1220;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+
+            margin-top: 7px;
+        }
+
+        .analytics-progress {
+            height: 100%;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #6366f1,
+                    #8b5cf6
+                );
+        }
+
+
+        /* =====================================================
+           BACKLOG
+        ===================================================== */
+
+        .backlog-content {
+            display: flex;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .backlog-number {
+            color: #fbbf24;
+            font-size: 42px;
+            font-weight: 700;
+        }
+
+        .backlog-label {
+            color: #94a3b8;
+            font-size: 13px;
+        }
+
+        .backlog-description {
+            color: #64748b;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .backlog-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .backlog-stat {
+            padding: 10px 13px;
+
+            background: #0b1220;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 8px;
+        }
+
+        .backlog-stat-number {
+            color: #f8fafc;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .backlog-stat-label {
+            color: #64748b;
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+
+        /* =====================================================
+           TREND LIST
+        ===================================================== */
+
+        .trend-container {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+
+        .trend-row {
+            display: grid;
+            grid-template-columns: 75px 1fr 45px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trend-month {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .trend-bar-bg {
+            width: 100%;
+            height: 9px;
+
+            background: #0b1220;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .trend-bar {
+            height: 100%;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #ef4444,
+                    #f59e0b
+                );
+
+            transition: width 0.5s ease;
+        }
+
+        .trend-value {
+            color: #f8fafc;
+            font-size: 11px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+
+        /* =====================================================
+           RESOLUTION TREND
+        ===================================================== */
+
+        .resolution-trend-row {
+            display: grid;
+            grid-template-columns: 75px 1fr 1fr;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 12px;
+        }
+
+        .resolution-trend-month {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .resolution-trend-box {
+            background: #0b1220;
+
+            border: 1px solid #1e293b;
+
+            border-radius: 8px;
+
+            padding: 9px 11px;
+        }
+
+        .resolution-trend-label {
+            color: #64748b;
+            font-size: 10px;
+        }
+
+        .resolution-trend-value {
+            color: #f8fafc;
+            font-size: 14px;
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+
+        /* =====================================================
+           SPRINT
+        ===================================================== */
+
+        .sprint-item {
+            margin-bottom: 18px;
+
+            padding-bottom: 14px;
+
+            border-bottom: 1px solid #1e293b;
+        }
+
+        .sprint-item:last-child {
+            border-bottom: none;
+        }
+
+        .sprint-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            margin-bottom: 8px;
+        }
+
+        .sprint-name {
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .sprint-total {
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        .sprint-progress-bg {
+            width: 100%;
+            height: 8px;
+
+            background: #0b1220;
+
+            border-radius: 10px;
+
+            overflow: hidden;
+        }
+
+        .sprint-progress {
+            height: 100%;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #22c55e,
+                    #14b8a6
+                );
+
+            transition: width 0.5s ease;
+        }
+
+        .sprint-footer {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 7px;
+        }
+
+        .sprint-footer span {
+            color: #64748b;
+            font-size: 10px;
+        }
+
+
+        /* =====================================================
            INSIGHTS
         ===================================================== */
 
@@ -573,6 +858,15 @@
             .analytics-header {
                 flex-direction: column;
                 gap: 15px;
+            }
+
+            .backlog-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .resolution-trend-row {
+                grid-template-columns: 60px 1fr 1fr;
             }
 
         }
@@ -1068,6 +1362,169 @@
 
 
     <!-- =====================================================
+         MILESTONE 4: MODULES + REPEATED DEFECTS
+    ===================================================== -->
+
+    <div class="analytics-grid">
+
+
+        <!-- MOST AFFECTED MODULES -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h2>
+                        Most Affected Components
+                    </h2>
+
+                    <p>
+                        Components with the highest number of reported defects
+                    </p>
+
+                </div>
+
+                <span class="card-menu">
+                    ⋮
+                </span>
+
+            </div>
+
+
+            <div id="modulesContainer">
+
+                <div class="loading">
+                    Loading component data...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- REPEATED DEFECTS -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h2>
+                        Repeated Defects
+                    </h2>
+
+                    <p>
+                        Defect titles reported multiple times
+                    </p>
+
+                </div>
+
+                <span class="card-menu">
+                    ⋮
+                </span>
+
+            </div>
+
+
+            <div id="repeatedDefectsContainer">
+
+                <div class="loading">
+                    Loading repeated defects...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         CRITICAL TRENDS + BACKLOG
+    ===================================================== -->
+
+    <div class="analytics-grid">
+
+
+        <!-- CRITICAL DEFECT TRENDS -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h2>
+                        Critical Defect Trends
+                    </h2>
+
+                    <p>
+                        Monthly trend of critical severity defects
+                    </p>
+
+                </div>
+
+                <span class="card-menu">
+                    ⋮
+                </span>
+
+            </div>
+
+
+            <div id="criticalTrendContainer">
+
+                <div class="loading">
+                    Loading critical trends...
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- DEFECT BACKLOG -->
+
+        <div class="analytics-card">
+
+            <div class="analytics-card-header">
+
+                <div>
+
+                    <h2>
+                        Defect Backlog
+                    </h2>
+
+                    <p>
+                        Current unresolved defect workload
+                    </p>
+
+                </div>
+
+                <span class="card-menu">
+                    ⋮
+                </span>
+
+            </div>
+
+
+            <div
+                id="backlogContainer">
+
+                <div class="loading">
+                    Loading backlog...
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
          RESOLUTION TIME
     ===================================================== -->
 
@@ -1123,6 +1580,82 @@
                     Average time from issue creation to resolution
                 </div>
 
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         RESOLUTION TRENDS
+    ===================================================== -->
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-header">
+
+            <div>
+
+                <h2>
+                    Resolution Trends
+                </h2>
+
+                <p>
+                    Monthly comparison of created and resolved defects
+                </p>
+
+            </div>
+
+            <span class="card-menu">
+                ⋮
+            </span>
+
+        </div>
+
+
+        <div id="resolutionTrendContainer">
+
+            <div class="loading">
+                Loading resolution trends...
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         SPRINT DEFECT TRENDS
+    ===================================================== -->
+
+    <div class="analytics-card">
+
+        <div class="analytics-card-header">
+
+            <div>
+
+                <h2>
+                    Sprint Defect Trends
+                </h2>
+
+                <p>
+                    Defect distribution and progress across sprints
+                </p>
+
+            </div>
+
+            <span class="card-menu">
+                ⋮
+            </span>
+
+        </div>
+
+
+        <div id="sprintTrendContainer">
+
+            <div class="loading">
+                Loading sprint trends...
             </div>
 
         </div>
@@ -1199,7 +1732,7 @@ async function fetchFresh(url) {
             ? "&"
             : "?";
 
-    return await fetch(
+    const response = await fetch(
         url +
         separator +
         "refresh=" +
@@ -1208,6 +1741,16 @@ async function fetchFresh(url) {
             cache: "no-store"
         }
     );
+
+    if (!response.ok) {
+
+        throw new Error(
+            `Request failed: ${response.status}`
+        );
+
+    }
+
+    return response;
 
 }
 
@@ -1238,7 +1781,8 @@ async function loadSummary() {
         const active =
             (data.open || 0) +
             (data.in_progress || 0) +
-            (data.in_review || 0);
+            (data.in_review || 0) +
+            (data.reopened || 0);
 
 
         document.getElementById(
@@ -1425,7 +1969,7 @@ function createDonut(
                     </span>
 
                     <span class="legend-name">
-                        ${item.name}
+                        ${escapeHtml(item.name)}
                     </span>
 
                 </div>
@@ -1442,6 +1986,22 @@ function createDonut(
 
         }
     );
+
+}
+
+
+/* =========================================================
+   HTML ESCAPE
+========================================================= */
+
+function escapeHtml(value) {
+
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
 }
 
@@ -1662,7 +2222,9 @@ async function loadDevelopers() {
                         <span
                             class="developer-name">
 
-                            ${developer.name}
+                            ${escapeHtml(
+                                developer.name
+                            )}
 
                         </span>
 
@@ -1753,6 +2315,809 @@ async function loadResolutionTime() {
 
 
 /* =========================================================
+   MOST AFFECTED MODULES
+========================================================= */
+
+async function loadModules() {
+
+    const container =
+        document.getElementById(
+            "modulesContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/modules"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.modules ||
+            data.modules.length === 0
+        ) {
+
+            container.innerHTML =
+                '<div class="empty-message">' +
+                'No component data available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        const modules =
+            data.modules;
+
+
+        const maximum =
+            Math.max(
+                ...modules.map(
+                    module =>
+                        Number(
+                            module.count
+                        )
+                )
+            );
+
+
+        container.innerHTML = "";
+
+
+        modules
+            .slice(0, 6)
+            .forEach(module => {
+
+                const percentage =
+                    maximum > 0
+                        ? (
+                            module.count /
+                            maximum *
+                            100
+                        )
+                        : 0;
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "developer-item";
+
+
+                item.innerHTML = `
+
+                    <div
+                        class="developer-header">
+
+                        <span
+                            class="developer-name">
+
+                            ${escapeHtml(
+                                module.name
+                            )}
+
+                        </span>
+
+                        <span
+                            class="developer-count">
+
+                            ${module.count}
+
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="developer-bar-bg">
+
+                        <div
+                            class="developer-bar"
+                            style="
+                                width:${percentage}%;
+                            ">
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    item
+                );
+
+            });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Modules error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load component data.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   REPEATED DEFECTS
+========================================================= */
+
+async function loadRepeatedDefects() {
+
+    const container =
+        document.getElementById(
+            "repeatedDefectsContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/repeated-defects"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.repeated_defects ||
+            data.repeated_defects.length === 0
+        ) {
+
+            container.innerHTML =
+                '<div class="empty-message">' +
+                'No repeated defects found.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        data.repeated_defects
+            .slice(0, 6)
+            .forEach(defect => {
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "analytics-list-item";
+
+
+                item.innerHTML = `
+
+                    <span
+                        class="analytics-list-name">
+
+                        ${escapeHtml(
+                            defect.title
+                        )}
+
+                    </span>
+
+                    <span
+                        class="analytics-list-value">
+
+                        ${defect.count} times
+
+                    </span>
+
+                `;
+
+
+                container.appendChild(
+                    item
+                );
+
+            });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Repeated defects error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load repeated defects.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   CRITICAL DEFECT TRENDS
+========================================================= */
+
+async function loadCriticalTrends() {
+
+    const container =
+        document.getElementById(
+            "criticalTrendContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/critical-trends"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.critical_trends ||
+            data.critical_trends.length === 0
+        ) {
+
+            container.innerHTML =
+                '<div class="empty-message">' +
+                'No critical defect trend data available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        const trends =
+            data.critical_trends;
+
+
+        const maximum =
+            Math.max(
+                ...trends.map(
+                    item =>
+                        Number(
+                            item.count
+                        )
+                )
+            );
+
+
+        container.innerHTML =
+            '<div class="trend-container"></div>';
+
+
+        const trendContainer =
+            container.querySelector(
+                ".trend-container"
+            );
+
+
+        trends
+            .slice(-8)
+            .forEach(item => {
+
+                const percentage =
+                    maximum > 0
+                        ? (
+                            item.count /
+                            maximum *
+                            100
+                        )
+                        : 0;
+
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "trend-row";
+
+
+                row.innerHTML = `
+
+                    <span class="trend-month">
+                        ${escapeHtml(
+                            item.month
+                        )}
+                    </span>
+
+                    <div
+                        class="trend-bar-bg">
+
+                        <div
+                            class="trend-bar"
+                            style="
+                                width:${percentage}%;
+                            ">
+                        </div>
+
+                    </div>
+
+                    <span class="trend-value">
+                        ${item.count}
+                    </span>
+
+                `;
+
+
+                trendContainer.appendChild(
+                    row
+                );
+
+            });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Critical trends error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load critical trends.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   DEFECT BACKLOG
+========================================================= */
+
+async function loadBacklog() {
+
+    const container =
+        document.getElementById(
+            "backlogContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/backlog"
+            );
+
+        const data =
+            await response.json();
+
+
+        const backlog =
+            Number(
+                data.backlog || 0
+            );
+
+
+        const resolved =
+            Number(
+                data.resolved_or_closed || 0
+            );
+
+
+        const total =
+            backlog +
+            resolved;
+
+
+        const backlogPercentage =
+            total > 0
+                ? (
+                    backlog /
+                    total *
+                    100
+                ).toFixed(1)
+                : 0;
+
+
+        container.innerHTML = `
+
+            <div class="backlog-content">
+
+                <div>
+
+                    <div class="backlog-number">
+                        ${backlog}
+                    </div>
+
+                    <div class="backlog-label">
+                        Open backlog
+                    </div>
+
+                    <div class="backlog-description">
+                        Active defects requiring attention
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="analytics-progress-bg">
+
+                <div
+                    class="analytics-progress"
+                    style="
+                        width:${backlogPercentage}%;
+                    ">
+                </div>
+
+            </div>
+
+
+            <div class="backlog-stats">
+
+                <div class="backlog-stat">
+
+                    <div class="backlog-stat-number">
+                        ${resolved}
+                    </div>
+
+                    <div class="backlog-stat-label">
+                        Resolved / Closed
+                    </div>
+
+                </div>
+
+
+                <div class="backlog-stat">
+
+                    <div class="backlog-stat-number">
+                        ${total}
+                    </div>
+
+                    <div class="backlog-stat-label">
+                        Total tracked
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Backlog error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load backlog data.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   RESOLUTION TRENDS
+========================================================= */
+
+async function loadResolutionTrends() {
+
+    const container =
+        document.getElementById(
+            "resolutionTrendContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/resolution-trends"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.resolution_trends ||
+            data.resolution_trends.length === 0
+        ) {
+
+            container.innerHTML =
+                '<div class="empty-message">' +
+                'No resolution trend data available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        data.resolution_trends
+            .slice(-8)
+            .forEach(item => {
+
+                const row =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                row.className =
+                    "resolution-trend-row";
+
+
+                row.innerHTML = `
+
+                    <span
+                        class="resolution-trend-month">
+
+                        ${escapeHtml(
+                            item.month
+                        )}
+
+                    </span>
+
+
+                    <div
+                        class="resolution-trend-box">
+
+                        <div
+                            class="resolution-trend-label">
+
+                            Created
+
+                        </div>
+
+                        <div
+                            class="resolution-trend-value">
+
+                            ${item.created}
+
+                        </div>
+
+                    </div>
+
+
+                    <div
+                        class="resolution-trend-box">
+
+                        <div
+                            class="resolution-trend-label">
+
+                            Resolved
+
+                        </div>
+
+                        <div
+                            class="resolution-trend-value">
+
+                            ${item.resolved}
+
+                        </div>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    row
+                );
+
+            });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Resolution trends error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load resolution trends.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
+   SPRINT DEFECT TRENDS
+========================================================= */
+
+async function loadSprintTrends() {
+
+    const container =
+        document.getElementById(
+            "sprintTrendContainer"
+        );
+
+    try {
+
+        const response =
+            await fetchFresh(
+                "/analytics/sprint-trends"
+            );
+
+        const data =
+            await response.json();
+
+
+        if (
+            !data.sprint_trends ||
+            data.sprint_trends.length === 0
+        ) {
+
+            container.innerHTML =
+                '<div class="empty-message">' +
+                'No sprint defect data available.' +
+                '</div>';
+
+            return;
+
+        }
+
+
+        container.innerHTML = "";
+
+
+        data.sprint_trends
+            .forEach(sprint => {
+
+                const total =
+                    Number(
+                        sprint.total || 0
+                    );
+
+
+                const resolved =
+                    Number(
+                        sprint.resolved || 0
+                    );
+
+
+                const percentage =
+                    total > 0
+                        ? (
+                            resolved /
+                            total *
+                            100
+                        )
+                        : 0;
+
+
+                const item =
+                    document.createElement(
+                        "div"
+                    );
+
+
+                item.className =
+                    "sprint-item";
+
+
+                item.innerHTML = `
+
+                    <div class="sprint-header">
+
+                        <span class="sprint-name">
+
+                            ${escapeHtml(
+                                sprint.name
+                            )}
+
+                        </span>
+
+                        <span class="sprint-total">
+
+                            ${total} issues
+
+                        </span>
+
+                    </div>
+
+
+                    <div
+                        class="sprint-progress-bg">
+
+                        <div
+                            class="sprint-progress"
+                            style="
+                                width:${percentage}%;
+                            ">
+                        </div>
+
+                    </div>
+
+
+                    <div class="sprint-footer">
+
+                        <span>
+                            Resolved:
+                            ${resolved}
+                        </span>
+
+                        <span>
+                            Active:
+                            ${sprint.active || 0}
+                        </span>
+
+                        <span>
+                            ${percentage.toFixed(0)}%
+                        </span>
+
+                    </div>
+
+                `;
+
+
+                container.appendChild(
+                    item
+                );
+
+            });
+
+    }
+
+    catch(error) {
+
+        console.error(
+            "Sprint trends error:",
+            error
+        );
+
+        container.innerHTML =
+            '<div class="empty-message">' +
+            'Unable to load sprint trends.' +
+            '</div>';
+
+    }
+
+}
+
+
+/* =========================================================
    INSIGHTS
 ========================================================= */
 
@@ -1771,7 +3136,8 @@ function generateInsight(data) {
     const active =
         (data.open || 0) +
         (data.in_progress || 0) +
-        (data.in_review || 0);
+        (data.in_review || 0) +
+        (data.reopened || 0);
 
 
     const reopened =
@@ -1826,13 +3192,13 @@ function generateInsight(data) {
 
 
     insight.textContent =
-        "BugFlow is continuously analyzing your defect distribution, workload, and lifecycle status.";
+        "BugFlow is continuously analyzing your defect distribution, workload, repeated defects, critical trends, backlog, and sprint performance.";
 
 }
 
 
 /* =========================================================
-   LOAD ALL
+   LOAD ALL ANALYTICS
 ========================================================= */
 
 async function loadAllAnalytics() {
@@ -1863,7 +3229,19 @@ async function loadAllAnalytics() {
 
             loadDevelopers(),
 
-            loadResolutionTime()
+            loadResolutionTime(),
+
+            loadModules(),
+
+            loadRepeatedDefects(),
+
+            loadCriticalTrends(),
+
+            loadBacklog(),
+
+            loadResolutionTrends(),
+
+            loadSprintTrends()
 
         ]);
 

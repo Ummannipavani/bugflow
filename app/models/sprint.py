@@ -17,7 +17,7 @@ class Sprint(Base):
 
     end_date = Column(Date)
 
-    status = Column(String, default="Active")
+    status = Column(String, default="Active",index=True)
 
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 

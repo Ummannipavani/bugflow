@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional
+from typing import Optional, Literal
 from datetime import date
 
 
@@ -94,17 +94,26 @@ class IssueUpdate(BaseModel):
 
     severity: str
 
-    category: Optional[str] = None
-
-    module: Optional[str] = None
-
-    defect_type: Optional[str] = None
-
-    description: str = Field(
-        ...,
-        min_length=10
+    category: Optional[str] = Field(
+    None,
+    max_length=100
     )
 
+    module: Optional[str] = Field(
+    None,
+    max_length=100
+    )
+
+    defect_type: Optional[str] = Field(
+    None,
+    max_length=100
+    )
+
+    description: str = Field(
+    ...,
+    min_length=10,
+    max_length=5000
+    )
     due_date: Optional[date] = None
 
     sprint_id: Optional[int] = Field(
